@@ -1,0 +1,2734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Estudio – Grado Sexto | Monterrosales Homeschool</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --quimica: #e74c3c;
+    --quimica-light: #fdecea;
+    --biologia: #27ae60;
+    --biologia-light: #eafaf1;
+    --lenguaje: #8e44ad;
+    --lenguaje-light: #f5eef8;
+    --sociales: #e67e22;
+    --sociales-light: #fef5ec;
+    --matematicas: #2980b9;
+    --matematicas-light: #eaf4fb;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #1a202c;
+    --text-light: #4a5568;
+    --border: #e2e8f0;
+    --accent: #f6c90e;
+    --radius: 14px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: white;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 20px,
+      rgba(246,201,14,0.03) 20px, rgba(246,201,14,0.03) 40px
+    );
+  }
+  .site-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    position: relative;
+  }
+  .site-header h1 span { color: var(--accent); }
+  .site-header p {
+    font-size: 0.95rem;
+    opacity: 0.75;
+    margin-top: 0.4rem;
+    position: relative;
+  }
+
+  /* ===== NAV TABS ===== */
+  .nav-wrapper {
+    background: white;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  .nav-tabs {
+    display: flex;
+    min-width: max-content;
+    padding: 0 1rem;
+  }
+  .nav-tab {
+    padding: 1rem 1.4rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    color: var(--text-light);
+    user-select: none;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { border-bottom-color: currentColor; }
+  .nav-tab[data-subject="quimica"] { color: var(--quimica); }
+  .nav-tab[data-subject="biologia"] { color: var(--biologia); }
+  .nav-tab[data-subject="lenguaje"] { color: var(--lenguaje); }
+  .nav-tab[data-subject="sociales"] { color: var(--sociales); }
+  .nav-tab[data-subject="matematicas"] { color: var(--matematicas); }
+  .nav-tab[data-subject="simulacros"] { color: #1a202c; }
+
+  /* ===== SECTIONS ===== */
+  .section { display: none; padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--border);
+  }
+  .card.quimica { border-left-color: var(--quimica); }
+  .card.biologia { border-left-color: var(--biologia); }
+  .card.lenguaje { border-left-color: var(--lenguaje); }
+  .card.sociales { border-left-color: var(--sociales); }
+  .card.matematicas { border-left-color: var(--matematicas); }
+
+  .card h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem;
+    color: var(--text-light);
+  }
+  .card p, .card li { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .card ul, .card ol { padding-left: 1.4rem; }
+  .card li { margin-bottom: 0.3rem; }
+
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 0.3rem;
+  }
+  .section-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ===== VISUAL AIDS (SVG containers) ===== */
+  .visual-box {
+    background: #f8fafc;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin: 1rem 0;
+    text-align: center;
+  }
+  .visual-box svg { max-width: 100%; height: auto; }
+  .visual-caption {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* ===== HIGHLIGHT BOXES ===== */
+  .highlight {
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 0.8rem 0;
+    font-size: 0.93rem;
+  }
+  .highlight.info { background: #eaf4fb; border-left: 4px solid var(--matematicas); }
+  .highlight.warning { background: #fef5ec; border-left: 4px solid var(--sociales); }
+  .highlight.success { background: #eafaf1; border-left: 4px solid var(--biologia); }
+  .highlight.tip { background: #f5eef8; border-left: 4px solid var(--lenguaje); }
+  .highlight strong { display: block; margin-bottom: 0.3rem; }
+
+  /* ===== FORMULA / CODE ===== */
+  .formula {
+    background: #1a202c;
+    color: #f6c90e;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-family: monospace;
+    font-size: 1rem;
+    display: inline-block;
+    margin: 0.4rem 0;
+  }
+
+  /* ===== TABLES ===== */
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0.8rem 0; }
+  th { background: var(--text); color: white; padding: 0.6rem 0.8rem; text-align: left; }
+  td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: #f8fafc; }
+
+  /* ===== EXERCISE BOXES ===== */
+  .exercise {
+    background: linear-gradient(135deg, #fff9e6, #fffbf0);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin: 1rem 0;
+  }
+  .exercise h4 {
+    font-weight: 800;
+    color: #92660a;
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+  }
+  .exercise .ex-problem { font-weight: 700; margin-bottom: 0.4rem; }
+  .exercise details summary {
+    cursor: pointer;
+    color: var(--matematicas);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  .exercise details p { margin-top: 0.5rem; font-size: 0.93rem; }
+
+  /* ===== QUIZ STYLES ===== */
+  .quiz-header {
+    background: linear-gradient(135deg, #1a202c, #2d3748);
+    color: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .quiz-header h2 { font-size: 1.5rem; font-weight: 900; }
+  .quiz-header p { opacity: 0.75; font-size: 0.9rem; }
+
+  .quiz-block { margin-bottom: 1.8rem; }
+  .quiz-block .q-num {
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.5;
+    margin-bottom: 0.3rem;
+  }
+  .quiz-block .q-text {
+    font-size: 0.97rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .quiz-block .options label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    margin-bottom: 0.4rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.93rem;
+  }
+  .quiz-block .options label:hover { border-color: #94a3b8; background: #f8fafc; }
+  .quiz-block .options input[type="radio"],
+  .quiz-block .options input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; }
+  .quiz-block input[type="text"] {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+  }
+
+  .quiz-submit-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: #1a202c;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    margin-top: 1rem;
+  }
+  .quiz-submit-btn:hover { transform: translateY(-2px); background: #2d3748; }
+
+  .result-box {
+    display: none;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 1.2rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .result-box .score { font-size: 3rem; font-weight: 900; }
+  .result-box .score-label { font-size: 1rem; color: var(--text-light); }
+  .result-box .feedback-list { text-align: left; margin-top: 1rem; }
+  .correct-ans { color: #27ae60; font-weight: 700; }
+  .wrong-ans { color: #e74c3c; font-weight: 700; }
+  .result-item { padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+
+  /* ===== SIMULATOR TAB ===== */
+  .sim-selector {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .sim-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    border: 2px solid var(--border);
+    background: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sim-btn.active-q { background: #1a202c; color: white; border-color: #1a202c; }
+  .sim-btn[data-quiz="quimica"] { color: var(--quimica); border-color: var(--quimica); }
+  .sim-btn[data-quiz="quimica"].active-q { background: var(--quimica); color: white; }
+  .sim-btn[data-quiz="biologia"] { color: var(--biologia); border-color: var(--biologia); }
+  .sim-btn[data-quiz="biologia"].active-q { background: var(--biologia); color: white; }
+  .sim-btn[data-quiz="lenguaje"] { color: var(--lenguaje); border-color: var(--lenguaje); }
+  .sim-btn[data-quiz="lenguaje"].active-q { background: var(--lenguaje); color: white; }
+  .sim-btn[data-quiz="sociales"] { color: var(--sociales); border-color: var(--sociales); }
+  .sim-btn[data-quiz="sociales"].active-q { background: var(--sociales); color: white; }
+  .sim-btn[data-quiz="matematicas"] { color: var(--matematicas); border-color: var(--matematicas); }
+  .sim-btn[data-quiz="matematicas"].active-q { background: var(--matematicas); color: white; }
+
+  .quiz-panel { display: none; }
+  .quiz-panel.active { display: block; }
+
+  @media (max-width: 600px) {
+    .section { padding: 1.2rem 1rem; }
+    .site-header h1 { font-size: 1.4rem; }
+    .section-title { font-size: 1.4rem; }
+    .score { font-size: 2rem !important; }
+  }
+
+  /* grid for visual items */
+  .visual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .visual-item {
+    background: white;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    padding: 0.8rem;
+    text-align: center;
+    font-size: 0.83rem;
+    font-weight: 700;
+  }
+  .visual-item svg { display: block; margin: 0 auto 0.4rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>📚 Guía de Estudio – <span>Grado Sexto</span></h1>
+  <p>Monterrosales Homeschool · Preparación completa para el examen de validación</p>
+</header>
+
+<!-- NAV -->
+<div class="nav-wrapper">
+  <div class="nav-tabs">
+    <div class="nav-tab active" data-subject="quimica" onclick="showSection('quimica',this)">🧪 Química</div>
+    <div class="nav-tab" data-subject="biologia" onclick="showSection('biologia',this)">🧬 Biología</div>
+    <div class="nav-tab" data-subject="lenguaje" onclick="showSection('lenguaje',this)">📚 Lenguaje</div>
+    <div class="nav-tab" data-subject="sociales" onclick="showSection('sociales',this)">🌎 C. Sociales</div>
+    <div class="nav-tab" data-subject="matematicas" onclick="showSection('matematicas',this)">➗ Matemáticas</div>
+    <div class="nav-tab" data-subject="simulacros" onclick="showSection('simulacros',this)">✏️ Simulacros</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--  QUÍMICA -->
+<!-- ============================================================ -->
+<section id="quimica" class="section active">
+  <div class="section-title" style="color:var(--quimica)">🧪 Química</div>
+  <div class="section-subtitle">Antoine Lavoisier · Materia · Átomos · Soluciones · Modelos atómicos</div>
+
+  <!-- Lavoisier -->
+  <div class="card quimica">
+    <h2>⚗️ Antoine Lavoisier – Padre de la Química</h2>
+    <ul>
+      <li><strong>Vivió:</strong> 1743 – 1794, Francia.</li>
+      <li>Demostró que el <strong>oxígeno</strong> es el componente del aire que alimenta la combustión.</li>
+      <li>Formuló la <strong>Ley de Conservación de la Masa</strong>: "La materia no se crea ni se destruye, solo se transforma."</li>
+      <li>Creó la primera lista de <strong>elementos químicos</strong> y modernizó la nomenclatura química.</li>
+      <li>Inventó el nombre "oxígeno" e "hidrógeno".</li>
+    </ul>
+    <div class="highlight info"><strong>💡 Frase clave:</strong> "En toda reacción química, la masa de los reactivos es igual a la masa de los productos."</div>
+  </div>
+
+  <!-- Conversión de unidades -->
+  <div class="card quimica">
+    <h2>⚖️ Conversión de Unidades (kg ↔ g)</h2>
+    <p>El kilogramo (kg) y el gramo (g) son unidades de masa del Sistema Internacional.</p>
+    <table>
+      <tr><th>Conversión</th><th>Operación</th><th>Ejemplo</th></tr>
+      <tr><td>kg → g</td><td>× 1000</td><td>3 kg = 3 000 g</td></tr>
+      <tr><td>g → kg</td><td>÷ 1000</td><td>500 g = 0.5 kg</td></tr>
+    </table>
+    <div class="exercise">
+      <h4>✏️ Practica</h4>
+      <p class="ex-problem">1. Convierte 2.5 kg a gramos.</p>
+      <details><summary>Ver respuesta</summary><p>2.5 × 1000 = <strong>2 500 g</strong></p></details>
+      <p class="ex-problem">2. Convierte 750 g a kilogramos.</p>
+      <details><summary>Ver respuesta</summary><p>750 ÷ 1000 = <strong>0.75 kg</strong></p></details>
+      <p class="ex-problem">3. Un paquete pesa 4.2 kg, ¿cuántos gramos son?</p>
+      <details><summary>Ver respuesta</summary><p>4.2 × 1000 = <strong>4 200 g</strong></p></details>
+    </div>
+  </div>
+
+  <!-- Estados de la materia -->
+  <div class="card quimica">
+    <h2>💧 Estados de la Materia</h2>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <!-- SÓLIDO -->
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <rect x="5" y="5" width="70" height="70" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+          <g fill="#3b82f6">
+            <circle cx="20" cy="20" r="5"/><circle cx="40" cy="20" r="5"/><circle cx="60" cy="20" r="5"/>
+            <circle cx="20" cy="40" r="5"/><circle cx="40" cy="40" r="5"/><circle cx="60" cy="40" r="5"/>
+            <circle cx="20" cy="60" r="5"/><circle cx="40" cy="60" r="5"/><circle cx="60" cy="60" r="5"/>
+          </g>
+        </svg>
+        SÓLIDO<br><span style="font-weight:400;font-size:0.78rem">Partículas muy juntas y ordenadas</span>
+      </div>
+      <div class="visual-item">
+        <!-- LÍQUIDO -->
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <rect x="5" y="5" width="70" height="70" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+          <g fill="#10b981">
+            <circle cx="25" cy="25" r="5"/><circle cx="55" cy="22" r="5"/>
+            <circle cx="18" cy="45" r="5"/><circle cx="42" cy="50" r="5"/><circle cx="63" cy="43" r="5"/>
+            <circle cx="30" cy="65" r="5"/><circle cx="58" cy="63" r="5"/>
+          </g>
+        </svg>
+        LÍQUIDO<br><span style="font-weight:400;font-size:0.78rem">Juntas pero sin orden fijo</span>
+      </div>
+      <div class="visual-item">
+        <!-- GASEOSO -->
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <rect x="5" y="5" width="70" height="70" rx="6" fill="#fef9c3" stroke="#f59e0b" stroke-width="2"/>
+          <g fill="#f59e0b">
+            <circle cx="15" cy="15" r="5"/><circle cx="70" cy="12" r="5"/>
+            <circle cx="40" cy="40" r="5"/>
+            <circle cx="12" cy="68" r="5"/><circle cx="68" cy="70" r="5"/>
+            <circle cx="55" cy="28" r="5"/><circle cx="22" cy="52" r="5"/>
+          </g>
+        </svg>
+        GASEOSO<br><span style="font-weight:400;font-size:0.78rem">Muy separadas y en movimiento</span>
+      </div>
+      <div class="visual-item">
+        <!-- PLASMA -->
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <rect x="5" y="5" width="70" height="70" rx="6" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/>
+          <g fill="#ec4899" opacity="0.8">
+            <circle cx="20" cy="18" r="4"/><circle cx="60" cy="15" r="3"/>
+            <circle cx="40" cy="40" r="6"/><circle cx="15" cy="60" r="3"/>
+            <circle cx="65" cy="62" r="4"/><circle cx="35" cy="70" r="3"/>
+          </g>
+          <!-- lightning -->
+          <polyline points="42,10 36,35 46,35 36,65" stroke="#be185d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        PLASMA<br><span style="font-weight:400;font-size:0.78rem">Gas ionizado, muy energético</span>
+      </div>
+    </div>
+    <table>
+      <tr><th>Estado</th><th>Forma</th><th>Volumen</th><th>Ejemplo</th></tr>
+      <tr><td>Sólido</td><td>Fija</td><td>Fijo</td><td>Hielo, madera</td></tr>
+      <tr><td>Líquido</td><td>Variable (toma forma del recipiente)</td><td>Fijo</td><td>Agua, jugo</td></tr>
+      <tr><td>Gaseoso</td><td>Variable</td><td>Variable</td><td>Vapor, aire</td></tr>
+      <tr><td>Plasma</td><td>Variable</td><td>Variable</td><td>Sol, rayos, neon</td></tr>
+    </table>
+  </div>
+
+  <!-- Conteo de átomos -->
+  <div class="card quimica">
+    <h2>🔢 Conteo de Átomos en Fórmulas Químicas</h2>
+    <p>En una fórmula química, el subíndice (número pequeño) indica cuántos átomos hay de cada elemento.</p>
+    <div class="visual-box">
+      <svg viewBox="0 0 400 120" width="400">
+        <!-- H2O -->
+        <text x="30" y="50" font-family="monospace" font-size="36" fill="#3b82f6" font-weight="bold">H</text>
+        <text x="58" y="62" font-family="monospace" font-size="22" fill="#3b82f6">2</text>
+        <text x="72" y="50" font-family="monospace" font-size="36" fill="#ef4444" font-weight="bold">O</text>
+        <text x="20" y="90" font-family="sans-serif" font-size="13" fill="#555">2 hidrógenos</text>
+        <text x="70" y="90" font-family="sans-serif" font-size="13" fill="#555">1 oxígeno</text>
+        <!-- CO2 -->
+        <text x="220" y="50" font-family="monospace" font-size="36" fill="#f59e0b" font-weight="bold">C</text>
+        <text x="248" y="50" font-family="monospace" font-size="36" fill="#ef4444" font-weight="bold">O</text>
+        <text x="276" y="62" font-family="monospace" font-size="22" fill="#ef4444">2</text>
+        <text x="200" y="90" font-family="sans-serif" font-size="13" fill="#555">1 carbono</text>
+        <text x="250" y="90" font-family="sans-serif" font-size="13" fill="#555">2 oxígenos</text>
+        <text x="30" y="110" font-family="sans-serif" font-size="11" fill="#888">H₂O = agua</text>
+        <text x="220" y="110" font-family="sans-serif" font-size="11" fill="#888">CO₂ = dióxido de carbono</text>
+      </svg>
+    </div>
+    <table>
+      <tr><th>Fórmula</th><th>Elemento</th><th>N.° átomos</th></tr>
+      <tr><td>H₂O</td><td>H (hidrógeno)</td><td>2</td></tr>
+      <tr><td>H₂O</td><td>O (oxígeno)</td><td>1</td></tr>
+      <tr><td>CO₂</td><td>C (carbono)</td><td>1</td></tr>
+      <tr><td>CO₂</td><td>O (oxígeno)</td><td>2</td></tr>
+      <tr><td>NaCl</td><td>Na (sodio)</td><td>1</td></tr>
+      <tr><td>NaCl</td><td>Cl (cloro)</td><td>1</td></tr>
+      <tr><td>H₂SO₄</td><td>H</td><td>2</td></tr>
+      <tr><td>H₂SO₄</td><td>S</td><td>1</td></tr>
+      <tr><td>H₂SO₄</td><td>O</td><td>4</td></tr>
+    </table>
+  </div>
+
+  <!-- Moléculas diatómicas -->
+  <div class="card quimica">
+    <h2>⚛️ Moléculas Diatómicas</h2>
+    <p>Son moléculas formadas por <strong>exactamente 2 átomos</strong> del mismo elemento. Se recuerdan con la nemotecnia <strong>"BrINClHOF"</strong>.</p>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <svg width="80" height="50" viewBox="0 0 80 50">
+          <circle cx="22" cy="25" r="14" fill="#93c5fd" stroke="#3b82f6" stroke-width="2"/>
+          <circle cx="58" cy="25" r="14" fill="#93c5fd" stroke="#3b82f6" stroke-width="2"/>
+          <line x1="36" y1="25" x2="44" y2="25" stroke="#3b82f6" stroke-width="3"/>
+          <text x="16" y="29" font-size="12" fill="white" font-weight="bold">H</text>
+          <text x="52" y="29" font-size="12" fill="white" font-weight="bold">H</text>
+        </svg>
+        H₂ – Hidrógeno
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="50" viewBox="0 0 80 50">
+          <circle cx="22" cy="25" r="14" fill="#fca5a5" stroke="#ef4444" stroke-width="2"/>
+          <circle cx="58" cy="25" r="14" fill="#fca5a5" stroke="#ef4444" stroke-width="2"/>
+          <line x1="33" y1="22" x2="47" y2="22" stroke="#ef4444" stroke-width="2.5"/>
+          <line x1="33" y1="28" x2="47" y2="28" stroke="#ef4444" stroke-width="2.5"/>
+          <text x="16" y="29" font-size="12" fill="white" font-weight="bold">O</text>
+          <text x="52" y="29" font-size="12" fill="white" font-weight="bold">O</text>
+        </svg>
+        O₂ – Oxígeno
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="50" viewBox="0 0 80 50">
+          <circle cx="22" cy="25" r="14" fill="#a3e635" stroke="#65a30d" stroke-width="2"/>
+          <circle cx="58" cy="25" r="14" fill="#a3e635" stroke="#65a30d" stroke-width="2"/>
+          <line x1="33" y1="20" x2="47" y2="20" stroke="#65a30d" stroke-width="2.5"/>
+          <line x1="33" y1="25" x2="47" y2="25" stroke="#65a30d" stroke-width="2.5"/>
+          <line x1="33" y1="30" x2="47" y2="30" stroke="#65a30d" stroke-width="2.5"/>
+          <text x="16" y="29" font-size="11" fill="white" font-weight="bold">N</text>
+          <text x="52" y="29" font-size="11" fill="white" font-weight="bold">N</text>
+        </svg>
+        N₂ – Nitrógeno
+      </div>
+    </div>
+    <div class="highlight warning"><strong>📌 Recuerda las 7:</strong> Br₂, I₂, N₂, Cl₂, H₂, O₂, F₂ (BrINClHOF)</div>
+  </div>
+
+  <!-- Electrones de valencia -->
+  <div class="card quimica">
+    <h2>🔵 Electrones de Valencia – Gases Nobles</h2>
+    <p>Los <strong>electrones de valencia</strong> son los que están en la última capa (cáscara) del átomo. Los <strong>gases nobles</strong> tienen su última capa completa (8 electrones, excepto He con 2), por eso son <em>inertes</em> – casi no reaccionan.</p>
+    <table>
+      <tr><th>Gas Noble</th><th>Símbolo</th><th>e⁻ de Valencia</th></tr>
+      <tr><td>Helio</td><td>He</td><td>2</td></tr>
+      <tr><td>Neón</td><td>Ne</td><td>8</td></tr>
+      <tr><td>Argón</td><td>Ar</td><td>8</td></tr>
+      <tr><td>Kriptón</td><td>Kr</td><td>8</td></tr>
+      <tr><td>Xenón</td><td>Xe</td><td>8</td></tr>
+      <tr><td>Radón</td><td>Rn</td><td>8</td></tr>
+    </table>
+    <div class="highlight success">Los gases nobles están en el <strong>Grupo 18</strong> (columna 18) de la Tabla Periódica.</div>
+  </div>
+
+  <!-- Teoría de Dalton -->
+  <div class="card quimica">
+    <h2>🔴 Teoría Atómica de John Dalton (1808)</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 200 200" width="180">
+        <circle cx="100" cy="100" r="70" fill="#fecaca" stroke="#ef4444" stroke-width="3"/>
+        <circle cx="100" cy="100" r="12" fill="#ef4444"/>
+        <text x="72" y="180" font-size="13" fill="#555" font-family="sans-serif">Modelo de Dalton</text>
+        <text x="60" y="195" font-size="11" fill="#888" font-family="sans-serif">(Esfera maciza)</text>
+      </svg>
+      <p class="visual-caption">Dalton imaginaba el átomo como una esfera sólida e indivisible</p>
+    </div>
+    <ul>
+      <li>La materia está formada por partículas diminutas llamadas <strong>átomos</strong>.</li>
+      <li>Los átomos son <strong>indivisibles e indestructibles</strong>.</li>
+      <li>Todos los átomos de un mismo elemento son <strong>idénticos</strong>.</li>
+      <li>Átomos de elementos distintos se combinan en proporciones fijas para formar <strong>compuestos</strong>.</li>
+    </ul>
+  </div>
+
+  <!-- Thomson -->
+  <div class="card quimica">
+    <h2>🔵 Modelo Atómico de J.J. Thomson (1897)</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 220 180" width="220">
+        <!-- Pudding (masa positiva) -->
+        <circle cx="110" cy="90" r="75" fill="#fde68a" stroke="#f59e0b" stroke-width="3"/>
+        <!-- electrones (pasas) -->
+        <circle cx="70" cy="65" r="10" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+        <circle cx="148" cy="60" r="10" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+        <circle cx="85" cy="115" r="10" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+        <circle cx="140" cy="120" r="10" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+        <circle cx="110" cy="80" r="10" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+        <text x="67" y="69" font-size="9" fill="white" font-weight="bold">e⁻</text>
+        <text x="145" y="64" font-size="9" fill="white" font-weight="bold">e⁻</text>
+        <text x="82" y="119" font-size="9" fill="white" font-weight="bold">e⁻</text>
+        <text x="137" y="124" font-size="9" fill="white" font-weight="bold">e⁻</text>
+        <text x="107" y="84" font-size="9" fill="white" font-weight="bold">e⁻</text>
+        <!-- labels -->
+        <text x="40" y="170" font-size="12" fill="#555" font-family="sans-serif">Carga positiva (masa)</text>
+        <text x="50" y="155" font-size="10" fill="#888" font-family="sans-serif">🔵 = Electrones</text>
+      </svg>
+      <p class="visual-caption">Modelo "Pudín de pasas": carga positiva con electrones incrustados</p>
+    </div>
+    <ul>
+      <li>Descubrió el <strong>electrón</strong> mediante el experimento del tubo de rayos catódicos.</li>
+      <li>Propuso que el átomo es una <strong>esfera de carga positiva</strong> con electrones incrustados (como pasas en un budín).</li>
+      <li>Demostró que el átomo <strong>sí es divisible</strong> (a diferencia de Dalton).</li>
+    </ul>
+  </div>
+
+  <!-- Soluciones -->
+  <div class="card quimica">
+    <h2>💧 Soluciones: Soluto y Solvente</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 280 130" width="280">
+        <!-- vaso -->
+        <path d="M40,20 L60,120 H220 L240,20 Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" fill-opacity="0.5"/>
+        <!-- partículas de soluto -->
+        <g fill="#ef4444">
+          <circle cx="90" cy="70" r="5"/><circle cx="130" cy="55" r="5"/>
+          <circle cx="170" cy="80" r="5"/><circle cx="110" cy="90" r="5"/>
+          <circle cx="155" cy="65" r="5"/><circle cx="80" cy="95" r="5"/>
+          <circle cx="200" cy="75" r="5"/><circle cx="145" cy="100" r="5"/>
+        </g>
+        <text x="50" y="15" font-size="12" fill="#3b82f6" font-weight="bold" font-family="sans-serif">SOLVENTE (agua)</text>
+        <text x="155" y="15" font-size="12" fill="#ef4444" font-weight="bold" font-family="sans-serif">● SOLUTO (sal)</text>
+        <text x="70" y="125" font-size="11" fill="#555" font-family="sans-serif">SOLUCIÓN = Soluto + Solvente</text>
+      </svg>
+    </div>
+    <table>
+      <tr><th>Término</th><th>Definición</th><th>Ejemplo (agua salada)</th></tr>
+      <tr><td><strong>Solución</strong></td><td>Mezcla homogénea</td><td>Agua salada</td></tr>
+      <tr><td><strong>Soluto</strong></td><td>Lo que se disuelve (menor cantidad)</td><td>Sal</td></tr>
+      <tr><td><strong>Solvente</strong></td><td>Lo que disuelve (mayor cantidad)</td><td>Agua</td></tr>
+    </table>
+    <div class="highlight tip">Otros ejemplos: café (café soluto, agua solvente), limonada (limón+azúcar soluto, agua solvente).</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  BIOLOGÍA -->
+<!-- ============================================================ -->
+<section id="biologia" class="section">
+  <div class="section-title" style="color:var(--biologia)">🧬 Biología</div>
+  <div class="section-subtitle">Ecosistemas · Células · Nutrición · Respiración · Microorganismos</div>
+
+  <div class="card biologia">
+    <h2>🌿 Factores Bióticos y Abióticos</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 340 160" width="340">
+        <!-- Bióticos -->
+        <rect x="10" y="10" width="150" height="140" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+        <text x="45" y="35" font-size="13" font-weight="bold" fill="#065f46" font-family="sans-serif">BIÓTICOS</text>
+        <text x="22" y="58" font-size="12" fill="#047857" font-family="sans-serif">🌳 Plantas</text>
+        <text x="22" y="78" font-size="12" fill="#047857" font-family="sans-serif">🐾 Animales</text>
+        <text x="22" y="98" font-size="12" fill="#047857" font-family="sans-serif">🍄 Hongos</text>
+        <text x="22" y="118" font-size="12" fill="#047857" font-family="sans-serif">🦠 Bacterias</text>
+        <text x="22" y="138" font-size="11" fill="#6b7280" font-family="sans-serif">(Seres vivos)</text>
+        <!-- Abióticos -->
+        <rect x="180" y="10" width="150" height="140" rx="12" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+        <text x="210" y="35" font-size="13" font-weight="bold" fill="#1e3a8a" font-family="sans-serif">ABIÓTICOS</text>
+        <text x="192" y="58" font-size="12" fill="#1d4ed8" font-family="sans-serif">☀️ Luz solar</text>
+        <text x="192" y="78" font-size="12" fill="#1d4ed8" font-family="sans-serif">💧 Agua</text>
+        <text x="192" y="98" font-size="12" fill="#1d4ed8" font-family="sans-serif">🌡️ Temperatura</text>
+        <text x="192" y="118" font-size="12" fill="#1d4ed8" font-family="sans-serif">🏔️ Suelo</text>
+        <text x="192" y="138" font-size="11" fill="#6b7280" font-family="sans-serif">(Sin vida)</text>
+      </svg>
+      <p class="visual-caption">Los dos tipos de factores que forman un ecosistema</p>
+    </div>
+    <div class="highlight success"><strong>Regla fácil:</strong> Biótico = vivo o que fue vivo. Abiótico = nunca tuvo vida (físico o químico).</div>
+  </div>
+
+  <div class="card biologia">
+    <h2>🔬 Mitosis – División Celular</h2>
+    <p>La mitosis produce dos células <strong>hijas idénticas</strong> a la célula madre (mismo número de cromosomas). Es la base del crecimiento y la regeneración.</p>
+    <div class="visual-box">
+      <svg viewBox="0 0 500 130" width="500">
+        <!-- Interfase -->
+        <g transform="translate(10,15)">
+          <ellipse cx="50" cy="55" rx="45" ry="45" fill="#fef9c3" stroke="#f59e0b" stroke-width="2"/>
+          <ellipse cx="50" cy="55" rx="22" ry="22" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/>
+          <g fill="#d97706">
+            <line x1="38" y1="50" x2="62" y2="50" stroke="#d97706" stroke-width="2"/>
+            <line x1="35" y1="58" x2="65" y2="58" stroke="#d97706" stroke-width="2"/>
+          </g>
+          <text x="22" y="108" font-size="11" fill="#555" font-family="sans-serif">Interfase</text>
+          <text x="10" y="118" font-size="10" fill="#888" font-family="sans-serif">(ADN se duplica)</text>
+        </g>
+        <text x="110" y="60" font-size="20" fill="#94a3b8">→</text>
+        <!-- Profase -->
+        <g transform="translate(130,15)">
+          <ellipse cx="50" cy="55" rx="45" ry="45" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+          <g fill="#7c3aed">
+            <ellipse cx="42" cy="50" rx="8" ry="14" stroke="#7c3aed" stroke-width="1.5" fill="none"/>
+            <ellipse cx="58" cy="50" rx="8" ry="14" stroke="#7c3aed" stroke-width="1.5" fill="none"/>
+            <ellipse cx="42" cy="62" rx="8" ry="14" stroke="#4c1d95" stroke-width="1.5" fill="none"/>
+            <ellipse cx="58" cy="62" rx="8" ry="14" stroke="#4c1d95" stroke-width="1.5" fill="none"/>
+          </g>
+          <text x="28" y="108" font-size="11" fill="#555" font-family="sans-serif">Profase</text>
+          <text x="12" y="118" font-size="10" fill="#888" font-family="sans-serif">(Cromosomas visibles)</text>
+        </g>
+        <text x="230" y="60" font-size="20" fill="#94a3b8">→</text>
+        <!-- Metafase -->
+        <g transform="translate(250,15)">
+          <ellipse cx="50" cy="55" rx="45" ry="45" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/>
+          <line x1="50" y1="15" x2="50" y2="95" stroke="#ec4899" stroke-width="1" stroke-dasharray="4"/>
+          <ellipse cx="38" cy="55" rx="7" ry="12" fill="#ec4899" stroke="#be185d" stroke-width="1.5"/>
+          <ellipse cx="62" cy="55" rx="7" ry="12" fill="#ec4899" stroke="#be185d" stroke-width="1.5"/>
+          <text x="28" y="108" font-size="11" fill="#555" font-family="sans-serif">Metafase</text>
+          <text x="12" y="118" font-size="10" fill="#888" font-family="sans-serif">(Alineación en centro)</text>
+        </g>
+        <text x="350" y="60" font-size="20" fill="#94a3b8">→</text>
+        <!-- Telofase/División -->
+        <g transform="translate(370,15)">
+          <ellipse cx="30" cy="42" rx="28" ry="30" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+          <ellipse cx="90" cy="68" rx="28" ry="30" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+          <circle cx="30" cy="42" r="9" fill="#10b981" opacity="0.6"/>
+          <circle cx="90" cy="68" r="9" fill="#10b981" opacity="0.6"/>
+          <text x="10" y="108" font-size="11" fill="#555" font-family="sans-serif">Telofase + Citocinesis</text>
+          <text x="8" y="118" font-size="10" fill="#888" font-family="sans-serif">(2 células idénticas)</text>
+        </g>
+      </svg>
+      <p class="visual-caption">Fases principales de la mitosis</p>
+    </div>
+    <div class="highlight info"><strong>Orden fácil:</strong> IPMAT → Interfase · Profase · Metafase · Anafase · Telofase</div>
+  </div>
+
+  <div class="card biologia">
+    <h2>🌱 Tipos de Nutrición</h2>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="35" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+          <text x="28" y="35" font-size="22">☀️</text>
+          <text x="27" y="58" font-size="11" fill="#065f46" font-weight="700">AUTO</text>
+          <text x="24" y="70" font-size="10" fill="#065f46">Produce su</text>
+        </svg>
+        <strong>AUTÓTROFO</strong><br>
+        <span style="font-weight:400;font-size:0.8rem">Producen su propio alimento.<br>Ej: plantas, algas</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="35" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/>
+          <text x="28" y="35" font-size="22">🍖</text>
+          <text x="22" y="58" font-size="11" fill="#9d174d" font-weight="700">HETERO</text>
+          <text x="20" y="70" font-size="10" fill="#9d174d">Come otros</text>
+        </svg>
+        <strong>HETERÓTROFO</strong><br>
+        <span style="font-weight:400;font-size:0.8rem">Se alimentan de otros seres.<br>Ej: animales, hongos</span>
+      </div>
+    </div>
+    <table>
+      <tr><th>Tipo</th><th>Energía</th><th>Ejemplos</th></tr>
+      <tr><td>Autótrofo fotosintético</td><td>Luz solar</td><td>Plantas, algas</td></tr>
+      <tr><td>Autótrofo quimiosintético</td><td>Reacciones químicas</td><td>Bacterias del azufre</td></tr>
+      <tr><td>Heterótrofo herbívoro</td><td>Plantas</td><td>Vaca, conejo</td></tr>
+      <tr><td>Heterótrofo carnívoro</td><td>Animales</td><td>León, tiburón</td></tr>
+      <tr><td>Heterótrofo omnívoro</td><td>Plantas y animales</td><td>Humanos, oso</td></tr>
+      <tr><td>Heterótrofo descomponedor</td><td>Materia muerta</td><td>Hongos, bacterias</td></tr>
+    </table>
+  </div>
+
+  <div class="card biologia">
+    <h2>💨 Respiración Aeróbica vs Anaeróbica</h2>
+    <table>
+      <tr><th></th><th>Aeróbica</th><th>Anaeróbica</th></tr>
+      <tr><td><strong>Oxígeno</strong></td><td>✅ Requiere O₂</td><td>❌ Sin O₂</td></tr>
+      <tr><td><strong>Productos</strong></td><td>CO₂ + H₂O + energía</td><td>Ácido láctico o alcohol + CO₂</td></tr>
+      <tr><td><strong>Energía</strong></td><td>Alta (36–38 ATP)</td><td>Baja (2 ATP)</td></tr>
+      <tr><td><strong>Ejemplos</strong></td><td>Humanos, animales</td><td>Levaduras, bacterias, músculos en esfuerzo</td></tr>
+    </table>
+    <div class="highlight warning"><strong>💡 Dato:</strong> Cuando corres mucho y te duelen los músculos, es por el ácido láctico producido en respiración anaeróbica.</div>
+  </div>
+
+  <div class="card biologia">
+    <h2>🌎 Ecosistemas</h2>
+    <ul>
+      <li><strong>Ecosistema:</strong> Sistema formado por seres vivos (comunidad biótica) y su entorno físico (factores abióticos) que interactúan entre sí.</li>
+      <li><strong>Población:</strong> Conjunto de individuos de la misma especie en un área.</li>
+      <li><strong>Comunidad:</strong> Todas las poblaciones de diferentes especies en un área.</li>
+      <li><strong>Bioma:</strong> Grandes ecosistemas con características climáticas similares (selva, desierto, tundra…).</li>
+    </ul>
+    <div class="highlight success"><strong>Cadena trófica:</strong> Productores → Consumidores primarios → Consumidores secundarios → Descomponedores</div>
+  </div>
+
+  <div class="card biologia">
+    <h2>⛏️ Actividades Económicas Extractivas</h2>
+    <p>Extraen recursos naturales <strong>directamente de la naturaleza</strong>, sin transformarlos.</p>
+    <table>
+      <tr><th>Tipo</th><th>Descripción</th><th>Ejemplos</th></tr>
+      <tr><td>Agricultura</td><td>Cultivo de plantas</td><td>Maíz, trigo, café</td></tr>
+      <tr><td>Ganadería</td><td>Cría de animales</td><td>Vacas, ovejas</td></tr>
+      <tr><td>Pesca</td><td>Captura de peces</td><td>Salmón, atún</td></tr>
+      <tr><td>Silvicultura</td><td>Aprovechamiento de bosques</td><td>Madera, caucho</td></tr>
+      <tr><td>Minería</td><td>Extracción de minerales</td><td>Oro, carbón, petróleo</td></tr>
+    </table>
+  </div>
+
+  <div class="card biologia">
+    <h2>🌫️ Contaminación Atmosférica</h2>
+    <ul>
+      <li><strong>Causas:</strong> Gases de fábricas, automóviles, quema de combustibles fósiles, deforestación.</li>
+      <li><strong>Principales contaminantes:</strong> CO₂, CO, SO₂, NO₂, metano (CH₄), CFC.</li>
+      <li><strong>Efectos:</strong> Efecto invernadero, lluvia ácida, smog, destrucción de la capa de ozono, enfermedades respiratorias.</li>
+    </ul>
+    <div class="highlight warning"><strong>Efecto invernadero:</strong> Los gases retienen calor en la atmósfera → calentamiento global.</div>
+  </div>
+
+  <div class="card biologia">
+    <h2>🦠 Microorganismos</h2>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <svg width="80" height="60" viewBox="0 0 80 60">
+          <rect x="10" y="20" width="60" height="22" rx="11" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+          <text x="22" y="35" font-size="12" fill="#92400e" font-weight="bold">BACILO</text>
+        </svg>
+        Bacilo<br><span style="font-weight:400;font-size:0.78rem">Forma de bastón<br>Ej: E. coli, TBC</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="60" viewBox="0 0 80 60">
+          <circle cx="40" cy="30" r="22" fill="#a7f3d0" stroke="#059669" stroke-width="2"/>
+          <text x="29" y="34" font-size="12" fill="#065f46" font-weight="bold">COCO</text>
+        </svg>
+        Coco<br><span style="font-weight:400;font-size:0.78rem">Forma esférica<br>Ej: Streptococo</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="60" viewBox="0 0 80 60">
+          <path d="M15,30 Q25,5 40,30 Q55,55 65,30" stroke="#818cf8" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <text x="20" y="55" font-size="11" fill="#4338ca" font-weight="bold">ESPIRILO</text>
+        </svg>
+        Espirilo<br><span style="font-weight:400;font-size:0.78rem">Forma espiral<br>Ej: Helicobacter</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="60" viewBox="0 0 80 60">
+          <path d="M20,30 Q32,10 40,30 Q48,50 60,30" stroke="#f472b6" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <text x="18" y="55" font-size="10" fill="#be185d" font-weight="bold">VIBRIO</text>
+        </svg>
+        Vibrio<br><span style="font-weight:400;font-size:0.78rem">Forma de coma<br>Ej: Cólera</span>
+      </div>
+    </div>
+    <div class="highlight info"><strong>No todos los microorganismos son dañinos.</strong> Las bacterias también ayudan a fermentar alimentos (yogur, queso) y a descomponer materia orgánica.</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  LENGUAJE -->
+<!-- ============================================================ -->
+<section id="lenguaje" class="section">
+  <div class="section-title" style="color:var(--lenguaje)">📚 Lenguaje</div>
+  <div class="section-subtitle">Literatura · Gramática · Ortografía · Comprensión lectora</div>
+
+  <div class="card lenguaje">
+    <h2>📖 Géneros Literarios</h2>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <svg width="70" height="60" viewBox="0 0 70 60"><text x="10" y="38" font-size="38">📖</text></svg>
+        <strong>Narrativo</strong><br><span style="font-weight:400;font-size:0.78rem">Cuenta hechos. Tiene narrador, personajes, trama.<br>Ej: cuento, novela, fábula</span>
+      </div>
+      <div class="visual-item">
+        <svg width="70" height="60" viewBox="0 0 70 60"><text x="10" y="38" font-size="38">🎵</text></svg>
+        <strong>Lírico</strong><br><span style="font-weight:400;font-size:0.78rem">Expresa sentimientos. Usa ritmo y rima.<br>Ej: poema, oda, himno</span>
+      </div>
+      <div class="visual-item">
+        <svg width="70" height="60" viewBox="0 0 70 60"><text x="10" y="38" font-size="38">🎭</text></svg>
+        <strong>Dramático</strong><br><span style="font-weight:400;font-size:0.78rem">Para ser representado. Tiene diálogos y acotaciones.<br>Ej: obra de teatro</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card lenguaje">
+    <h2>📝 Subgéneros Narrativos</h2>
+    <table>
+      <tr><th>Subgénero</th><th>Características</th><th>Ejemplo</th></tr>
+      <tr><td><strong>Cuento</strong></td><td>Narración breve, pocos personajes, un solo conflicto</td><td>Caperucita Roja</td></tr>
+      <tr><td><strong>Novela</strong></td><td>Narración larga, múltiples personajes y tramas</td><td>El Quijote</td></tr>
+      <tr><td><strong>Fábula</strong></td><td>Personajes animales, enseña una moraleja</td><td>La cigarra y la hormiga</td></tr>
+      <tr><td><strong>Mito</strong></td><td>Explica el origen del mundo o fenómenos naturales</td><td>Creación del sol (maya)</td></tr>
+      <tr><td><strong>Leyenda</strong></td><td>Mezcla hechos reales y sobrenaturales de una región</td><td>La Llorona</td></tr>
+      <tr><td><strong>Crónica</strong></td><td>Narra hechos en orden cronológico</td><td>Crónicas de Indias</td></tr>
+    </table>
+  </div>
+
+  <div class="card lenguaje">
+    <h2>🎭 Textos Dramáticos</h2>
+    <ul>
+      <li><strong>Acto:</strong> División mayor de una obra de teatro (como un capítulo). Una obra puede tener 1, 2 o 3 actos.</li>
+      <li><strong>Escena:</strong> División dentro del acto; cambia cuando entra o sale un personaje o cambia el lugar.</li>
+      <li><strong>Acotaciones:</strong> Instrucciones del autor para el director/actores (se escriben en cursiva o paréntesis).</li>
+      <li><strong>Diálogo:</strong> Conversación entre personajes.</li>
+      <li><strong>Monólogo:</strong> Un personaje habla solo.</li>
+    </ul>
+    <div class="highlight tip"><strong>Estructura:</strong> Acto I → Escena 1, Escena 2… → Acto II → etc.</div>
+  </div>
+
+  <div class="card lenguaje">
+    <h2>🗣️ Tipos de Narrador</h2>
+    <table>
+      <tr><th>Tipo</th><th>Persona gramatical</th><th>Características</th></tr>
+      <tr><td><strong>Omnisciente</strong></td><td>3ª persona (él/ella)</td><td>Lo sabe todo, incluso pensamientos de los personajes</td></tr>
+      <tr><td><strong>Protagonista</strong></td><td>1ª persona (yo)</td><td>El personaje principal cuenta su propia historia</td></tr>
+      <tr><td><strong>Testigo</strong></td><td>1ª o 3ª persona</td><td>Observa la historia desde fuera, no participa</td></tr>
+      <tr><td><strong>Objetivo</strong></td><td>3ª persona</td><td>Solo narra lo que ve, sin opinar ni saber pensamientos</td></tr>
+    </table>
+  </div>
+
+  <div class="card lenguaje">
+    <h2>🔤 Clases de Palabras</h2>
+    <h3>Sustantivos</h3>
+    <p>Nombran personas, animales, objetos, lugares o ideas.</p>
+    <table>
+      <tr><th>Tipo</th><th>Ejemplo</th></tr>
+      <tr><td>Propio</td><td>Colombia, María, Bogotá</td></tr>
+      <tr><td>Común</td><td>perro, ciudad, libro</td></tr>
+      <tr><td>Concreto</td><td>mesa, árbol (se puede tocar)</td></tr>
+      <tr><td>Abstracto</td><td>amor, libertad (no se puede tocar)</td></tr>
+      <tr><td>Individual</td><td>flor (una)</td></tr>
+      <tr><td>Colectivo</td><td>ramo (muchas flores)</td></tr>
+    </table>
+    <h3>Adverbios</h3>
+    <p>Modifican verbos, adjetivos u otros adverbios. No cambian de género ni número.</p>
+    <table>
+      <tr><th>Tipo</th><th>Ejemplos</th></tr>
+      <tr><td>Lugar</td><td>aquí, allá, cerca, lejos, arriba</td></tr>
+      <tr><td>Tiempo</td><td>hoy, ayer, después, siempre, nunca</td></tr>
+      <tr><td>Modo</td><td>bien, mal, rápido, fácilmente</td></tr>
+      <tr><td>Cantidad</td><td>mucho, poco, bastante, nada</td></tr>
+      <tr><td>Negación</td><td>no, jamás, tampoco</td></tr>
+      <tr><td>Afirmación</td><td>sí, también, cierto</td></tr>
+    </table>
+  </div>
+
+  <div class="card lenguaje">
+    <h2>📋 Partes del Texto</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 300 220" width="300">
+        <rect x="20" y="10" width="260" height="200" rx="10" fill="white" stroke="#d1d5db" stroke-width="2"/>
+        <!-- Introducción -->
+        <rect x="30" y="25" width="240" height="50" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="45" y="45" font-size="13" fill="#1d4ed8" font-weight="bold" font-family="sans-serif">INTRODUCCIÓN</text>
+        <text x="45" y="62" font-size="10" fill="#3b82f6" font-family="sans-serif">Presenta el tema. Capta la atención del lector.</text>
+        <!-- Desarrollo -->
+        <rect x="30" y="85" width="240" height="65" rx="6" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+        <text x="45" y="108" font-size="13" fill="#065f46" font-weight="bold" font-family="sans-serif">DESARROLLO</text>
+        <text x="45" y="125" font-size="10" fill="#047857" font-family="sans-serif">Expone las ideas principales con argumentos,</text>
+        <text x="45" y="140" font-size="10" fill="#047857" font-family="sans-serif">ejemplos y explicaciones.</text>
+        <!-- Conclusión -->
+        <rect x="30" y="160" width="240" height="40" rx="6" fill="#fce7f3" stroke="#ec4899" stroke-width="1.5"/>
+        <text x="45" y="180" font-size="13" fill="#9d174d" font-weight="bold" font-family="sans-serif">CONCLUSIÓN</text>
+        <text x="45" y="195" font-size="10" fill="#be185d" font-family="sans-serif">Cierra el texto. Resume las ideas o reflexión final.</text>
+      </svg>
+      <p class="visual-caption">Estructura básica de cualquier texto</p>
+    </div>
+  </div>
+
+  <div class="card lenguaje">
+    <h2>📌 Enunciado, Oración y Párrafo</h2>
+    <table>
+      <tr><th>Unidad</th><th>Definición</th><th>Ejemplo</th></tr>
+      <tr><td><strong>Enunciado</strong></td><td>Mensaje con sentido completo (no necesita verbo)</td><td>"¡Fuego!"</td></tr>
+      <tr><td><strong>Oración</strong></td><td>Tiene sujeto + predicado (verbo)</td><td>"El niño juega fútbol."</td></tr>
+      <tr><td><strong>Párrafo</strong></td><td>Conjunto de oraciones sobre una misma idea</td><td>Texto con sangría, termina con punto aparte</td></tr>
+    </table>
+    <div class="highlight tip"><strong>Idea principal:</strong> La idea más importante de un párrafo. Puede estar al inicio, al final o en el centro. Las demás ideas son secundarias y la apoyan.</div>
+  </div>
+
+  <div class="card lenguaje">
+    <h2>🔤 Campo Léxico y Ortografía</h2>
+    <h3>Campo Léxico</h3>
+    <p>Conjunto de palabras relacionadas con un mismo tema o concepto.</p>
+    <div class="highlight info"><strong>Ejemplo – Campo léxico de "mar":</strong> ola, playa, barco, sal, pez, marea, arena, submarino, puerto.</div>
+    <h3>Reglas Ortográficas Clave</h3>
+    <table>
+      <tr><th>Regla</th><th>Ejemplos</th></tr>
+      <tr><td>B antes de consonante o al inicio</td><td>blanco, bravo, hablar</td></tr>
+      <tr><td>V en adjetivos terminados en -avo, -evo, -ivo</td><td>activo, nuevo, bravo</td></tr>
+      <tr><td>H en palabras que empiezan con hie-, hue-</td><td>hierro, hueso, huevo</td></tr>
+      <tr><td>G antes de a, o, u · GU antes de e, i</td><td>gato, guerrero, guía</td></tr>
+      <tr><td>J antes de -aje, -eje, -aje</td><td>viaje, equipaje, hereje</td></tr>
+      <tr><td>Tilde en esdrújulas (siempre)</td><td>música, rápido, fábula</td></tr>
+      <tr><td>Tilde en agudas que terminan en n, s, vocal</td><td>café, canción, jamás</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  CIENCIAS SOCIALES -->
+<!-- ============================================================ -->
+<section id="sociales" class="section">
+  <div class="section-title" style="color:var(--sociales)">🌎 Ciencias Sociales</div>
+  <div class="section-subtitle">Prehistoria · Hominización · Culturas precolombinas · Cristóbal Colón</div>
+
+  <div class="card sociales">
+    <h2>🏔️ La Prehistoria – Períodos de la Edad de Piedra</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 500 100" width="500">
+        <!-- Timeline -->
+        <line x1="20" y1="50" x2="480" y2="50" stroke="#94a3b8" stroke-width="3"/>
+        <!-- Paleolítico -->
+        <circle cx="80" cy="50" r="12" fill="#e67e22" stroke="white" stroke-width="2"/>
+        <text x="48" y="30" font-size="11" fill="#92400e" font-weight="bold" font-family="sans-serif">PALEOLÍTICO</text>
+        <text x="40" y="80" font-size="10" fill="#555" font-family="sans-serif">2.5 mill. a.C.</text>
+        <text x="48" y="92" font-size="10" fill="#555" font-family="sans-serif">Caza y recolección</text>
+        <!-- Mesolítico -->
+        <circle cx="250" cy="50" r="12" fill="#f59e0b" stroke="white" stroke-width="2"/>
+        <text x="220" y="30" font-size="11" fill="#92400e" font-weight="bold" font-family="sans-serif">MESOLÍTICO</text>
+        <text x="210" y="80" font-size="10" fill="#555" font-family="sans-serif">10 000 a.C.</text>
+        <text x="205" y="92" font-size="10" fill="#555" font-family="sans-serif">Transición, microlitos</text>
+        <!-- Neolítico -->
+        <circle cx="420" cy="50" r="12" fill="#10b981" stroke="white" stroke-width="2"/>
+        <text x="392" y="30" font-size="11" fill="#065f46" font-weight="bold" font-family="sans-serif">NEOLÍTICO</text>
+        <text x="385" y="80" font-size="10" fill="#555" font-family="sans-serif">8 000 a.C.</text>
+        <text x="378" y="92" font-size="10" fill="#555" font-family="sans-serif">Agricultura, sedentarismo</text>
+      </svg>
+      <p class="visual-caption">Línea de tiempo de la Prehistoria</p>
+    </div>
+    <table>
+      <tr><th>Período</th><th>Cuándo</th><th>Características</th></tr>
+      <tr><td><strong>Paleolítico</strong></td><td>2.5 mill – 10 000 a.C.</td><td>Nómadas, caza, recolección, fuego, pinturas rupestres</td></tr>
+      <tr><td><strong>Mesolítico</strong></td><td>10 000 – 8 000 a.C.</td><td>Transición, herramientas pequeñas (microlitos), pesca</td></tr>
+      <tr><td><strong>Neolítico</strong></td><td>8 000 – 3 500 a.C.</td><td>Agricultura, ganadería, sedentarismo, cerámica, tejidos</td></tr>
+    </table>
+  </div>
+
+  <div class="card sociales">
+    <h2>🦴 Proceso de Hominización</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 500 110" width="500">
+        <line x1="10" y1="55" x2="490" y2="55" stroke="#d1d5db" stroke-width="2"/>
+        <!-- steps -->
+        <g>
+          <circle cx="55" cy="55" r="20" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+          <text x="35" y="59" font-size="9" fill="#92400e" font-family="sans-serif" font-weight="bold">Australo-</text>
+          <text x="38" y="69" font-size="8" fill="#92400e" font-family="sans-serif">pithecus</text>
+          <text x="30" y="90" font-size="9" fill="#555" font-family="sans-serif">4 m.a.C.</text>
+        </g>
+        <g>
+          <circle cx="155" cy="55" r="20" fill="#fed7aa" stroke="#f97316" stroke-width="2"/>
+          <text x="138" y="52" font-size="9" fill="#7c2d12" font-family="sans-serif" font-weight="bold">Homo</text>
+          <text x="135" y="62" font-size="8" fill="#7c2d12" font-family="sans-serif">habilis</text>
+          <text x="130" y="85" font-size="9" fill="#555" font-family="sans-serif">2.4 m.a.C.</text>
+          <text x="128" y="97" font-size="9" fill="#555" font-family="sans-serif">Usa herramientas</text>
+        </g>
+        <g>
+          <circle cx="255" cy="55" r="20" fill="#fca5a5" stroke="#ef4444" stroke-width="2"/>
+          <text x="240" y="52" font-size="9" fill="#7f1d1d" font-family="sans-serif" font-weight="bold">Homo</text>
+          <text x="235" y="62" font-size="8" fill="#7f1d1d" font-family="sans-serif">erectus</text>
+          <text x="228" y="85" font-size="9" fill="#555" font-family="sans-serif">1.8 m.a.C.</text>
+          <text x="232" y="97" font-size="9" fill="#555" font-family="sans-serif">Domina fuego</text>
+        </g>
+        <g>
+          <circle cx="360" cy="55" r="20" fill="#c4b5fd" stroke="#7c3aed" stroke-width="2"/>
+          <text x="343" y="52" font-size="9" fill="#4c1d95" font-family="sans-serif" font-weight="bold">Homo</text>
+          <text x="336" y="62" font-size="8" fill="#4c1d95" font-family="sans-serif">neandert.</text>
+          <text x="335" y="85" font-size="9" fill="#555" font-family="sans-serif">200 000 a.C.</text>
+          <text x="332" y="97" font-size="9" fill="#555" font-family="sans-serif">Enterraba muertos</text>
+        </g>
+        <g>
+          <circle cx="460" cy="55" r="20" fill="#a7f3d0" stroke="#059669" stroke-width="2"/>
+          <text x="443" y="52" font-size="9" fill="#064e3b" font-family="sans-serif" font-weight="bold">Homo</text>
+          <text x="440" y="62" font-size="8" fill="#064e3b" font-family="sans-serif">sapiens</text>
+          <text x="436" y="85" font-size="9" fill="#555" font-family="sans-serif">300 000 a.C.</text>
+          <text x="435" y="97" font-size="9" fill="#555" font-family="sans-serif">Arte, lenguaje</text>
+        </g>
+      </svg>
+      <p class="visual-caption">Evolución del género Homo hacia el Homo sapiens</p>
+    </div>
+    <div class="highlight warning"><strong>Revolución Neolítica:</strong> El paso de la vida nómada (caza) a la vida sedentaria (agricultura). El ser humano aprendió a cultivar, domesticar animales y vivir en aldeas permanentes.</div>
+  </div>
+
+  <div class="card sociales">
+    <h2>⛵ Viajes de Cristóbal Colón</h2>
+    <table>
+      <tr><th>Viaje</th><th>Año</th><th>Destino principal</th></tr>
+      <tr><td>1.° viaje</td><td>1492</td><td>Llegó a las Bahamas (Guanahani). Descubrimiento de América.</td></tr>
+      <tr><td>2.° viaje</td><td>1493–1496</td><td>Puerto Rico, Jamaica, Cuba y costa de Haití.</td></tr>
+      <tr><td>3.° viaje</td><td>1498–1500</td><td>Venezuela – primer contacto con continente sudamericano.</td></tr>
+      <tr><td>4.° viaje</td><td>1502–1504</td><td>Centroamérica (Honduras, Costa Rica, Panamá).</td></tr>
+    </table>
+    <div class="highlight info"><strong>Barcos del primer viaje:</strong> La Niña, La Pinta y La Santa María. Colón nunca supo que había llegado a un continente nuevo; creía que era Asia.</div>
+  </div>
+
+  <div class="card sociales">
+    <h2>🏛️ Culturas Precolombinas</h2>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          <!-- Pirámide maya -->
+          <polygon points="35,5 65,60 5,60" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+          <rect x="22" y="42" width="26" height="18" fill="#fcd34d"/>
+          <rect x="28" y="52" width="14" height="8" fill="#92400e"/>
+        </svg>
+        <strong>MAYAS</strong><br>
+        <span style="font-weight:400;font-size:0.76rem">México/Guatemala. Calendario, astronomía, pirámides, escritura jeroglífica</span>
+      </div>
+      <div class="visual-item">
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          <polygon points="35,5 65,60 5,60" fill="#fca5a5" stroke="#ef4444" stroke-width="2"/>
+          <circle cx="35" cy="35" r="10" fill="#dc2626" opacity="0.7"/>
+          <text x="28" y="40" font-size="10" fill="white" font-weight="bold">Sol</text>
+        </svg>
+        <strong>AZTECAS</strong><br>
+        <span style="font-weight:400;font-size:0.76rem">México. Tenochtitlán, Calendario Solar, Moctezuma, jaguar</span>
+      </div>
+      <div class="visual-item">
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          <path d="M35,5 L55,65 L35,50 L15,65 Z" fill="#a7f3d0" stroke="#059669" stroke-width="2"/>
+        </svg>
+        <strong>INCAS</strong><br>
+        <span style="font-weight:400;font-size:0.76rem">Perú/Andes. Machu Picchu, Camino del Inca, quipu, Sapa Inca</span>
+      </div>
+      <div class="visual-item">
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          <circle cx="35" cy="35" r="28" fill="#c4b5fd" stroke="#7c3aed" stroke-width="2"/>
+          <text x="17" y="40" font-size="22">🌿</text>
+        </svg>
+        <strong>MUISCAS</strong><br>
+        <span style="font-weight:400;font-size:0.76rem">Colombia. El Dorado, sal, esmeraldas, chicha, Zipa y Zaque</span>
+      </div>
+    </div>
+    <table>
+      <tr><th>Cultura</th><th>Ubicación</th><th>Características clave</th></tr>
+      <tr><td>Mayas</td><td>México, Guatemala, Belice</td><td>Calendario, cero, escritura, Chichén Itzá</td></tr>
+      <tr><td>Aztecas</td><td>México central</td><td>Tenochtitlán (actual CDMX), sacrificios rituales, acueductos</td></tr>
+      <tr><td>Incas</td><td>Perú, Bolivia, Ecuador, Chile</td><td>Machu Picchu, quipu (registro en cuerdas), terrazas agrícolas</td></tr>
+      <tr><td>Muiscas</td><td>Colombia (altiplano cundiboyacense)</td><td>Comercio de sal y esmeraldas, leyenda El Dorado, orfebrería</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  MATEMÁTICAS -->
+<!-- ============================================================ -->
+<section id="matematicas" class="section">
+  <div class="section-title" style="color:var(--matematicas)">➗ Matemáticas</div>
+  <div class="section-subtitle">Números · Álgebra · Geometría · Transformaciones</div>
+
+  <div class="card matematicas">
+    <h2>🔢 Números Romanos</h2>
+    <table>
+      <tr><th>Romano</th><th>Valor</th><th>Romano</th><th>Valor</th></tr>
+      <tr><td>I</td><td>1</td><td>L</td><td>50</td></tr>
+      <tr><td>V</td><td>5</td><td>C</td><td>100</td></tr>
+      <tr><td>X</td><td>10</td><td>D</td><td>500</td></tr>
+      <tr><td>IV</td><td>4</td><td>M</td><td>1000</td></tr>
+      <tr><td>IX</td><td>9</td><td>XL</td><td>40</td></tr>
+      <tr><td>XI</td><td>11</td><td>XC</td><td>90</td></tr>
+    </table>
+    <div class="highlight info"><strong>Regla:</strong> Si un símbolo menor va ANTES del mayor, se resta (IV=4). Si va DESPUÉS, se suma (VI=6).</div>
+    <div class="exercise">
+      <h4>✏️ Practica</h4>
+      <p class="ex-problem">1. Escribe en romano: 49</p>
+      <details><summary>Ver respuesta</summary><p>XLIX (40+9)</p></details>
+      <p class="ex-problem">2. ¿Cuánto vale MCMXCIX?</p>
+      <details><summary>Ver respuesta</summary><p>1000 + (1000-100) + (100-10) + (10-1) = 1999</p></details>
+    </div>
+  </div>
+
+  <div class="card matematicas">
+    <h2>√ Raíz Cuadrada</h2>
+    <p>La raíz cuadrada de un número <em>n</em> es el número que multiplicado por sí mismo da <em>n</em>.</p>
+    <div class="formula">√25 = 5 porque 5 × 5 = 25</div>
+    <table>
+      <tr><th>Raíz</th><th>Resultado</th><th>Verificación</th></tr>
+      <tr><td>√1</td><td>1</td><td>1×1=1</td></tr>
+      <tr><td>√4</td><td>2</td><td>2×2=4</td></tr>
+      <tr><td>√9</td><td>3</td><td>3×3=9</td></tr>
+      <tr><td>√16</td><td>4</td><td>4×4=16</td></tr>
+      <tr><td>√25</td><td>5</td><td>5×5=25</td></tr>
+      <tr><td>√36</td><td>6</td><td>6×6=36</td></tr>
+      <tr><td>√49</td><td>7</td><td>7×7=49</td></tr>
+      <tr><td>√64</td><td>8</td><td>8×8=64</td></tr>
+      <tr><td>√81</td><td>9</td><td>9×9=81</td></tr>
+      <tr><td>√100</td><td>10</td><td>10×10=100</td></tr>
+    </table>
+  </div>
+
+  <div class="card matematicas">
+    <h2>± Operaciones con Números Enteros</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 400 60" width="400">
+        <line x1="20" y1="30" x2="380" y2="30" stroke="#94a3b8" stroke-width="2"/>
+        <line x1="200" y1="15" x2="200" y2="45" stroke="#1a202c" stroke-width="2.5"/>
+        <g font-size="11" font-family="sans-serif" fill="#555">
+          <text x="10" y="25">-5</text><text x="45" y="25">-4</text><text x="80" y="25">-3</text>
+          <text x="115" y="25">-2</text><text x="150" y="25">-1</text><text x="192" y="25">0</text>
+          <text x="227" y="25">1</text><text x="262" y="25">2</text><text x="297" y="25">3</text>
+          <text x="332" y="25">4</text><text x="367" y="25">5</text>
+        </g>
+        <g fill="#3b82f6">
+          <circle cx="35" cy="30" r="5"/><circle cx="70" cy="30" r="5"/><circle cx="105" cy="30" r="5"/>
+          <circle cx="140" cy="30" r="5"/><circle cx="175" cy="30" r="5"/>
+        </g>
+        <g fill="#ef4444">
+          <circle cx="235" cy="30" r="5"/><circle cx="270" cy="30" r="5"/><circle cx="305" cy="30" r="5"/>
+          <circle cx="340" cy="30" r="5"/><circle cx="375" cy="30" r="5"/>
+        </g>
+        <circle cx="200" cy="30" r="6" fill="#1a202c"/>
+        <text x="90" y="55" font-size="11" fill="#3b82f6" font-family="sans-serif">Negativos ←</text>
+        <text x="230" y="55" font-size="11" fill="#ef4444" font-family="sans-serif">→ Positivos</text>
+      </svg>
+      <p class="visual-caption">Recta numérica de los enteros</p>
+    </div>
+    <table>
+      <tr><th>Operación</th><th>Regla</th><th>Ejemplo</th></tr>
+      <tr><td>(+) + (+)</td><td>Suma normal</td><td>3 + 5 = 8</td></tr>
+      <tr><td>(-) + (-)</td><td>Suma y pone negativo</td><td>-3 + (-5) = -8</td></tr>
+      <tr><td>(+) + (-)</td><td>Resta, signo del mayor</td><td>7 + (-3) = 4</td></tr>
+      <tr><td>(-) × (-)</td><td>Resultado positivo</td><td>-4 × -2 = 8</td></tr>
+      <tr><td>(+) × (-)</td><td>Resultado negativo</td><td>4 × -2 = -8</td></tr>
+    </table>
+    <div class="exercise">
+      <h4>✏️ Practica</h4>
+      <p class="ex-problem">1. (-8) + 3 = ?</p>
+      <details><summary>Ver respuesta</summary><p>-5</p></details>
+      <p class="ex-problem">2. (-6) × (-4) = ?</p>
+      <details><summary>Ver respuesta</summary><p>+24</p></details>
+      <p class="ex-problem">3. (-15) ÷ 3 = ?</p>
+      <details><summary>Ver respuesta</summary><p>-5</p></details>
+    </div>
+  </div>
+
+  <div class="card matematicas">
+    <h2>🔣 Ecuaciones Lineales</h2>
+    <p>Una ecuación lineal tiene una <strong>incógnita (x)</strong> de primer grado. El objetivo es despejar x.</p>
+    <div class="highlight info"><strong>Principio:</strong> Lo que haces a un lado de la ecuación debes hacerlo al otro lado también.</div>
+    <div class="exercise">
+      <h4>✏️ Ejemplo 1: x + 5 = 12</h4>
+      <p>Restamos 5 en ambos lados:<br>
+      x + 5 - 5 = 12 - 5<br>
+      <strong>x = 7</strong></p>
+      <details><summary>Verificar</summary><p>7 + 5 = 12 ✅</p></details>
+    </div>
+    <div class="exercise">
+      <h4>✏️ Ejemplo 2: 3x - 4 = 11</h4>
+      <p>Paso 1: sumar 4 → 3x = 15<br>
+      Paso 2: dividir entre 3 → <strong>x = 5</strong></p>
+      <details><summary>Verificar</summary><p>3(5) - 4 = 15 - 4 = 11 ✅</p></details>
+    </div>
+    <div class="exercise">
+      <h4>✏️ Ejemplo 3: 2x + 3 = x + 9</h4>
+      <p>Pasar la x del lado derecho: 2x - x = 9 - 3<br>
+      <strong>x = 6</strong></p>
+      <details><summary>Verificar</summary><p>2(6)+3=15 y 6+9=15 ✅</p></details>
+    </div>
+    <div class="exercise">
+      <h4>✏️ Resuelve tú</h4>
+      <p class="ex-problem">a) 4x + 2 = 18</p>
+      <details><summary>Ver respuesta</summary><p>4x = 16 → x = 4</p></details>
+      <p class="ex-problem">b) 5x - 3 = 2x + 9</p>
+      <details><summary>Ver respuesta</summary><p>3x = 12 → x = 4</p></details>
+      <p class="ex-problem">c) 7x = 49</p>
+      <details><summary>Ver respuesta</summary><p>x = 7</p></details>
+      <p class="ex-problem">d) x/3 + 4 = 7</p>
+      <details><summary>Ver respuesta</summary><p>x/3 = 3 → x = 9</p></details>
+    </div>
+  </div>
+
+  <div class="card matematicas">
+    <h2>🔢 Números Racionales e Irracionales</h2>
+    <table>
+      <tr><th>Tipo</th><th>Definición</th><th>Ejemplos</th></tr>
+      <tr><td><strong>Racionales (ℚ)</strong></td><td>Se expresan como fracción p/q (q ≠ 0). Decimales exactos o periódicos.</td><td>½, 0.75, -3, 0.333...</td></tr>
+      <tr><td><strong>Irracionales</strong></td><td>No se expresan como fracción. Decimales infinitos no periódicos.</td><td>√2 = 1.41421…, π = 3.14159…, √3</td></tr>
+    </table>
+    <div class="highlight warning"><strong>Truco:</strong> Si la raíz cuadrada da un número exacto (√4=2, √9=3) es racional. Si no (√5=2.236…) es irracional.</div>
+  </div>
+
+  <div class="card matematicas">
+    <h2>🔷 Polígonos</h2>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <svg width="80" height="70" viewBox="0 0 80 70">
+          <polygon points="40,5 75,65 5,65" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5"/>
+        </svg>
+        Triángulo<br><span style="font-weight:400;font-size:0.78rem">3 lados</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="70" viewBox="0 0 80 70">
+          <rect x="10" y="15" width="60" height="45" fill="#d1fae5" stroke="#10b981" stroke-width="2.5"/>
+        </svg>
+        Cuadrilátero<br><span style="font-weight:400;font-size:0.78rem">4 lados</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="70" viewBox="0 0 80 70">
+          <polygon points="40,5 72,28 60,65 20,65 8,28" fill="#fce7f3" stroke="#ec4899" stroke-width="2.5"/>
+        </svg>
+        Pentágono<br><span style="font-weight:400;font-size:0.78rem">5 lados</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="70" viewBox="0 0 80 70">
+          <polygon points="40,5 68,18 75,50 55,68 25,68 5,50 12,18" fill="#fef9c3" stroke="#f59e0b" stroke-width="2.5"/>
+        </svg>
+        Heptágono<br><span style="font-weight:400;font-size:0.78rem">7 lados</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="70" viewBox="0 0 80 70">
+          <polygon points="40,5 70,20 75,50 55,70 25,70 5,50 10,20" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+        </svg>
+        Octágono<br><span style="font-weight:400;font-size:0.78rem">8 lados</span>
+      </div>
+      <div class="visual-item">
+        <svg width="80" height="70" viewBox="0 0 80 70">
+          <polygon points="40,5 67,15 76,42 62,67 18,67 4,42 13,15" fill="#d1fae5" stroke="#059669" stroke-width="2.5"/>
+        </svg>
+        Hexágono<br><span style="font-weight:400;font-size:0.78rem">6 lados</span>
+      </div>
+    </div>
+    <div class="highlight info"><strong>Suma de ángulos internos = (n - 2) × 180°</strong><br>
+    Triángulo: (3-2)×180 = 180°<br>
+    Cuadrado: (4-2)×180 = 360°<br>
+    Pentágono: (5-2)×180 = 540°</div>
+  </div>
+
+  <div class="card matematicas">
+    <h2>🔺 Tipos de Triángulos</h2>
+    <div class="visual-grid">
+      <div class="visual-item">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <polygon points="50,5 90,72 10,72" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5"/>
+          <text x="40" y="72" font-size="9" fill="#1d4ed8">60°</text>
+          <text x="7" y="72" font-size="9" fill="#1d4ed8">60°</text>
+          <text x="80" y="72" font-size="9" fill="#1d4ed8">60°</text>
+          <!-- tick marks -->
+          <line x1="30" y1="38" x2="38" y2="42" stroke="#1d4ed8" stroke-width="2"/>
+          <line x1="70" y1="38" x2="62" y2="42" stroke="#1d4ed8" stroke-width="2"/>
+          <line x1="50" y1="72" x2="50" y2="63" stroke="#1d4ed8" stroke-width="2"/>
+        </svg>
+        <strong>Equilátero</strong><br>
+        <span style="font-weight:400;font-size:0.78rem">3 lados iguales<br>3 ángulos de 60°</span>
+      </div>
+      <div class="visual-item">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <polygon points="50,5 85,72 15,72" fill="#d1fae5" stroke="#10b981" stroke-width="2.5"/>
+          <!-- 2 lados iguales -->
+          <line x1="32" y1="38" x2="40" y2="42" stroke="#065f46" stroke-width="2"/>
+          <line x1="34" y1="43" x2="42" y2="47" stroke="#065f46" stroke-width="2"/>
+          <line x1="68" y1="38" x2="60" y2="42" stroke="#065f46" stroke-width="2"/>
+          <line x1="66" y1="43" x2="58" y2="47" stroke="#065f46" stroke-width="2"/>
+        </svg>
+        <strong>Isósceles</strong><br>
+        <span style="font-weight:400;font-size:0.78rem">2 lados iguales<br>2 ángulos iguales</span>
+      </div>
+      <div class="visual-item">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <polygon points="20,70 90,70 20,10" fill="#fce7f3" stroke="#ec4899" stroke-width="2.5"/>
+          <!-- cuadradito de ángulo recto -->
+          <rect x="20" y="58" width="12" height="12" fill="none" stroke="#be185d" stroke-width="2"/>
+        </svg>
+        <strong>Rectángulo</strong><br>
+        <span style="font-weight:400;font-size:0.78rem">Un ángulo de 90°<br>3 lados distintos</span>
+      </div>
+      <div class="visual-item">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <polygon points="10,70 95,70 70,10" fill="#fef9c3" stroke="#f59e0b" stroke-width="2.5"/>
+        </svg>
+        <strong>Escaleno</strong><br>
+        <span style="font-weight:400;font-size:0.78rem">3 lados distintos<br>3 ángulos distintos</span>
+      </div>
+      <div class="visual-item">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <polygon points="50,5 90,72 10,72" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+          <!-- ángulo obtuso en vértice superior -->
+          <path d="M35,72 A20,20 0 0,1 65,72" stroke="#7c3aed" stroke-width="1.5" fill="none"/>
+          <text x="40" y="65" font-size="9" fill="#6d28d9">&gt;90°</text>
+        </svg>
+        <strong>Obtusángulo</strong><br>
+        <span style="font-weight:400;font-size:0.78rem">Un ángulo mayor<br>de 90°</span>
+      </div>
+      <div class="visual-item">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <polygon points="50,5 90,72 10,72" fill="#fce7f3" stroke="#f43f5e" stroke-width="2.5"/>
+          <text x="33" y="72" font-size="9" fill="#be123c">&lt;90°</text>
+          <text x="74" y="72" font-size="9" fill="#be123c">&lt;90°</text>
+          <text x="42" y="20" font-size="9" fill="#be123c">&lt;90°</text>
+        </svg>
+        <strong>Acutángulo</strong><br>
+        <span style="font-weight:400;font-size:0.78rem">Los 3 ángulos<br>menores de 90°</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card matematicas">
+    <h2>🔄 Transformaciones Geométricas</h2>
+    <div class="visual-box">
+      <svg viewBox="0 0 480 160" width="480">
+        <!-- Reflexión -->
+        <g transform="translate(10,10)">
+          <text x="20" y="15" font-size="12" font-weight="bold" fill="#3b82f6" font-family="sans-serif">Reflexión (Espejo)</text>
+          <polygon points="15,100 50,30 70,100" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+          <line x1="90" y1="20" x2="90" y2="130" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5"/>
+          <polygon points="165,100 130,30 110,100" fill="#bfdbfe" stroke="#3b82f6" stroke-width="2" opacity="0.6"/>
+          <text x="25" y="130" font-size="10" fill="#555" font-family="sans-serif">Figura original</text>
+          <text x="100" y="130" font-size="10" fill="#3b82f6" font-family="sans-serif">Imagen reflejada</text>
+        </g>
+        <!-- Traslación -->
+        <g transform="translate(200,10)">
+          <text x="5" y="15" font-size="12" font-weight="bold" fill="#10b981" font-family="sans-serif">Traslación</text>
+          <polygon points="10,100 45,30 65,100" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+          <polygon points="80,100 115,30 135,100" fill="#a7f3d0" stroke="#10b981" stroke-width="2" opacity="0.7"/>
+          <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#059669"/></marker></defs>
+          <line x1="45" y1="65" x2="85" y2="65" stroke="#059669" stroke-width="2" marker-end="url(#arr)"/>
+          <text x="10" y="130" font-size="10" fill="#555" font-family="sans-serif">Se mueve sin rotar</text>
+        </g>
+        <!-- Rotación -->
+        <g transform="translate(370,10)">
+          <text x="0" y="15" font-size="12" font-weight="bold" fill="#f59e0b" font-family="sans-serif">Rotación</text>
+          <polygon points="55,65 85,25 90,65" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/>
+          <polygon points="55,65 15,50 55,20" fill="#fcd34d" stroke="#f59e0b" stroke-width="2" opacity="0.6"/>
+          <circle cx="55" cy="65" r="5" fill="#d97706"/>
+          <text x="0" y="130" font-size="10" fill="#555" font-family="sans-serif">Gira alrededor de un punto</text>
+        </g>
+      </svg>
+      <p class="visual-caption">Tipos de transformaciones geométricas</p>
+    </div>
+    <table>
+      <tr><th>Transformación</th><th>Descripción</th><th>Clave</th></tr>
+      <tr><td><strong>Reflexión</strong></td><td>Imagen especular (espejo)</td><td>La figura se "voltea"</td></tr>
+      <tr><td><strong>Traslación</strong></td><td>Se mueve sin girar</td><td>Misma figura, otra posición</td></tr>
+      <tr><td><strong>Rotación</strong></td><td>Gira alrededor de un punto</td><td>Se especifica el ángulo</td></tr>
+      <tr><td><strong>Dilatación</strong></td><td>Cambia de tamaño (amplía o reduce)</td><td>Misma forma, distinto tamaño</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!--  SIMULACROS -->
+<!-- ============================================================ -->
+<section id="simulacros" class="section">
+  <div class="section-title">✏️ Simulacros de Prueba</div>
+  <div class="section-subtitle">5 simulacros · 20 preguntas cada uno · Corrección automática</div>
+
+  <div class="sim-selector">
+    <button class="sim-btn active-q" data-quiz="quimica" onclick="showQuiz('quimica',this)">🧪 Química (20 Preg.)</button>
+    <button class="sim-btn" data-quiz="biologia" onclick="showQuiz('biologia',this)">🧬 Biología (20 Preg.)</button>
+    <button class="sim-btn" data-quiz="lenguaje" onclick="showQuiz('lenguaje',this)">📚 Lenguaje (20 Preg.)</button>
+    <button class="sim-btn" data-quiz="sociales" onclick="showQuiz('sociales',this)">🌎 Sociales (20 Preg.)</button>
+    <button class="sim-btn" data-quiz="matematicas" onclick="showQuiz('matematicas',this)">➗ Matemáticas (20 Preg.)</button>
+  </div>
+
+  <!-- QUIZ QUÍMICA -->
+  <div id="quiz-quimica" class="quiz-panel active">
+    <div class="quiz-header" style="border-top: 4px solid var(--quimica)">
+      <h2>🧪 Simulacro – Química</h2>
+      <p>20 preguntas · Lee con cuidado antes de responder</p>
+    </div>
+    <div id="form-quimica">
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 1</div>
+        <div class="q-text">¿Quién es conocido como el "Padre de la Química"?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="q1" value="a"> Isaac Newton</label>
+          <label><input type="radio" name="q1" value="b"> Antoine Lavoisier</label>
+          <label><input type="radio" name="q1" value="c"> John Dalton</label>
+          <label><input type="radio" name="q1" value="d"> Robert Boyle</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 2</div>
+        <div class="q-text">Si una mochila pesa 3.5 kg, ¿cuántos gramos pesa?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="q2" value="a"> 35 g</label>
+          <label><input type="radio" name="q2" value="b"> 350 g</label>
+          <label><input type="radio" name="q2" value="c"> 3 500 g</label>
+          <label><input type="radio" name="q2" value="d"> 35 000 g</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 3</div>
+        <div class="q-text">¿Qué estado de la materia tiene forma y volumen FIJOS?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="q3" value="a"> Sólido</label>
+          <label><input type="radio" name="q3" value="b"> Líquido</label>
+          <label><input type="radio" name="q3" value="c"> Gaseoso</label>
+          <label><input type="radio" name="q3" value="d"> Plasma</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 4</div>
+        <div class="q-text">En la fórmula H₂O, ¿cuántos átomos de hidrógeno hay?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="q4" value="a"> 1</label>
+          <label><input type="radio" name="q4" value="b"> 2</label>
+          <label><input type="radio" name="q4" value="c"> 3</label>
+          <label><input type="radio" name="q4" value="d"> 4</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 5</div>
+        <div class="q-text">¿Cuáles de las siguientes son moléculas diatómicas? (Selecciona todas las correctas)</div>
+        <div class="options" data-correct="ac" data-type="multi">
+          <label><input type="checkbox" name="q5" value="a"> H₂ (hidrógeno)</label>
+          <label><input type="checkbox" name="q5" value="b"> H₂O (agua)</label>
+          <label><input type="checkbox" name="q5" value="c"> O₂ (oxígeno)</label>
+          <label><input type="checkbox" name="q5" value="d"> CO₂ (dióxido de carbono)</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 6</div>
+        <div class="q-text">¿Cuántos electrones de valencia tienen los gases nobles (excepto el Helio)?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="q6" value="a"> 2</label>
+          <label><input type="radio" name="q6" value="b"> 4</label>
+          <label><input type="radio" name="q6" value="c"> 6</label>
+          <label><input type="radio" name="q6" value="d"> 8</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 7</div>
+        <div class="q-text">Según la Teoría de Dalton, ¿cómo son los átomos de un mismo elemento?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="q7" value="a"> Diferentes entre sí</label>
+          <label><input type="radio" name="q7" value="b"> Idénticos entre sí</label>
+          <label><input type="radio" name="q7" value="c"> Divisibles en partes más pequeñas</label>
+          <label><input type="radio" name="q7" value="d"> Cambian con el tiempo</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 8</div>
+        <div class="q-text">En una solución de agua con azúcar: el azúcar es el ___ y el agua es el ___.</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="q8" value="a"> soluto / solvente</label>
+          <label><input type="radio" name="q8" value="b"> solvente / soluto</label>
+          <label><input type="radio" name="q8" value="c"> soluto / soluto</label>
+          <label><input type="radio" name="q8" value="d"> solvente / solvente</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 9</div>
+        <div class="q-text">¿Qué descubrió J.J. Thomson en su experimento con tubos de rayos catódicos?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="q9" value="a"> El núcleo atómico</label>
+          <label><input type="radio" name="q9" value="b"> El protón</label>
+          <label><input type="radio" name="q9" value="c"> El electrón</label>
+          <label><input type="radio" name="q9" value="d"> El neutrón</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 10</div>
+        <div class="q-text">¿Qué ley formuló Lavoisier? "La materia no se crea ni se destruye, solo se ___".</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="q10" value="a"> elimina</label>
+          <label><input type="radio" name="q10" value="b"> transforma</label>
+          <label><input type="radio" name="q10" value="c"> divide</label>
+          <label><input type="radio" name="q10" value="d"> duplica</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 11</div>
+        <div class="q-text">¿Cuántos átomos de oxígeno tiene la fórmula H₂SO₄?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="q11" value="a"> 1</label>
+          <label><input type="radio" name="q11" value="b"> 2</label>
+          <label><input type="radio" name="q11" value="c"> 3</label>
+          <label><input type="radio" name="q11" value="d"> 4</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 12</div>
+        <div class="q-text">¿Cuál de estos NO es un estado de la materia?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="q12" value="a"> Sólido</label>
+          <label><input type="radio" name="q12" value="b"> Plasma</label>
+          <label><input type="radio" name="q12" value="c"> Energía</label>
+          <label><input type="radio" name="q12" value="d"> Gaseoso</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 13</div>
+        <div class="q-text">El modelo atómico de Thomson es conocido como el modelo del "Pudín de ___".</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="q13" value="a"> uvas</label>
+          <label><input type="radio" name="q13" value="b"> pasas</label>
+          <label><input type="radio" name="q13" value="c"> ciruelas</label>
+          <label><input type="radio" name="q13" value="d"> manzanas</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 14</div>
+        <div class="q-text">600 g son equivalentes a:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="q14" value="a"> 0.6 kg</label>
+          <label><input type="radio" name="q14" value="b"> 6 kg</label>
+          <label><input type="radio" name="q14" value="c"> 60 kg</label>
+          <label><input type="radio" name="q14" value="d"> 0.06 kg</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 15</div>
+        <div class="q-text">¿Cuál de estos elementos SÍ forma molécula diatómica?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="q15" value="a"> Sodio (Na)</label>
+          <label><input type="radio" name="q15" value="b"> Calcio (Ca)</label>
+          <label><input type="radio" name="q15" value="c"> Hierro (Fe)</label>
+          <label><input type="radio" name="q15" value="d"> Cloro (Cl)</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 16</div>
+        <div class="q-text">En la fórmula CO₂ hay ___carbono(s) y ___ oxígeno(s).</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="q16" value="a"> 2 y 1</label>
+          <label><input type="radio" name="q16" value="b"> 1 y 2</label>
+          <label><input type="radio" name="q16" value="c"> 2 y 2</label>
+          <label><input type="radio" name="q16" value="d"> 1 y 1</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 17</div>
+        <div class="q-text">¿Por qué los gases nobles casi no reaccionan con otros elementos?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="q17" value="a"> Porque son muy pesados</label>
+          <label><input type="radio" name="q17" value="b"> Porque no tienen átomos</label>
+          <label><input type="radio" name="q17" value="c"> Porque tienen su última capa de electrones completa</label>
+          <label><input type="radio" name="q17" value="d"> Porque están en estado sólido</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 18</div>
+        <div class="q-text">¿Cuál es el mayor aporte de Dalton a la ciencia?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="q18" value="a"> Proponer que la materia está formada por átomos</label>
+          <label><input type="radio" name="q18" value="b"> Descubrir el electrón</label>
+          <label><input type="radio" name="q18" value="c"> Descubrir el oxígeno</label>
+          <label><input type="radio" name="q18" value="d"> Crear la Tabla Periódica</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 19</div>
+        <div class="q-text">¿Cuál es el solvente más universal en la naturaleza?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="q19" value="a"> El alcohol</label>
+          <label><input type="radio" name="q19" value="b"> El agua</label>
+          <label><input type="radio" name="q19" value="c"> El vinagre</label>
+          <label><input type="radio" name="q19" value="d"> La gasolina</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 20</div>
+        <div class="q-text">El plasma es un estado de la materia que se encuentra en:</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="q20" value="a"> El hielo</label>
+          <label><input type="radio" name="q20" value="b"> El vapor de agua</label>
+          <label><input type="radio" name="q20" value="c"> El aceite</label>
+          <label><input type="radio" name="q20" value="d"> El Sol y los rayos eléctricos</label>
+        </div>
+      </div>
+
+      <button class="quiz-submit-btn" onclick="gradeQuiz('quimica')">✅ Calificar Simulacro</button>
+      <div id="result-quimica" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ BIOLOGÍA -->
+  <div id="quiz-biologia" class="quiz-panel">
+    <div class="quiz-header" style="border-top: 4px solid var(--biologia)">
+      <h2>🧬 Simulacro – Biología</h2>
+      <p>20 preguntas · Lee con cuidado antes de responder</p>
+    </div>
+    <div id="form-biologia">
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 1</div>
+        <div class="q-text">¿Cuál de estos es un factor ABIÓTICO de un ecosistema?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="b1" value="a"> Un árbol</label>
+          <label><input type="radio" name="b1" value="b"> Una bacteria</label>
+          <label><input type="radio" name="b1" value="c"> La temperatura</label>
+          <label><input type="radio" name="b1" value="d"> Un hongo</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 2</div>
+        <div class="q-text">La mitosis produce:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b2" value="a"> 4 células con la mitad de cromosomas</label>
+          <label><input type="radio" name="b2" value="b"> 2 células idénticas a la célula madre</label>
+          <label><input type="radio" name="b2" value="c"> 1 célula con el doble de cromosomas</label>
+          <label><input type="radio" name="b2" value="d"> 3 células diferentes</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 3</div>
+        <div class="q-text">Las plantas son organismos:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="b3" value="a"> Autótrofos</label>
+          <label><input type="radio" name="b3" value="b"> Heterótrofos carnívoros</label>
+          <label><input type="radio" name="b3" value="c"> Heterótrofos descomponedores</label>
+          <label><input type="radio" name="b3" value="d"> Heterótrofos omnívoros</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 4</div>
+        <div class="q-text">La respiración aeróbica requiere:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="b4" value="a"> Nitrógeno</label>
+          <label><input type="radio" name="b4" value="b"> Dióxido de carbono</label>
+          <label><input type="radio" name="b4" value="c"> Oxígeno</label>
+          <label><input type="radio" name="b4" value="d"> Metano</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 5</div>
+        <div class="q-text">El conjunto de seres vivos de diferentes especies que habitan en un área se llama:</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="b5" value="a"> Población</label>
+          <label><input type="radio" name="b5" value="b"> Bioma</label>
+          <label><input type="radio" name="b5" value="c"> Ecosistema</label>
+          <label><input type="radio" name="b5" value="d"> Comunidad</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 6</div>
+        <div class="q-text">La minería es una actividad económica de tipo:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b6" value="a"> Terciaria</label>
+          <label><input type="radio" name="b6" value="b"> Extractiva</label>
+          <label><input type="radio" name="b6" value="c"> Transformadora</label>
+          <label><input type="radio" name="b6" value="d"> De servicios</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 7</div>
+        <div class="q-text">El dióxido de carbono (CO₂) en exceso en la atmósfera es responsable del:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="b7" value="a"> Efecto invernadero</label>
+          <label><input type="radio" name="b7" value="b"> Agujero en la capa de ozono</label>
+          <label><input type="radio" name="b7" value="c"> Lluvia ácida exclusivamente</label>
+          <label><input type="radio" name="b7" value="d"> La respiración de las plantas</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 8</div>
+        <div class="q-text">Las bacterias con forma de bastón se llaman:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b8" value="a"> Cocos</label>
+          <label><input type="radio" name="b8" value="b"> Bacilos</label>
+          <label><input type="radio" name="b8" value="c"> Espirilos</label>
+          <label><input type="radio" name="b8" value="d"> Vibrios</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 9</div>
+        <div class="q-text">¿Cuál es un factor BIÓTICO?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="b9" value="a"> El suelo</label>
+          <label><input type="radio" name="b9" value="b"> La luz solar</label>
+          <label><input type="radio" name="b9" value="c"> La humedad</label>
+          <label><input type="radio" name="b9" value="d"> Un hongo</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 10</div>
+        <div class="q-text">¿En qué fase de la mitosis los cromosomas se alinean en el centro de la célula?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b10" value="a"> Profase</label>
+          <label><input type="radio" name="b10" value="b"> Metafase</label>
+          <label><input type="radio" name="b10" value="c"> Anafase</label>
+          <label><input type="radio" name="b10" value="d"> Telofase</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 11</div>
+        <div class="q-text">La fermentación del pan es un ejemplo de respiración:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b11" value="a"> Aeróbica</label>
+          <label><input type="radio" name="b11" value="b"> Anaeróbica</label>
+          <label><input type="radio" name="b11" value="c"> Fotosintética</label>
+          <label><input type="radio" name="b11" value="d"> Celular aerobia</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 12</div>
+        <div class="q-text">Un herbívoro es un organismo:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="b12" value="a"> Autótrofo</label>
+          <label><input type="radio" name="b12" value="b"> Heterótrofo carnívoro</label>
+          <label><input type="radio" name="b12" value="c"> Heterótrofo que se alimenta de plantas</label>
+          <label><input type="radio" name="b12" value="d"> Descomponedor</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 13</div>
+        <div class="q-text">Las bacterias esféricas se denominan:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="b13" value="a"> Cocos</label>
+          <label><input type="radio" name="b13" value="b"> Bacilos</label>
+          <label><input type="radio" name="b13" value="c"> Espirilos</label>
+          <label><input type="radio" name="b13" value="d"> Vibrios</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 14</div>
+        <div class="q-text">¿Cuál es el producto principal de la respiración anaeróbica en los músculos?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b14" value="a"> Oxígeno</label>
+          <label><input type="radio" name="b14" value="b"> Ácido láctico</label>
+          <label><input type="radio" name="b14" value="c"> Glucosa</label>
+          <label><input type="radio" name="b14" value="d"> ATP en grandes cantidades</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 15</div>
+        <div class="q-text">La pesca y la agricultura son ejemplos de actividades:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="b15" value="a"> Extractivas</label>
+          <label><input type="radio" name="b15" value="b"> Industriales</label>
+          <label><input type="radio" name="b15" value="c"> De servicios</label>
+          <label><input type="radio" name="b15" value="d"> Tecnológicas</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 16</div>
+        <div class="q-text">¿Qué ocurre en la Interfase de la mitosis?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="b16" value="a"> Los cromosomas se separan</label>
+          <label><input type="radio" name="b16" value="b"> La célula se divide</label>
+          <label><input type="radio" name="b16" value="c"> El ADN se duplica</label>
+          <label><input type="radio" name="b16" value="d"> Se forma la membrana nueva</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 17</div>
+        <div class="q-text">Los hongos son organismos:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b17" value="a"> Autótrofos</label>
+          <label><input type="radio" name="b17" value="b"> Heterótrofos descomponedores</label>
+          <label><input type="radio" name="b17" value="c"> Autótrofos fotosintéticos</label>
+          <label><input type="radio" name="b17" value="d"> Heterótrofos carnívoros</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 18</div>
+        <div class="q-text">¿Cuáles son los factores que componen un ecosistema? (Elige 2)</div>
+        <div class="options" data-correct="ac" data-type="multi">
+          <label><input type="checkbox" name="b18" value="a"> Bióticos</label>
+          <label><input type="checkbox" name="b18" value="b"> Económicos</label>
+          <label><input type="checkbox" name="b18" value="c"> Abióticos</label>
+          <label><input type="checkbox" name="b18" value="d"> Políticos</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 19</div>
+        <div class="q-text">La contaminación del aire por los gases de los automóviles es un ejemplo de contaminación:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="b19" value="a"> Hídrica</label>
+          <label><input type="radio" name="b19" value="b"> Atmosférica</label>
+          <label><input type="radio" name="b19" value="c"> Del suelo</label>
+          <label><input type="radio" name="b19" value="d"> Acústica</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 20</div>
+        <div class="q-text">¿Cuáles de los siguientes son microorganismos? (Selecciona los correctos)</div>
+        <div class="options" data-correct="abd" data-type="multi">
+          <label><input type="checkbox" name="b20" value="a"> Bacterias</label>
+          <label><input type="checkbox" name="b20" value="b"> Virus</label>
+          <label><input type="checkbox" name="b20" value="c"> Elefantes</label>
+          <label><input type="checkbox" name="b20" value="d"> Hongos microscópicos</label>
+        </div>
+      </div>
+
+      <button class="quiz-submit-btn" onclick="gradeQuiz('biologia')">✅ Calificar Simulacro</button>
+      <div id="result-biologia" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ LENGUAJE -->
+  <div id="quiz-lenguaje" class="quiz-panel">
+    <div class="quiz-header" style="border-top: 4px solid var(--lenguaje)">
+      <h2>📚 Simulacro – Lenguaje</h2>
+      <p>20 preguntas · Lee con cuidado antes de responder</p>
+    </div>
+    <div id="form-lenguaje">
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 1</div>
+        <div class="q-text">¿Cuál es el género literario que expresa sentimientos y usa ritmo y rima?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="l1" value="a"> Narrativo</label>
+          <label><input type="radio" name="l1" value="b"> Lírico</label>
+          <label><input type="radio" name="l1" value="c"> Dramático</label>
+          <label><input type="radio" name="l1" value="d"> Épico</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 2</div>
+        <div class="q-text">El narrador que lo sabe todo, incluyendo los pensamientos de los personajes, es el narrador:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="l2" value="a"> Omnisciente</label>
+          <label><input type="radio" name="l2" value="b"> Protagonista</label>
+          <label><input type="radio" name="l2" value="c"> Testigo</label>
+          <label><input type="radio" name="l2" value="d"> Objetivo</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 3</div>
+        <div class="q-text">Una fábula siempre termina con:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="l3" value="a"> Un misterio sin resolver</label>
+          <label><input type="radio" name="l3" value="b"> Un poema</label>
+          <label><input type="radio" name="l3" value="c"> Una moraleja</label>
+          <label><input type="radio" name="l3" value="d"> Una descripción del paisaje</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 4</div>
+        <div class="q-text">¿Qué parte del texto presenta el tema y capta la atención del lector?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="l4" value="a"> Introducción</label>
+          <label><input type="radio" name="l4" value="b"> Desarrollo</label>
+          <label><input type="radio" name="l4" value="c"> Conclusión</label>
+          <label><input type="radio" name="l4" value="d"> Epílogo</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 5</div>
+        <div class="q-text">Identifica el adverbio en la oración: "El perro corre MUY rápido."</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="l5" value="a"> perro</label>
+          <label><input type="radio" name="l5" value="b"> muy</label>
+          <label><input type="radio" name="l5" value="c"> corre</label>
+          <label><input type="radio" name="l5" value="d"> rápido</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 6</div>
+        <div class="q-text">"Libertad" y "amor" son sustantivos de tipo:</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="l6" value="a"> Propio</label>
+          <label><input type="radio" name="l6" value="b"> Concreto</label>
+          <label><input type="radio" name="l6" value="c"> Colectivo</label>
+          <label><input type="radio" name="l6" value="d"> Abstracto</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 7</div>
+        <div class="q-text">¿Cuál es la división mayor de una obra de teatro?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="l7" value="a"> Escena</label>
+          <label><input type="radio" name="l7" value="b"> Acto</label>
+          <label><input type="radio" name="l7" value="c"> Capítulo</label>
+          <label><input type="radio" name="l7" value="d"> Estrofa</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 8</div>
+        <div class="q-text">La idea principal de un párrafo es:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="l8" value="a"> La más larga del párrafo</label>
+          <label><input type="radio" name="l8" value="b"> Siempre la primera oración</label>
+          <label><input type="radio" name="l8" value="c"> La idea más importante que resume el contenido</label>
+          <label><input type="radio" name="l8" value="d"> La última oración del párrafo</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 9</div>
+        <div class="q-text">¿Cuál de estas palabras lleva tilde? (Es esdrújula)</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="l9" value="a"> música</label>
+          <label><input type="radio" name="l9" value="b"> reloj</label>
+          <label><input type="radio" name="l9" value="c"> libro</label>
+          <label><input type="radio" name="l9" value="d"> camino</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 10</div>
+        <div class="q-text">El campo léxico de "escuela" incluye:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="l10" value="a"> río, montaña, selva</label>
+          <label><input type="radio" name="l10" value="b"> aula, maestro, cuaderno, recreo</label>
+          <label><input type="radio" name="l10" value="c"> carro, moto, bicicleta</label>
+          <label><input type="radio" name="l10" value="d"> sol, luna, estrellas</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 11</div>
+        <div class="q-text">Un texto dramático está escrito para ser:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="l11" value="a"> Leído en silencio</label>
+          <label><input type="radio" name="l11" value="b"> Cantado</label>
+          <label><input type="radio" name="l11" value="c"> Representado en escena</label>
+          <label><input type="radio" name="l11" value="d"> Memorizado</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 12</div>
+        <div class="q-text">¿Cuál es la diferencia entre cuento y novela?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="l12" value="a"> El cuento es breve con pocos personajes; la novela es larga con múltiples tramas</label>
+          <label><input type="radio" name="l12" value="b"> El cuento siempre tiene moraleja</label>
+          <label><input type="radio" name="l12" value="c"> La novela es más corta que el cuento</label>
+          <label><input type="radio" name="l12" value="d"> No hay diferencia</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 13</div>
+        <div class="q-text">En "Hoy salí temprano a jugar", la palabra HABER es un adverbio de:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="l13" value="a"> Tiempo</label>
+          <label><input type="radio" name="l13" value="b"> Lugar</label>
+          <label><input type="radio" name="l13" value="c"> Modo</label>
+          <label><input type="radio" name="l13" value="d"> Cantidad</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 14</div>
+        <div class="q-text">¿Cuál de estas palabras es un sustantivo PROPIO?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="l14" value="a"> ciudad</label>
+          <label><input type="radio" name="l14" value="b"> perro</label>
+          <label><input type="radio" name="l14" value="c"> montaña</label>
+          <label><input type="radio" name="l14" value="d"> Colombia</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 15</div>
+        <div class="q-text">Una oración es diferente de un enunciado porque la oración:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="l15" value="a"> Es siempre más corta</label>
+          <label><input type="radio" name="l15" value="b"> Siempre tiene un verbo (sujeto + predicado)</label>
+          <label><input type="radio" name="l15" value="c"> No puede ser pregunta</label>
+          <label><input type="radio" name="l15" value="d"> Es lo mismo que un párrafo</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 16</div>
+        <div class="q-text">Las instrucciones que el autor da para el director o actores en una obra de teatro se llaman:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="l16" value="a"> Diálogos</label>
+          <label><input type="radio" name="l16" value="b"> Monólogos</label>
+          <label><input type="radio" name="l16" value="c"> Acotaciones</label>
+          <label><input type="radio" name="l16" value="d"> Actos</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 17</div>
+        <div class="q-text">¿Cuál es el género literario de una obra de teatro?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="l17" value="a"> Lírico</label>
+          <label><input type="radio" name="l17" value="b"> Dramático</label>
+          <label><input type="radio" name="l17" value="c"> Narrativo</label>
+          <label><input type="radio" name="l17" value="d"> Épico</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 18</div>
+        <div class="q-text">¿Cuál palabra lleva tilde por ser aguda terminada en vocal?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="l18" value="a"> café</label>
+          <label><input type="radio" name="l18" value="b"> mesa</label>
+          <label><input type="radio" name="l18" value="c"> libro</label>
+          <label><input type="radio" name="l18" value="d"> árbol</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 19</div>
+        <div class="q-text">Un mito es diferente de una leyenda porque el mito:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="l19" value="a"> Explica el origen del mundo o fenómenos naturales con dioses</label>
+          <label><input type="radio" name="l19" value="b"> Es siempre más corto</label>
+          <label><input type="radio" name="l19" value="c"> Tiene personajes animales</label>
+          <label><input type="radio" name="l19" value="d"> Ocurre en la actualidad</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 20</div>
+        <div class="q-text">El narrador protagonista narra la historia en:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="l20" value="a"> 3.ª persona (él/ella)</label>
+          <label><input type="radio" name="l20" value="b"> 1.ª persona (yo)</label>
+          <label><input type="radio" name="l20" value="c"> 2.ª persona (tú)</label>
+          <label><input type="radio" name="l20" value="d"> Ninguna persona gramatical</label>
+        </div>
+      </div>
+
+      <button class="quiz-submit-btn" onclick="gradeQuiz('lenguaje')">✅ Calificar Simulacro</button>
+      <div id="result-lenguaje" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ SOCIALES -->
+  <div id="quiz-sociales" class="quiz-panel">
+    <div class="quiz-header" style="border-top: 4px solid var(--sociales)">
+      <h2>🌎 Simulacro – Ciencias Sociales</h2>
+      <p>20 preguntas · Lee con cuidado antes de responder</p>
+    </div>
+    <div id="form-sociales">
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 1</div>
+        <div class="q-text">¿En qué período prehistórico el ser humano comenzó a practicar la agricultura?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="s1" value="a"> Paleolítico</label>
+          <label><input type="radio" name="s1" value="b"> Mesolítico</label>
+          <label><input type="radio" name="s1" value="c"> Neolítico</label>
+          <label><input type="radio" name="s1" value="d"> Edad de los Metales</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 2</div>
+        <div class="q-text">¿Cuál fue el primer homínido en usar herramientas de piedra?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="s2" value="a"> Homo sapiens</label>
+          <label><input type="radio" name="s2" value="b"> Homo habilis</label>
+          <label><input type="radio" name="s2" value="c"> Homo erectus</label>
+          <label><input type="radio" name="s2" value="d"> Neanderthal</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 3</div>
+        <div class="q-text">¿En qué año Cristóbal Colón llegó a América por primera vez?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="s3" value="a"> 1492</label>
+          <label><input type="radio" name="s3" value="b"> 1498</label>
+          <label><input type="radio" name="s3" value="c"> 1500</label>
+          <label><input type="radio" name="s3" value="d"> 1502</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 4</div>
+        <div class="q-text">¿Cuál de estas culturas precolombinas construyó Machu Picchu?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="s4" value="a"> Mayas</label>
+          <label><input type="radio" name="s4" value="b"> Aztecas</label>
+          <label><input type="radio" name="s4" value="c"> Incas</label>
+          <label><input type="radio" name="s4" value="d"> Muiscas</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 5</div>
+        <div class="q-text">La civilización Muisca se ubicaba principalmente en:</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="s5" value="a"> México</label>
+          <label><input type="radio" name="s5" value="b"> Perú</label>
+          <label><input type="radio" name="s5" value="c"> Guatemala</label>
+          <label><input type="radio" name="s5" value="d"> Colombia</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 6</div>
+        <div class="q-text">La Revolución Neolítica consistió en:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="s6" value="a"> El descubrimiento del fuego</label>
+          <label><input type="radio" name="s6" value="b"> El paso de la caza y recolección a la agricultura y ganadería</label>
+          <label><input type="radio" name="s6" value="c"> La invención de la escritura</label>
+          <label><input type="radio" name="s6" value="d"> El uso del hierro</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 7</div>
+        <div class="q-text">Los Mayas destacaron por su desarrollo en:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="s7" value="a"> Astronomía, matemáticas y escritura jeroglífica</label>
+          <label><input type="radio" name="s7" value="b"> Conquista de los Andes</label>
+          <label><input type="radio" name="s7" value="c"> Comercio de esmeraldas</label>
+          <label><input type="radio" name="s7" value="d"> Construcción de acueductos en México</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 8</div>
+        <div class="q-text">¿Cuántos viajes realizó Cristóbal Colón al continente americano?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="s8" value="a"> 2</label>
+          <label><input type="radio" name="s8" value="b"> 3</label>
+          <label><input type="radio" name="s8" value="c"> 4</label>
+          <label><input type="radio" name="s8" value="d"> 5</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 9</div>
+        <div class="q-text">Los Aztecas fundaron su capital en:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="s9" value="a"> Cusco</label>
+          <label><input type="radio" name="s9" value="b"> Tenochtitlán</label>
+          <label><input type="radio" name="s9" value="c"> Chichén Itzá</label>
+          <label><input type="radio" name="s9" value="d"> Tikal</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 10</div>
+        <div class="q-text">¿En qué período prehistórico el ser humano era nómada y vivía de la caza?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="s10" value="a"> Paleolítico</label>
+          <label><input type="radio" name="s10" value="b"> Mesolítico</label>
+          <label><input type="radio" name="s10" value="c"> Neolítico</label>
+          <label><input type="radio" name="s10" value="d"> Edad de Bronce</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 11</div>
+        <div class="q-text">El proceso de hominización se refiere a:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="s11" value="a"> La invención de la agricultura</label>
+          <label><input type="radio" name="s11" value="b"> Los viajes de Colón</label>
+          <label><input type="radio" name="s11" value="c"> La evolución de los primates hacia el ser humano actual</label>
+          <label><input type="radio" name="s11" value="d"> La construcción de pirámides</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 12</div>
+        <div class="q-text">¿Cuál fue el primer homínido en dominar el fuego?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="s12" value="a"> Homo habilis</label>
+          <label><input type="radio" name="s12" value="b"> Homo erectus</label>
+          <label><input type="radio" name="s12" value="c"> Australopithecus</label>
+          <label><input type="radio" name="s12" value="d"> Homo neanderthalensis</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 13</div>
+        <div class="q-text">La leyenda del Dorado está relacionada con la cultura:</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="s13" value="a"> Inca</label>
+          <label><input type="radio" name="s13" value="b"> Maya</label>
+          <label><input type="radio" name="s13" value="c"> Azteca</label>
+          <label><input type="radio" name="s13" value="d"> Muisca</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 14</div>
+        <div class="q-text">¿En cuál de sus viajes Colón llegó por primera vez al continente sudamericano?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="s14" value="a"> Primer viaje</label>
+          <label><input type="radio" name="s14" value="b"> Segundo viaje</label>
+          <label><input type="radio" name="s14" value="c"> Tercer viaje</label>
+          <label><input type="radio" name="s14" value="d"> Cuarto viaje</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 15</div>
+        <div class="q-text">¿Qué herramienta usaban los Incas para llevar registros numéricos?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="s15" value="a"> Jeroglíficos</label>
+          <label><input type="radio" name="s15" value="b"> El quipu (cuerdas con nudos)</label>
+          <label><input type="radio" name="s15" value="c"> Tablillas de arcilla</label>
+          <label><input type="radio" name="s15" value="d"> Papiro</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 16</div>
+        <div class="q-text">El Mesolítico es el período:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="s16" value="a"> Antes del Paleolítico</label>
+          <label><input type="radio" name="s16" value="b"> Entre el Paleolítico y el Neolítico</label>
+          <label><input type="radio" name="s16" value="c"> Después del Neolítico</label>
+          <label><input type="radio" name="s16" value="d"> La misma época que el Neolítico</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 17</div>
+        <div class="q-text">¿Cuáles son culturas precolombinas de América? (Selecciona 3)</div>
+        <div class="options" data-correct="abc" data-type="multi">
+          <label><input type="checkbox" name="s17" value="a"> Mayas</label>
+          <label><input type="checkbox" name="s17" value="b"> Incas</label>
+          <label><input type="checkbox" name="s17" value="c"> Aztecas</label>
+          <label><input type="checkbox" name="s17" value="d"> Romanos</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 18</div>
+        <div class="q-text">¿Qué característica distingue al Homo sapiens de los demás homínidos?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="s18" value="a"> Fue el primero en usar herramientas</label>
+          <label><input type="radio" name="s18" value="b"> Fue el primero en dominar el fuego</label>
+          <label><input type="radio" name="s18" value="c"> Desarrolló lenguaje complejo, arte y pensamiento abstracto</label>
+          <label><input type="radio" name="s18" value="d"> Vivía en el agua</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 19</div>
+        <div class="q-text">Los barcos del primer viaje de Colón eran:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="s19" value="a"> La Aurora, La Luna y La España</label>
+          <label><input type="radio" name="s19" value="b"> La Niña, La Pinta y La Santa María</label>
+          <label><input type="radio" name="s19" value="c"> El Galión, La Carabela y El Bergantín</label>
+          <label><input type="radio" name="s19" value="d"> La Victoria, La Santiago y La San Antonio</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 20</div>
+        <div class="q-text">¿Qué es la domesticación de alimentos?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="s20" value="a"> El proceso de cultivar plantas y criar animales para alimentarse</label>
+          <label><input type="radio" name="s20" value="b"> Cocinar los alimentos antes de comerlos</label>
+          <label><input type="radio" name="s20" value="c"> Transportar alimentos de un lugar a otro</label>
+          <label><input type="radio" name="s20" value="d"> Guardar alimentos para el invierno</label>
+        </div>
+      </div>
+
+      <button class="quiz-submit-btn" onclick="gradeQuiz('sociales')">✅ Calificar Simulacro</button>
+      <div id="result-sociales" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ MATEMÁTICAS -->
+  <div id="quiz-matematicas" class="quiz-panel">
+    <div class="quiz-header" style="border-top: 4px solid var(--matematicas)">
+      <h2>➗ Simulacro – Matemáticas</h2>
+      <p>20 preguntas · Lee con cuidado antes de responder</p>
+    </div>
+    <div id="form-matematicas">
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 1</div>
+        <div class="q-text">¿Cuánto vale XLII en números arábigos?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m1" value="a"> 52</label>
+          <label><input type="radio" name="m1" value="b"> 42</label>
+          <label><input type="radio" name="m1" value="c"> 62</label>
+          <label><input type="radio" name="m1" value="d"> 32</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 2</div>
+        <div class="q-text">¿Cuál es la raíz cuadrada de 81?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="m2" value="a"> 7</label>
+          <label><input type="radio" name="m2" value="b"> 8</label>
+          <label><input type="radio" name="m2" value="c"> 9</label>
+          <label><input type="radio" name="m2" value="d"> 10</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 3</div>
+        <div class="q-text">Calcula: (-5) + (-3) = ?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="m3" value="a"> -8</label>
+          <label><input type="radio" name="m3" value="b"> 8</label>
+          <label><input type="radio" name="m3" value="c"> -2</label>
+          <label><input type="radio" name="m3" value="d"> 2</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 4</div>
+        <div class="q-text">Resuelve la ecuación: 2x + 6 = 14. ¿Cuánto vale x?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m4" value="a"> 3</label>
+          <label><input type="radio" name="m4" value="b"> 4</label>
+          <label><input type="radio" name="m4" value="c"> 5</label>
+          <label><input type="radio" name="m4" value="d"> 10</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 5</div>
+        <div class="q-text">¿Cuál de estos números es IRRACIONAL?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="m5" value="a"> 0.5</label>
+          <label><input type="radio" name="m5" value="b"> ¾</label>
+          <label><input type="radio" name="m5" value="c"> √7</label>
+          <label><input type="radio" name="m5" value="d"> -3</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 6</div>
+        <div class="q-text">¿Cuántos lados tiene un hexágono?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m6" value="a"> 5</label>
+          <label><input type="radio" name="m6" value="b"> 6</label>
+          <label><input type="radio" name="m6" value="c"> 7</label>
+          <label><input type="radio" name="m6" value="d"> 8</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 7</div>
+        <div class="q-text">Una figura que se voltea sobre un eje como en un espejo experimenta una:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="m7" value="a"> Reflexión</label>
+          <label><input type="radio" name="m7" value="b"> Traslación</label>
+          <label><input type="radio" name="m7" value="c"> Rotación</label>
+          <label><input type="radio" name="m7" value="d"> Dilatación</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 8</div>
+        <div class="q-text">Un triángulo equilátero tiene:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="m8" value="a"> 2 lados iguales y 1 diferente</label>
+          <label><input type="radio" name="m8" value="b"> Un ángulo de 90°</label>
+          <label><input type="radio" name="m8" value="c"> 3 lados y 3 ángulos iguales (60° cada uno)</label>
+          <label><input type="radio" name="m8" value="d"> 3 lados completamente diferentes</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 9</div>
+        <div class="q-text">¿Cuánto es (-4) × (-6)?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m9" value="a"> -24</label>
+          <label><input type="radio" name="m9" value="b"> 24</label>
+          <label><input type="radio" name="m9" value="c"> -10</label>
+          <label><input type="radio" name="m9" value="d"> 10</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 10</div>
+        <div class="q-text">¿Cómo se escribe 99 en números romanos?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="m10" value="a"> LXXXXIX</label>
+          <label><input type="radio" name="m10" value="b"> IC</label>
+          <label><input type="radio" name="m10" value="c"> XCIX</label>
+          <label><input type="radio" name="m10" value="d"> XCIX</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 11</div>
+        <div class="q-text">¿Cuál es el resultado de √49?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m11" value="a"> 6</label>
+          <label><input type="radio" name="m11" value="b"> 7</label>
+          <label><input type="radio" name="m11" value="c"> 8</label>
+          <label><input type="radio" name="m11" value="d"> 5</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 12</div>
+        <div class="q-text">Resuelve: 5x - 10 = 20. ¿Cuánto es x?</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="m12" value="a"> 2</label>
+          <label><input type="radio" name="m12" value="b"> 4</label>
+          <label><input type="radio" name="m12" value="c"> 6</label>
+          <label><input type="radio" name="m12" value="d"> 10</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 13</div>
+        <div class="q-text">La suma de los ángulos internos de un triángulo siempre es:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m13" value="a"> 90°</label>
+          <label><input type="radio" name="m13" value="b"> 180°</label>
+          <label><input type="radio" name="m13" value="c"> 270°</label>
+          <label><input type="radio" name="m13" value="d"> 360°</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 14</div>
+        <div class="q-text">π (pi) = 3.14159... es un número:</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="m14" value="a"> Irracional</label>
+          <label><input type="radio" name="m14" value="b"> Racional</label>
+          <label><input type="radio" name="m14" value="c"> Entero</label>
+          <label><input type="radio" name="m14" value="d"> Natural</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 15</div>
+        <div class="q-text">¿Cuántos lados tiene un octágono?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="m15" value="a"> 5</label>
+          <label><input type="radio" name="m15" value="b"> 6</label>
+          <label><input type="radio" name="m15" value="c"> 7</label>
+          <label><input type="radio" name="m15" value="d"> 8</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 16</div>
+        <div class="q-text">Una figura que se mueve a otro lugar sin girar experimenta una:</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m16" value="a"> Reflexión</label>
+          <label><input type="radio" name="m16" value="b"> Traslación</label>
+          <label><input type="radio" name="m16" value="c"> Rotación</label>
+          <label><input type="radio" name="m16" value="d"> Dilatación</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 17</div>
+        <div class="q-text">Calcula: 10 + (-15) = ?</div>
+        <div class="options" data-correct="a">
+          <label><input type="radio" name="m17" value="a"> -5</label>
+          <label><input type="radio" name="m17" value="b"> 5</label>
+          <label><input type="radio" name="m17" value="c"> 25</label>
+          <label><input type="radio" name="m17" value="d"> -25</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 18</div>
+        <div class="q-text">Un triángulo con un ángulo mayor de 90° se llama:</div>
+        <div class="options" data-correct="c">
+          <label><input type="radio" name="m18" value="a"> Rectángulo</label>
+          <label><input type="radio" name="m18" value="b"> Acutángulo</label>
+          <label><input type="radio" name="m18" value="c"> Obtusángulo</label>
+          <label><input type="radio" name="m18" value="d"> Equilátero</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 19</div>
+        <div class="q-text">¿Cuánto vale M en números romanos?</div>
+        <div class="options" data-correct="d">
+          <label><input type="radio" name="m19" value="a"> 100</label>
+          <label><input type="radio" name="m19" value="b"> 500</label>
+          <label><input type="radio" name="m19" value="c"> 50</label>
+          <label><input type="radio" name="m19" value="d"> 1000</label>
+        </div>
+      </div>
+
+      <div class="quiz-block">
+        <div class="q-num">Pregunta 20</div>
+        <div class="q-text">Resuelve: 3x + 7 = x + 19. ¿Cuánto es x?</div>
+        <div class="options" data-correct="b">
+          <label><input type="radio" name="m20" value="a"> 5</label>
+          <label><input type="radio" name="m20" value="b"> 6</label>
+          <label><input type="radio" name="m20" value="c"> 7</label>
+          <label><input type="radio" name="m20" value="d"> 12</label>
+        </div>
+      </div>
+
+      <button class="quiz-submit-btn" onclick="gradeQuiz('matematicas')">✅ Calificar Simulacro</button>
+      <div id="result-matematicas" class="result-box"></div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  // ========== NAVIGATION ==========
+  function showSection(id, tab) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    tab.classList.add('active');
+  }
+
+  // ========== QUIZ NAVIGATION ==========
+  function showQuiz(id, btn) {
+    document.querySelectorAll('.quiz-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active-q'));
+    document.getElementById('quiz-' + id).classList.add('active');
+    btn.classList.add('active-q');
+  }
+
+  // ========== GRADING ==========
+  const correctAnswers = {
+    quimica: {
+      q1:'b',q2:'c',q3:'a',q4:'b',q5:'ac',q6:'d',q7:'b',q8:'a',q9:'c',q10:'b',
+      q11:'d',q12:'c',q13:'b',q14:'a',q15:'d',q16:'b',q17:'c',q18:'a',q19:'b',q20:'d'
+    },
+    biologia: {
+      b1:'c',b2:'b',b3:'a',b4:'c',b5:'d',b6:'b',b7:'a',b8:'b',b9:'d',b10:'b',
+      b11:'b',b12:'c',b13:'a',b14:'b',b15:'a',b16:'c',b17:'b',b18:'ac',b19:'b',b20:'abd'
+    },
+    lenguaje: {
+      l1:'b',l2:'a',l3:'c',l4:'a',l5:'b',l6:'d',l7:'b',l8:'c',l9:'a',l10:'b',
+      l11:'c',l12:'a',l13:'a',l14:'d',l15:'b',l16:'c',l17:'b',l18:'a',l19:'a',l20:'b'
+    },
+    sociales: {
+      s1:'c',s2:'b',s3:'a',s4:'c',s5:'d',s6:'b',s7:'a',s8:'c',s9:'b',s10:'a',
+      s11:'c',s12:'b',s13:'d',s14:'c',s15:'b',s16:'b',s17:'abc',s18:'c',s19:'b',s20:'a'
+    },
+    matematicas: {
+      m1:'b',m2:'c',m3:'a',m4:'b',m5:'c',m6:'b',m7:'a',m8:'c',m9:'b',m10:'d',
+      m11:'b',m12:'c',m13:'b',m14:'a',m15:'d',m16:'b',m17:'a',m18:'c',m19:'d',m20:'b'
+    }
+  };
+
+  const questionLabels = {
+    quimica: ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13','q14','q15','q16','q17','q18','q19','q20'],
+    biologia: ['b1','b2','b3','b4','b5','b6','b7','b8','b9','b10','b11','b12','b13','b14','b15','b16','b17','b18','b19','b20'],
+    lenguaje: ['l1','l2','l3','l4','l5','l6','l7','l8','l9','l10','l11','l12','l13','l14','l15','l16','l17','l18','l19','l20'],
+    sociales: ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20'],
+    matematicas: ['m1','m2','m3','m4','m5','m6','m7','m8','m9','m10','m11','m12','m13','m14','m15','m16','m17','m18','m19','m20']
+  };
+
+  function getAnswer(name, isMulti) {
+    if (isMulti) {
+      const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+      return Array.from(checked).map(c => c.value).sort().join('');
+    } else {
+      const sel = document.querySelector(`input[name="${name}"]:checked`);
+      return sel ? sel.value : '';
+    }
+  }
+
+  function gradeQuiz(subject) {
+    const answers = correctAnswers[subject];
+    const names = questionLabels[subject];
+    let score = 0;
+    let feedbackHTML = '<div class="feedback-list">';
+
+    names.forEach((name, idx) => {
+      const optDiv = document.querySelector(`#quiz-${subject} .options[data-correct]`);
+      // find the specific options div for this question
+      const allOptions = document.querySelectorAll(`#quiz-${subject} .options`);
+      const optionDiv = allOptions[idx];
+      const isMulti = optionDiv && optionDiv.getAttribute('data-type') === 'multi';
+      const userAns = getAnswer(name, isMulti);
+      const correctAns = answers[name] || '';
+
+      const isCorrect = userAns.split('').sort().join('') === correctAns.split('').sort().join('') && userAns !== '';
+
+      if (isCorrect) {
+        score++;
+        feedbackHTML += `<div class="result-item"><span class="correct-ans">✅ P${idx+1}:</span> Correcto</div>`;
+      } else {
+        const correctLetters = correctAns.toUpperCase().split('').join(', ');
+        feedbackHTML += `<div class="result-item"><span class="wrong-ans">❌ P${idx+1}:</span> Tu respuesta: ${userAns ? userAns.toUpperCase() : 'Sin respuesta'} — Correcta: <strong>${correctLetters}</strong></div>`;
+      }
+    });
+    feedbackHTML += '</div>';
+
+    const pct = Math.round((score / 20) * 100);
+    let emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
+    let msg = pct >= 80 ? '¡Excelente!' : pct >= 60 ? 'Buen trabajo, sigue repasando.' : 'Necesitas repasar más este tema.';
+
+    const resultBox = document.getElementById('result-' + subject);
+    resultBox.innerHTML = `
+      <div class="score" style="color:${pct>=80?'#27ae60':pct>=60?'#e67e22':'#e74c3c'}">${emoji} ${score}/20</div>
+      <div class="score-label">${pct}% — ${msg}</div>
+      ${feedbackHTML}
+    `;
+    resultBox.style.display = 'block';
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
