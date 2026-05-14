@@ -22,8 +22,8 @@
   // ========== GRADING ==========
   const correctAnswers = {
     quimica: {
-      q1:'b',q2:'c',q3:'a',q4:'b',q5:'ac',q6:'d',q7:'b',q8:'a',q9:'c',q10:'b',
-      q11:'d',q12:'c',q13:'b',q14:'f',q15:'c',q16:'c',q17:'f',q18:'c',q19:'c',q20:'f'
+      q1:'v',q2:'c',q3:'f',q4:'c',q5:'c',q6:'f',q7:'c',q8:'b',q9:'v',q10:'b',
+      q11:'c',q12:'v',q13:'b',q14:'f',q15:'c',q16:'c',q17:'f',q18:'c',q19:'c',q20:'f'
     },
     biologia: {
       b1:'c',b2:'b',b3:'a',b4:'c',b5:'d',b6:'b',b7:'a',b8:'b',b9:'d',b10:'b',
