@@ -23,7 +23,7 @@
   const correctAnswers = {
     quimica: {
       q1:'b',q2:'c',q3:'a',q4:'b',q5:'ac',q6:'d',q7:'b',q8:'a',q9:'c',q10:'b',
-      q11:'d',q12:'c',q13:'b',q14:'a',q15:'d',q16:'b',q17:'c',q18:'a',q19:'b',q20:'d'
+      q11:'d',q12:'c',q13:'b',q14:'f',q15:'c',q16:'c',q17:'f',q18:'c',q19:'c',q20:'f'
     },
     biologia: {
       b1:'c',b2:'b',b3:'a',b4:'c',b5:'d',b6:'b',b7:'a',b8:'b',b9:'d',b10:'b',
@@ -61,6 +61,12 @@
     }
   }
 
+  function labelAns(a) {
+    if (a === 'v') return 'VERDADERO';
+    if (a === 'f') return 'FALSO';
+    return a.toUpperCase().split('').join(', ');
+  }
+
   function gradeQuiz(subject) {
     const answers = correctAnswers[subject];
     const names = questionLabels[subject];
@@ -82,8 +88,7 @@
         score++;
         feedbackHTML += `<div class="result-item"><span class="correct-ans">✅ P${idx+1}:</span> Correcto</div>`;
       } else {
-        const correctLetters = correctAns.toUpperCase().split('').join(', ');
-        feedbackHTML += `<div class="result-item"><span class="wrong-ans">❌ P${idx+1}:</span> Tu respuesta: ${userAns ? userAns.toUpperCase() : 'Sin respuesta'} — Correcta: <strong>${correctLetters}</strong></div>`;
+        feedbackHTML += `<div class="result-item"><span class="wrong-ans">❌ P${idx+1}:</span> Tu respuesta: ${userAns ? labelAns(userAns) : 'Sin respuesta'} — Correcta: <strong>${labelAns(correctAns)}</strong></div>`;
       }
     });
     feedbackHTML += '</div>';
