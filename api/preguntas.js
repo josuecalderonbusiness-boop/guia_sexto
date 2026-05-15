@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: `${sheetName}!A2:G35`,
+      range: `${sheetName}!A2:H35`,
     });
 
     const rows = response.data.values || [];
@@ -44,6 +44,8 @@ module.exports = async (req, res) => {
           D: row[4] || '',
         },
         respuesta: (row[5] || 'A').toUpperCase(),
+        imagen: row[6] || '',
+        video: row[7] || '',
       }));
 
     res.status(200).json({ ok: true, preguntas, sheetName });
