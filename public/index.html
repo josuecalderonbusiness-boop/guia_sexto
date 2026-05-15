@@ -499,9 +499,6 @@ function renderPregunta() {
       <p class="pregunta-text">${q.pregunta}</p>
       <div class="opciones-list">${opcionesHtml}</div>
       <div class="feedback-msg" id="feedback-msg"></div>
-      <button class="btn-siguiente" id="btn-siguiente" onclick="siguiente()">
-        ${idx+1 < total ? 'Siguiente pregunta →' : '¡Ver mi resultado! 🏆'}
-      </button>
     </div>
   `;
 }
@@ -513,52 +510,30 @@ function responder(letra) {
   const feedback = document.getElementById('feedback-msg');
   const btnEl = document.getElementById(`op-${elegida}`);
 
-  // Deshabilitar todos
+  // Deshabilitar todos los botones
   ['A','B','C','D'].forEach(l => {
     const b = document.getElementById(`op-${l}`);
     if (b) b.disabled = true;
   });
 
-  if (elegida !== correcta) {
-    examenActual.intentos++;
-    btnEl.classList.add('incorrecta');
-
-    if (examenActual.intentos < 2) {
-      // Primer intento fallido — puede intentar de nuevo
-      feedback.textContent = `❌ ¡Incorrecto! Te queda 1 intento más. Piénsalo bien...`;
-      feedback.className = 'feedback-msg show intento';
-      setTimeout(() => {
-        btnEl.classList.remove('incorrecta');
-        ['A','B','C','D'].forEach(l => {
-          const b = document.getElementById(`op-${l}`);
-          if (b && l !== elegida) b.disabled = false;
-        });
-      }, 800);
-      return;
-    }
-
-    // Segundo intento fallido — revelar respuesta y continuar
-    const btnCorrecta = document.getElementById(`op-${correcta}`);
-    if (btnCorrecta) btnCorrecta.classList.add('correcta-revelar');
-    feedback.textContent = `❌ La respuesta correcta era la opción ${correcta}. ¡Sigue adelante!`;
-    feedback.className = 'feedback-msg show fail';
-    examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: false });
-  } else {
-    // Correcto
+  if (elegida === correcta) {
     btnEl.classList.add('correcta');
     feedback.textContent = '🎉 ¡Correcto! ¡Muy bien!';
     feedback.className = 'feedback-msg show ok';
     examenActual.puntaje++;
     examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: true });
+    setTimeout(() => siguiente(), 1500);
+  } else {
+    btnEl.classList.add('incorrecta');
+    const btnCorrecta = document.getElementById(`op-${correcta}`);
+    if (btnCorrecta) btnCorrecta.classList.add('correcta-revelar');
+    feedback.textContent = `❌ Era la opción ${correcta}. ¡Sigue adelante!`;
+    feedback.className = 'feedback-msg show fail';
+    examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: false });
+    setTimeout(() => siguiente(), 2500);
   }
 
   fetch('/api/progreso',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:estado.codigo,dia:examenActual.dia,materia:examenActual.materia,idx:examenActual.idx,puntaje:examenActual.puntaje,total:examenActual.preguntas.length,respuestas:examenActual.respuestas})}).catch(()=>{});
-  const btnSig = document.getElementById('btn-siguiente');
-  btnSig.classList.add('show');
-  const mat = MATERIAS[examenActual.materia];
-  btnSig.style.background = mat.gradiente;
-  btnSig.style.color = 'white';
-  btnSig.style.boxShadow = `0 4px 16px ${mat.color}44`;
 }
 
 function siguiente() {
