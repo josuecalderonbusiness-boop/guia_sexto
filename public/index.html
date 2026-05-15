@@ -382,13 +382,15 @@ function mostrarHeaderNombre() {
 }
 
 function cambiarNombre() {
-  if (confirm('¿Cambiar tu nombre?')) {
-    estado.nombre = '';
-    guardarEstadoLocal();
-    document.getElementById('header-nombre').style.display = 'none';
-    document.getElementById('input-nombre').value = '';
-    mostrar('screen-login');
-  }
+  const nuevo = prompt('¿Cuál es tu nuevo nombre?', estado.nombre);
+  if (!nuevo || nuevo.trim() === estado.nombre) return;
+  fetch('/api/login', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ codigo: estado.codigo, nuevoNombre: nuevo.trim() })
+  }).catch(()=>{});
+  estado.nombre = nuevo.trim();
+  guardarEstadoLocal();
+  document.getElementById('header-nombre-text').textContent = estado.nombre;
 }
 
 async function renderInicio() {
@@ -574,7 +576,7 @@ async function terminarExamen() {
   else                { emoji = '💪'; titulo = '¡Sigue adelante!'; sub = `${pct}%. ¡Tú puedes mejorar!`; }
 
   document.getElementById('res-emoji').textContent = emoji;
-  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-titulo').textContent = `${titulo} ${estado.nombre}`;
   document.getElementById('res-sub').textContent = sub;
   document.getElementById('res-num').textContent = puntaje;
   document.getElementById('res-de').textContent = `de ${total}`;
@@ -593,6 +595,38 @@ async function terminarExamen() {
 
   mostrar('screen-resultado');
   window.scrollTo(0,0);
+  lanzarConfetti(pct);
+}
+
+function lanzarConfetti(pct) {
+  if (pct < 60) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({length: pct >= 80 ? 150 : 80}, () => ({
+    x: Math.random() * canvas.width, y: -20,
+    r: Math.random() * 8 + 4,
+    color: ['#FF6B6B','#51CF66','#339AF0','#FF922B','#845EF7','#FFD700'][Math.floor(Math.random()*6)],
+    vx: (Math.random()-0.5)*4, vy: Math.random()*3+2,
+    angle: Math.random()*360, va: (Math.random()-0.5)*5
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle*Math.PI/180);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.angle += p.va; p.vy += 0.05;
+    });
+    frame++;
+    if (frame < 180) requestAnimationFrame(draw);
+    else canvas.remove();
+  }
+  draw();
 }
 
 async function continuarExamen(p) {

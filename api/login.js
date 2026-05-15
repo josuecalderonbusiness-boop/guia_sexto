@@ -31,15 +31,25 @@ module.exports = async (req, res) => {
     });
 
     const rows = response.data.values || [];
-    const usuario = rows.find(row => 
+    const rowNum = rows.findIndex(row => 
       row[0]?.trim().toUpperCase() === codigo.trim().toUpperCase()
     );
+    const usuario = rowNum >= 0 ? rows[rowNum] : null;
 
     if (!usuario) {
       return res.status(200).json({ ok: false, error: 'Código incorrecto. Verifica con tu profe.' });
     }
 
-    res.status(200).json({ ok: true, nombre: usuario[1] || usuario[0], codigo: usuario[0] });
+    // Actualizar nombre si viene nuevoNombre
+    if (req.body.nuevoNombre && rowNum >= 0) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SHEET_ID,
+        range: `Usuarios!B${rowNum + 2}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[req.body.nuevoNombre]] }
+      });
+    }
+    res.status(200).json({ ok: true, nombre: req.body.nuevoNombre || usuario[1] || usuario[0], codigo: usuario[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ ok: false, error: 'Error del servidor' });
