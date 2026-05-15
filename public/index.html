@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🎓 Mis Exámenes</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --mat: #FF6B6B; --mat-l: #FFE8E8;
+    --bio: #51CF66; --bio-l: #E8FFE8;
+    --qui: #845EF7; --qui-l: #F0EBFF;
+    --soc: #FF922B; --soc-l: #FFF0E0;
+    --len: #339AF0; --len-l: #E8F4FF;
+    --bg: #F8F9FF;
+    --card: #FFFFFF;
+    --text: #1A1A2E;
+    --radius: 20px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+    padding: 20px 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255,107,107,0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 50%, rgba(81,207,102,0.15) 0%, transparent 60%);
+  }
+  .header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: white;
+    position: relative;
+    letter-spacing: 1px;
+  }
+  .header p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    margin-top: 4px;
+    position: relative;
+  }
+  .nombre-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    position: relative;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.25);
+  }
+
+  /* ── PANTALLA LOGIN ── */
+  #screen-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 32px 20px;
+  }
+  .login-card {
+    background: white;
+    border-radius: 28px;
+    padding: 40px 36px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .login-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .login-card h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .login-card p { color: #666; margin-bottom: 28px; font-size: 0.95rem; }
+  .input-name {
+    width: 100%;
+    padding: 16px 20px;
+    border: 3px solid #E0E0E0;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+  }
+  .input-name:focus { border-color: #339AF0; }
+  .btn-entrar {
+    width: 100%;
+    margin-top: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #339AF0, #228BE6);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(51,154,240,0.4);
+  }
+  .btn-entrar:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(51,154,240,0.5); }
+  .btn-entrar:active { transform: translateY(0); }
+
+  /* ── PANTALLA INICIO ── */
+  #screen-inicio { display: none; padding: 24px 20px; max-width: 800px; margin: 0 auto; }
+
+  .dias-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .dia-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .dia-card.desbloqueado { border-color: #E0E0E0; cursor: default; }
+  .dia-card.bloqueado { opacity: 0.5; filter: grayscale(0.5); }
+  .dia-card.activo { border-color: #51CF66; box-shadow: 0 8px 32px rgba(81,207,102,0.2); }
+
+  .dia-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .dia-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #1A1A2E, #0F3460);
+    color: white;
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .dia-info h3 {
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+  .dia-info p { color: #888; font-size: 0.85rem; }
+
+  .materias-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  @media(max-width: 500px) { .materias-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .materia-btn {
+    padding: 10px 6px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.78rem;
+    text-align: center;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .materia-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .materia-btn:disabled { cursor: not-allowed; }
+  .materia-btn .mat-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+  .materia-btn.completado::after {
+    content: '✅';
+    position: absolute;
+    top: -6px; right: -6px;
+    font-size: 1rem;
+  }
+
+  .mat-btn  { background: var(--mat-l); color: var(--mat); }
+  .bio-btn  { background: var(--bio-l); color: var(--bio); }
+  .qui-btn  { background: var(--qui-l); color: var(--qui); }
+  .soc-btn  { background: var(--soc-l); color: var(--soc); }
+  .len-btn  { background: var(--len-l); color: var(--len); }
+
+  /* ── PANTALLA EXAMEN ── */
+  #screen-examen { display: none; padding: 0; }
+
+  .examen-header {
+    padding: 20px 24px 16px;
+    background: white;
+    border-bottom: 3px solid #F0F0F0;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .examen-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .btn-volver {
+    background: #F0F0F0;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .btn-volver:hover { background: #E0E0E0; }
+
+  .examen-materia-badge {
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .progress-bar-wrap {
+    background: #F0F0F0;
+    border-radius: 50px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 50px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  .pregunta-container {
+    padding: 24px 20px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .pregunta-num {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #888;
+    margin-bottom: 8px;
+  }
+  .pregunta-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .opciones-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .opcion-btn {
+    background: white;
+    border: 3px solid #E8E8E8;
+    border-radius: 16px;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: all 0.2s;
+    line-height: 1.4;
+  }
+  .opcion-btn:hover:not(:disabled) {
+    border-color: #339AF0;
+    background: #F0F8FF;
+    transform: translateX(4px);
+  }
+  .opcion-letra {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: #F0F0F0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .opcion-btn.seleccionada {
+    border-color: #339AF0;
+    background: #E8F4FF;
+  }
+  .opcion-btn.seleccionada .opcion-letra { background: #339AF0; color: white; }
+
+  .opcion-btn.correcta {
+    border-color: #51CF66;
+    background: #E8FFE8;
+    animation: pulse-green 0.4s ease;
+  }
+  .opcion-btn.correcta .opcion-letra { background: #51CF66; color: white; }
+
+  .opcion-btn.incorrecta {
+    border-color: #FF6B6B;
+    background: #FFE8E8;
+    animation: shake 0.4s ease;
+  }
+  .opcion-btn.incorrecta .opcion-letra { background: #FF6B6B; color: white; }
+
+  .opcion-btn.correcta-revelar {
+    border-color: #51CF66;
+    background: #E8FFE8;
+  }
+  .opcion-btn.correcta-revelar .opcion-letra { background: #51CF66; color: white; }
+
+  .opcion-btn:disabled { cursor: not-allowed; }
+
+  .feedback-msg {
+    margin-top: 16px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feedback-msg.show { opacity: 1; }
+  .feedback-msg.ok { background: #E8FFE8; color: #2B8A3E; }
+  .feedback-msg.fail { background: #FFE8E8; color: #C92A2A; }
+
+  .btn-siguiente {
+    width: 100%;
+    margin-top: 20px;
+    padding: 18px;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .btn-siguiente.show { display: block; }
+  .btn-siguiente:hover { transform: translateY(-2px); }
+
+  /* ── PANTALLA RESULTADO ── */
+  #screen-resultado {
+    display: none;
+    padding: 32px 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .resultado-emoji { font-size: 5rem; margin-bottom: 16px; }
+  .resultado-titulo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  .resultado-sub { color: #666; margin-bottom: 28px; font-size: 1rem; }
+
+  .puntaje-circle {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    margin: 0 auto 28px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .puntaje-num { font-size: 3rem; line-height: 1; color: white; }
+  .puntaje-de { font-size: 1rem; color: rgba(255,255,255,0.8); }
+
+  .detalle-respuestas {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    text-align: left;
+  }
+  .detalle-respuestas h3 {
+    font-weight: 800;
+    margin-bottom: 14px;
+    font-size: 1rem;
+  }
+  .respuesta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .respuesta-item:last-child { border-bottom: none; }
+  .respuesta-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .btns-resultado { display: flex; flex-direction: column; gap: 12px; }
+  .btn-otra-materia {
+    padding: 16px;
+    border-radius: 16px;
+    border: 3px solid #E0E0E0;
+    background: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-otra-materia:hover { border-color: #339AF0; background: #F0F8FF; }
+  .btn-inicio-final {
+    padding: 16px;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, #1A1A2E, #0F3460);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .btn-inicio-final:hover { transform: translateY(-2px); }
+
+  /* ── LOADING ── */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+    color: #888;
+    font-weight: 600;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 5px solid #E0E0E0;
+    border-top-color: #339AF0;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  @keyframes pulse-green {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn 0.4s ease both; }
+
+  .error-msg {
+    background: #FFE8E8;
+    color: #C92A2A;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin: 20px;
+    font-weight: 700;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🎓 Mis Exámenes</h1>
+  <p>¡Aprende un poco cada día!</p>
+  <div class="nombre-badge" id="header-nombre" onclick="cambiarNombre()" style="display:none">
+    👤 <span id="header-nombre-text"></span> ✏️
+  </div>
+</div>
+
+<!-- PANTALLA LOGIN -->
+<div id="screen-login">
+  <div class="login-card fade-in">
+    <div class="login-emoji">🧠</div>
+    <h2>¡Hola! ¿Cómo te llamas?</h2>
+    <p>Escribe tu nombre para comenzar tus exámenes</p>
+    <input class="input-name" type="text" id="input-nombre"
+           placeholder="Tu nombre aquí..." maxlength="30"
+           onkeydown="if(event.key==='Enter') entrar()"/>
+    <button class="btn-entrar" onclick="entrar()">¡Comenzar! 🚀</button>
+  </div>
+</div>
+
+<!-- PANTALLA INICIO -->
+<div id="screen-inicio">
+  <p class="dias-title">📅 Elige tu examen de hoy</p>
+  <div id="dias-container"></div>
+</div>
+
+<!-- PANTALLA EXAMEN -->
+<div id="screen-examen">
+  <div class="examen-header">
+    <div class="examen-top">
+      <button class="btn-volver" onclick="volverInicio()">← Volver</button>
+      <span class="examen-materia-badge" id="examen-badge">📚</span>
+      <span style="font-weight:800;font-size:0.95rem" id="examen-dia-label">Día 1</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-label">
+      <span id="progress-text">Pregunta 1 de 25</span>
+      <span id="progress-pct">0%</span>
+    </div>
+  </div>
+  <div class="pregunta-container" id="pregunta-container">
+    <div class="loading"><div class="spinner"></div><span>Cargando preguntas...</span></div>
+  </div>
+</div>
+
+<!-- PANTALLA RESULTADO -->
+<div id="screen-resultado">
+  <div class="resultado-emoji" id="res-emoji">🏆</div>
+  <div class="resultado-titulo" id="res-titulo">¡Excelente!</div>
+  <div class="resultado-sub" id="res-sub"></div>
+  <div class="puntaje-circle" id="res-circle">
+    <div class="puntaje-num" id="res-num">0</div>
+    <div class="puntaje-de" id="res-de">de 25</div>
+  </div>
+  <div class="detalle-respuestas">
+    <h3>📋 Resumen de respuestas</h3>
+    <div id="res-detalle"></div>
+  </div>
+  <div class="btns-resultado">
+    <button class="btn-otra-materia" onclick="volverInicio()">📚 Hacer otra materia</button>
+    <button class="btn-inicio-final" onclick="volverInicio()">🏠 Ir al inicio</button>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────
+const MATERIAS = {
+  MAT: { nombre: 'Matemáticas', emoji: '🔢', clase: 'mat-btn', color: '#FF6B6B', gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)' },
+  BIO: { nombre: 'Biología',    emoji: '🌿', clase: 'bio-btn', color: '#51CF66', gradiente: 'linear-gradient(135deg,#51CF66,#37B24D)' },
+  QUI: { nombre: 'Química',     emoji: '⚗️', clase: 'qui-btn', color: '#845EF7', gradiente: 'linear-gradient(135deg,#845EF7,#7048E8)' },
+  SOC: { nombre: 'Cs. Sociales',emoji: '🌍', clase: 'soc-btn', color: '#FF922B', gradiente: 'linear-gradient(135deg,#FF922B,#F76707)' },
+  LEN: { nombre: 'Lenguaje',    emoji: '📖', clase: 'len-btn', color: '#339AF0', gradiente: 'linear-gradient(135deg,#339AF0,#1971C2)' },
+};
+const TOTAL_DIAS = 6;
+
+// ── ESTADO ───────────────────────────────────────────────────────────
+let estado = {
+  nombre: '',
+  diaActual: 1,       // día máximo disponible
+  completados: {},    // { "1_MAT": true, "1_BIO": false, ... }
+};
+let examenActual = { dia: 1, materia: '', preguntas: [], idx: 0, respuestas: [], puntaje: 0 };
+
+// ── PERSISTENCIA LOCAL ───────────────────────────────────────────────
+function cargarEstado() {
+  try {
+    const s = localStorage.getItem('examen_estado');
+    if (s) estado = { ...estado, ...JSON.parse(s) };
+  } catch(e) {}
+}
+function guardarEstadoLocal() {
+  localStorage.setItem('examen_estado', JSON.stringify(estado));
+}
+
+// ── LÓGICA DE DÍAS ───────────────────────────────────────────────────
+function diaDisponible(dia) { return dia <= estado.diaActual; }
+
+function diaCompleto(dia) {
+  return Object.keys(MATERIAS).every(m => estado.completados[`${dia}_${m}`]);
+}
+
+function materiaCompletada(dia, mat) {
+  return !!estado.completados[`${dia}_${mat}`];
+}
+
+function intentarDesbloquearSiguienteDia() {
+  if (diaCompleto(estado.diaActual) && estado.diaActual < TOTAL_DIAS) {
+    estado.diaActual++;
+    guardarEstadoLocal();
+  }
+}
+
+// ── PANTALLAS ────────────────────────────────────────────────────────
+function mostrar(id) {
+  ['screen-login','screen-inicio','screen-examen','screen-resultado'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  document.getElementById(id).style.display = id === 'screen-inicio' ? 'block' : 
+    (id === 'screen-examen' ? 'block' : 
+     (id === 'screen-login' ? 'flex' : 'block'));
+}
+
+// ── LOGIN ────────────────────────────────────────────────────────────
+function entrar() {
+  const nombre = document.getElementById('input-nombre').value.trim();
+  if (!nombre) { document.getElementById('input-nombre').style.borderColor = '#FF6B6B'; return; }
+  estado.nombre = nombre;
+  guardarEstadoLocal();
+  mostrarHeaderNombre();
+  mostrar('screen-inicio');
+  renderInicio();
+}
+
+function mostrarHeaderNombre() {
+  const badge = document.getElementById('header-nombre');
+  document.getElementById('header-nombre-text').textContent = estado.nombre;
+  badge.style.display = 'inline-block';
+}
+
+function cambiarNombre() {
+  if (confirm('¿Cambiar tu nombre?')) {
+    estado.nombre = '';
+    guardarEstadoLocal();
+    document.getElementById('header-nombre').style.display = 'none';
+    document.getElementById('input-nombre').value = '';
+    mostrar('screen-login');
+  }
+}
+
+// ── RENDER INICIO ────────────────────────────────────────────────────
+function renderInicio() {
+  intentarDesbloquearSiguienteDia();
+  const cont = document.getElementById('dias-container');
+  cont.innerHTML = '';
+
+  for (let dia = 1; dia <= TOTAL_DIAS; dia++) {
+    const disponible = diaDisponible(dia);
+    const completo = diaCompleto(dia);
+    const esActivo = dia === estado.diaActual && disponible && !completo;
+
+    const card = document.createElement('div');
+    card.className = `dia-card fade-in ${disponible ? (esActivo ? 'activo' : 'desbloqueado') : 'bloqueado'}`;
+    card.style.animationDelay = `${(dia-1)*0.06}s`;
+
+    let materiasHtml = '';
+    for (const [key, mat] of Object.entries(MATERIAS)) {
+      const done = materiaCompletada(dia, key);
+      const disabled = !disponible || (dia < estado.diaActual && done) ? 'disabled' : '';
+      materiasHtml += `
+        <button class="materia-btn ${mat.clase} ${done ? 'completado' : ''}"
+                onclick="iniciarExamen(${dia},'${key}')"
+                ${!disponible ? 'disabled' : ''}>
+          <span class="mat-icon">${mat.emoji}</span>
+          ${mat.nombre.split(' ')[0]}
+        </button>`;
+    }
+
+    const lockIcon = !disponible ? '🔒 ' : (completo ? '✅ ' : '');
+    card.innerHTML = `
+      <div class="dia-header">
+        <div class="dia-num">${dia}</div>
+        <div class="dia-info">
+          <h3>${lockIcon}Día ${dia}</h3>
+          <p>${disponible ? (completo ? '¡Completado!' : 'En progreso...') : 'Completa el día anterior primero'}</p>
+        </div>
+      </div>
+      <div class="materias-grid">${materiasHtml}</div>
+    `;
+    cont.appendChild(card);
+  }
+}
+
+// ── INICIAR EXAMEN ───────────────────────────────────────────────────
+async function iniciarExamen(dia, materia) {
+  examenActual = { dia, materia, preguntas: [], idx: 0, respuestas: [], puntaje: 0 };
+
+  const mat = MATERIAS[materia];
+  document.getElementById('examen-badge').textContent = `${mat.emoji} ${mat.nombre}`;
+  document.getElementById('examen-badge').style.background = mat.gradiente;
+  document.getElementById('examen-badge').style.color = 'white';
+  document.getElementById('examen-badge').style.borderRadius = '50px';
+  document.getElementById('examen-badge').style.padding = '6px 16px';
+  document.getElementById('examen-dia-label').textContent = `📅 Día ${dia}`;
+  document.getElementById('progress-fill').style.background = mat.gradiente;
+
+  mostrar('screen-examen');
+  document.getElementById('pregunta-container').innerHTML =
+    '<div class="loading"><div class="spinner"></div><span>Cargando preguntas...</span></div>';
+
+  try {
+    const res = await fetch(`/api/preguntas?dia=${dia}&materia=${materia}`);
+    const data = await res.json();
+    if (!data.ok || !data.preguntas.length) {
+      document.getElementById('pregunta-container').innerHTML =
+        `<div class="error-msg">⚠️ No hay preguntas cargadas para este examen.<br><small>Pídele al profe que las agregue en el Google Sheet.</small></div>`;
+      return;
+    }
+    examenActual.preguntas = data.preguntas;
+    renderPregunta();
+  } catch(e) {
+    document.getElementById('pregunta-container').innerHTML =
+      `<div class="error-msg">⚠️ Error de conexión. Revisa el internet e intenta de nuevo.</div>`;
+  }
+}
+
+// ── RENDER PREGUNTA ───────────────────────────────────────────────────
+function renderPregunta() {
+  const { preguntas, idx } = examenActual;
+  const q = preguntas[idx];
+  const total = preguntas.length;
+  const pct = Math.round((idx / total) * 100);
+
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `Pregunta ${idx+1} de ${total}`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+
+  const letras = ['A','B','C','D'];
+  let opcionesHtml = letras.map(l => `
+    <button class="opcion-btn" onclick="responder('${l}')" id="op-${l}">
+      <span class="opcion-letra">${l}</span>
+      <span>${q.opciones[l]}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('pregunta-container').innerHTML = `
+    <div class="fade-in">
+      <p class="pregunta-num">📝 Pregunta ${idx+1} de ${total}</p>
+      <p class="pregunta-text">${q.pregunta}</p>
+      <div class="opciones-list">${opcionesHtml}</div>
+      <div class="feedback-msg" id="feedback-msg"></div>
+      <button class="btn-siguiente" id="btn-siguiente" onclick="siguiente()">
+        ${idx+1 < total ? 'Siguiente pregunta →' : '¡Ver mi resultado! 🏆'}
+      </button>
+    </div>
+  `;
+}
+
+// ── RESPONDER ─────────────────────────────────────────────────────────
+function responder(letra) {
+  const q = examenActual.preguntas[examenActual.idx];
+  const correcta = q.respuesta.toUpperCase();
+  const elegida = letra.toUpperCase();
+
+  // Deshabilitar todos los botones
+  ['A','B','C','D'].forEach(l => {
+    const btn = document.getElementById(`op-${l}`);
+    if (btn) btn.disabled = true;
+  });
+
+  const feedback = document.getElementById('feedback-msg');
+  const btnEl = document.getElementById(`op-${elegida}`);
+
+  examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: elegida === correcta });
+
+  if (elegida === correcta) {
+    btnEl.classList.add('correcta');
+    feedback.textContent = '🎉 ¡Correcto! ¡Muy bien!';
+    feedback.className = 'feedback-msg show ok';
+    examenActual.puntaje++;
+  } else {
+    btnEl.classList.add('incorrecta');
+    const btnCorrecta = document.getElementById(`op-${correcta}`);
+    if (btnCorrecta) btnCorrecta.classList.add('correcta-revelar');
+    feedback.textContent = `❌ Era la opción ${correcta}. ¡La próxima!`;
+    feedback.className = 'feedback-msg show fail';
+  }
+
+  document.getElementById('btn-siguiente').classList.add('show');
+  const mat = MATERIAS[examenActual.materia];
+  document.getElementById('btn-siguiente').style.background = mat.gradiente;
+  document.getElementById('btn-siguiente').style.color = 'white';
+  document.getElementById('btn-siguiente').style.boxShadow = `0 4px 16px ${mat.color}44`;
+}
+
+// ── SIGUIENTE ─────────────────────────────────────────────────────────
+function siguiente() {
+  examenActual.idx++;
+  if (examenActual.idx < examenActual.preguntas.length) {
+    renderPregunta();
+  } else {
+    terminarExamen();
+  }
+}
+
+// ── TERMINAR EXAMEN ───────────────────────────────────────────────────
+async function terminarExamen() {
+  const { dia, materia, puntaje, preguntas, respuestas } = examenActual;
+  const total = preguntas.length;
+  const pct = Math.round((puntaje / total) * 100);
+  const mat = MATERIAS[materia];
+
+  // Marcar como completado
+  estado.completados[`${dia}_${materia}`] = true;
+  intentarDesbloquearSiguienteDia();
+  guardarEstadoLocal();
+
+  // Guardar en Sheets
+  try {
+    await fetch('/api/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: estado.nombre,
+        dia, materia: mat.nombre,
+        puntaje, total,
+        respuestas,
+        fecha: new Date().toLocaleString('es-CO')
+      })
+    });
+  } catch(e) { console.warn('No se pudo guardar en Sheets', e); }
+
+  // Mostrar resultado
+  let emoji, titulo, sub;
+  if (pct === 100)      { emoji = '🏆'; titulo = '¡PERFECTO!';        sub = '¡Sacaste 100%! ¡Eres increíble!'; }
+  else if (pct >= 80)   { emoji = '🌟'; titulo = '¡Excelente!';       sub = `¡${pct}%! ¡Muy buen trabajo!`; }
+  else if (pct >= 60)   { emoji = '👍'; titulo = '¡Buen trabajo!';    sub = `¡${pct}%! Sigue practicando.`; }
+  else                  { emoji = '💪'; titulo = '¡Sigue adelante!';  sub = `${pct}%. ¡Tú puedes mejorar!`; }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-sub').textContent = sub;
+  document.getElementById('res-num').textContent = puntaje;
+  document.getElementById('res-de').textContent = `de ${total}`;
+  document.getElementById('res-circle').style.background = mat.gradiente;
+  document.getElementById('res-circle').style.boxShadow = `0 8px 32px ${mat.color}55`;
+
+  // Detalle respuestas
+  const detalle = document.getElementById('res-detalle');
+  detalle.innerHTML = respuestas.map((r, i) => `
+    <div class="respuesta-item">
+      <span class="respuesta-icon">${r.ok ? '✅' : '❌'}</span>
+      <span><strong>${i+1}.</strong> ${r.pregunta.substring(0,60)}${r.pregunta.length>60?'...':''} 
+        ${!r.ok ? `<br><small style="color:#C92A2A">Tu resp: ${r.elegida} · Correcta: ${r.correcta}</small>` : ''}
+      </span>
+    </div>
+  `).join('');
+
+  mostrar('screen-resultado');
+  window.scrollTo(0,0);
+}
+
+// ── VOLVER ────────────────────────────────────────────────────────────
+function volverInicio() {
+  mostrar('screen-inicio');
+  renderInicio();
+  window.scrollTo(0,0);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+cargarEstado();
+if (estado.nombre) {
+  mostrarHeaderNombre();
+  mostrar('screen-inicio');
+  renderInicio();
+} else {
+  mostrar('screen-login');
+}
+</script>
+</body>
+</html>

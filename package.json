@@ -1,0 +1,10 @@
+{
+  "name": "examen-ninos",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "googleapis": "^140.0.0"
+  }
+}
