@@ -755,6 +755,7 @@ function renderPregunta() {
   document.getElementById('pregunta-container').innerHTML = `
     <div class="fade-in">
       <p class="pregunta-num">📝 Pregunta ${idx+1} de ${total}</p>
+      ${q.imagen ? `<img src="${q.imagen}" style="width:100%;max-width:480px;border-radius:14px;margin-bottom:16px;display:block;border:3px solid #E8E8E8;" onerror="this.style.display='none'"/>` : ''}
       <p class="pregunta-text">${q.pregunta}</p>
       <div class="opciones-list">${opcionesHtml}</div>
       <div class="feedback-msg" id="feedback-msg"></div>

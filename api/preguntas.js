@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: `${sheetName}!A2:F26`,
+      range: `${sheetName}!A2:G35`,
     });
 
     const rows = response.data.values || [];
