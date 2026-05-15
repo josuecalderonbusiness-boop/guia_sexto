@@ -391,10 +391,25 @@ function cambiarNombre() {
   }
 }
 
-function renderInicio() {
+async function renderInicio() {
   intentarDesbloquearSiguienteDia();
   const cont = document.getElementById('dias-container');
   cont.innerHTML = '';
+  if (estado.codigo) {
+    try {
+      const rp = await fetch('/api/progreso?codigo='+encodeURIComponent(estado.codigo));
+      const dp = await rp.json();
+      if (dp.ok && dp.progreso) {
+        const p = dp.progreso;
+        const mat = MATERIAS[p.materia];
+        const pct = Math.round((p.puntaje / p.total) * 100);
+        const banner = document.createElement('div');
+        banner.style.cssText = 'background:white;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,0.1);border:3px solid #51CF66;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap';
+        banner.innerHTML = `<div><p style="font-weight:800;font-size:1rem">⏸️ Examen en progreso</p><p style="color:#888;font-size:0.85rem">${mat.emoji} ${mat.nombre} · Día ${p.dia} · Pregunta ${p.idx+2} de ${p.total} · ${pct}% completado</p></div><div style="display:flex;gap:8px"><button onclick="continuarExamen(${JSON.stringify(p).replace(/"/g,'&quot;')})" style="background:linear-gradient(135deg,#51CF66,#37B24D);color:white;border:none;border-radius:12px;padding:10px 20px;font-family:Nunito,sans-serif;font-weight:800;cursor:pointer">▶️ Continuar</button><button onclick="this.closest('div').parentElement.remove()" style="background:#F0F0F0;border:none;border-radius:12px;padding:10px 16px;font-family:Nunito,sans-serif;font-weight:700;cursor:pointer">✕</button></div>`;
+        cont.appendChild(banner);
+      }
+    } catch(e) {}
+  }
   for (let dia = 1; dia <= TOTAL_DIAS; dia++) {
     const disponible = diaDisponible(dia);
     const completo = diaCompleto(dia);
@@ -537,6 +552,7 @@ function responder(letra) {
     examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: true });
   }
 
+  fetch('/api/progreso',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:estado.codigo,dia:examenActual.dia,materia:examenActual.materia,idx:examenActual.idx,puntaje:examenActual.puntaje,total:examenActual.preguntas.length,respuestas:examenActual.respuestas})}).catch(()=>{});
   const btnSig = document.getElementById('btn-siguiente');
   btnSig.classList.add('show');
   const mat = MATERIAS[examenActual.materia];
@@ -560,6 +576,7 @@ async function terminarExamen() {
   const pct = Math.round((puntaje / total) * 100);
   const mat = MATERIAS[materia];
 
+  fetch('/api/progreso?codigo='+encodeURIComponent(estado.codigo),{method:'DELETE'}).catch(()=>{});
   estado.completados[`${dia}_${materia}`] = true;
   intentarDesbloquearSiguienteDia();
   guardarEstadoLocal();
@@ -601,6 +618,22 @@ async function terminarExamen() {
 
   mostrar('screen-resultado');
   window.scrollTo(0,0);
+}
+
+async function continuarExamen(p) {
+  const mat = MATERIAS[p.materia];
+  const res = await fetch(`/api/preguntas?dia=${p.dia}&materia=${p.materia}`);
+  const data = await res.json();
+  examenActual = { dia: p.dia, materia: p.materia, preguntas: data.preguntas, idx: p.idx+1, puntaje: p.puntaje, respuestas: p.respuestas, intentos: 0 };
+  document.getElementById('examen-badge').textContent = `${mat.emoji} ${mat.nombre}`;
+  document.getElementById('examen-badge').style.background = mat.gradiente;
+  document.getElementById('examen-badge').style.color = 'white';
+  document.getElementById('examen-badge').style.borderRadius = '50px';
+  document.getElementById('examen-badge').style.padding = '6px 16px';
+  document.getElementById('examen-dia-label').textContent = `📅 Día ${p.dia}`;
+  document.getElementById('progress-fill').style.background = mat.gradiente;
+  mostrar('screen-examen');
+  renderPregunta();
 }
 
 // ── MIS RESULTADOS ───────────────────────────────────────────────────
