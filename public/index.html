@@ -238,12 +238,14 @@
 <div id="screen-login">
   <div class="login-card fade-in">
     <div class="login-emoji">🧠</div>
-    <h2>¡Hola! ¿Cómo te llamas?</h2>
-    <p>Escribe tu nombre para comenzar tus exámenes</p>
+    <h2>¡Hola! ¿Cuál es tu código?</h2>
+    <p>Escribe el código que te dio tu profe</p>
     <input class="input-name" type="text" id="input-nombre"
-           placeholder="Tu nombre aquí..." maxlength="30"
+           placeholder="Ej: TOMAS2026" maxlength="20"
+           style="text-transform:uppercase"
            onkeydown="if(event.key==='Enter') entrar()"/>
-    <button class="btn-entrar" onclick="entrar()">¡Comenzar! 🚀</button>
+    <div id="login-error" style="color:#C92A2A;font-weight:700;font-size:0.9rem;margin-top:8px;display:none"></div>
+    <button class="btn-entrar" onclick="entrar()">¡Entrar! 🚀</button>
   </div>
 </div>
 
@@ -338,14 +340,39 @@ function mostrar(id) {
   document.getElementById(id).style.display = id === 'screen-login' ? 'flex' : 'block';
 }
 
-function entrar() {
-  const nombre = document.getElementById('input-nombre').value.trim();
-  if (!nombre) { document.getElementById('input-nombre').style.borderColor = '#FF6B6B'; return; }
-  estado.nombre = nombre;
-  guardarEstadoLocal();
-  mostrarHeaderNombre();
-  mostrar('screen-inicio');
-  renderInicio();
+async function entrar() {
+  const codigo = document.getElementById('input-nombre').value.trim().toUpperCase();
+  if (!codigo) { document.getElementById('input-nombre').style.borderColor = '#FF6B6B'; return; }
+  const btn = document.querySelector('.btn-entrar');
+  btn.textContent = 'Verificando...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ codigo })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      document.getElementById('login-error').textContent = data.error;
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('input-nombre').style.borderColor = '#FF6B6B';
+      btn.textContent = '¡Entrar! 🚀';
+      btn.disabled = false;
+      return;
+    }
+    estado.nombre = data.nombre;
+    estado.codigo = data.codigo;
+    guardarEstadoLocal();
+    mostrarHeaderNombre();
+    mostrar('screen-inicio');
+    renderInicio();
+  } catch(e) {
+    document.getElementById('login-error').textContent = 'Error de conexión. Intenta de nuevo.';
+    document.getElementById('login-error').style.display = 'block';
+    btn.textContent = '¡Entrar! 🚀';
+    btn.disabled = false;
+  }
 }
 
 function mostrarHeaderNombre() {
