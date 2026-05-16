@@ -48,6 +48,13 @@
     padding: 6px 18px; border-radius: 50px; font-weight: 700; font-size: 0.95rem;
     margin-top: 10px; position: relative; cursor: pointer; border: 2px solid rgba(255,255,255,0.25);
   }
+  .btn-logout {
+    display: inline-block; background: rgba(255,100,100,0.25); color: white;
+    padding: 5px 14px; border-radius: 50px; font-weight: 700; font-size: 0.82rem;
+    margin-top: 8px; margin-left: 8px; cursor: pointer; border: 2px solid rgba(255,100,100,0.4);
+    vertical-align: middle; transition: background 0.2s;
+  }
+  .btn-logout:hover { background: rgba(255,80,80,0.45); }
 
   #screen-login {
     display: flex; flex-direction: column; align-items: center;
@@ -230,8 +237,11 @@
 <div class="header">
   <h1>🎓 Mis Exámenes</h1>
   <p>¡Aprende un poco cada día!</p>
-  <div class="nombre-badge" id="header-nombre" onclick="cambiarNombre()" style="display:none">
-    👤 <span id="header-nombre-text"></span> ✏️
+  <div id="header-nombre-wrap" style="display:none">
+    <div class="nombre-badge" id="header-nombre" onclick="cambiarNombre()">
+      👤 <span id="header-nombre-text"></span> ✏️
+    </div>
+    <span class="btn-logout" onclick="cerrarSesion()">🚪 Salir</span>
   </div>
 </div>
 
@@ -366,6 +376,7 @@ async function entrar() {
     guardarEstadoLocal();
     mostrarHeaderNombre();
     mostrar('screen-inicio');
+    await sincronizarCompletadosDesdeSheets();
     renderInicio();
   } catch(e) {
     document.getElementById('login-error').textContent = 'Error de conexión. Intenta de nuevo.';
@@ -376,9 +387,43 @@ async function entrar() {
 }
 
 function mostrarHeaderNombre() {
-  const badge = document.getElementById('header-nombre');
+  document.getElementById('header-nombre-wrap').style.display = 'inline-block';
   document.getElementById('header-nombre-text').textContent = estado.nombre;
-  badge.style.display = 'inline-block';
+}
+
+function cerrarSesion() {
+  if (!confirm('¿Seguro que quieres salir? Puedes volver a entrar con tu código.')) return;
+  localStorage.removeItem('examen_estado');
+  estado = { nombre: '', diaActual: 1, completados: {} };
+  document.getElementById('header-nombre-wrap').style.display = 'none';
+  document.getElementById('input-nombre').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  mostrar('screen-login');
+}
+
+async function sincronizarCompletadosDesdeSheets() {
+  if (!estado.nombre) return;
+  try {
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+    if (!data.ok || !data.resultados) return;
+    const NOMBRES = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+    data.resultados.forEach(r => {
+      const matKey = Object.keys(NOMBRES).find(k => NOMBRES[k] === r.materia);
+      const diaNum = r.dia ? r.dia.replace('Día ','').replace('Dia ','').trim() : null;
+      if (matKey && diaNum) {
+        estado.completados[`${diaNum}_${matKey}`] = true;
+      }
+    });
+    // Recalcular diaActual según completados reales
+    for (let d = 1; d <= 6; d++) {
+      const todasCompletas = Object.keys(NOMBRES).every(m => estado.completados[`${d}_${m}`]);
+      if (todasCompletas && estado.diaActual <= d) {
+        estado.diaActual = d + 1;
+      }
+    }
+    guardarEstadoLocal();
+  } catch(e) { console.warn('No se pudo sincronizar completados', e); }
 }
 
 function cambiarNombre() {
@@ -729,7 +774,7 @@ cargarEstado();
 if (estado.nombre) {
   mostrarHeaderNombre();
   mostrar('screen-inicio');
-  renderInicio();
+  sincronizarCompletadosDesdeSheets().then(() => renderInicio());
 } else {
   mostrar('screen-login');
 }
