@@ -595,6 +595,25 @@ async function sincronizarCompletadosDesdeSheets() {
       const diaNum = r.dia ? r.dia.replace('Día ','').replace('Dia ','').trim() : null;
       if (matKey && diaNum) {
         estado.completados[`${diaNum}_${matKey}`] = true;
+        // Sincronizar errores desde Sheets a localStorage
+        if (!diaNum.includes('Refuerzo')) {
+          try {
+            const respuestas = typeof r.respuestas === 'string' ? JSON.parse(r.respuestas) : r.respuestas;
+            if (respuestas && respuestas.length) {
+              const erroresKey = `errores_${diaNum}_${matKey}`;
+              const erroresExistentes = JSON.parse(localStorage.getItem(erroresKey) || '[]');
+              // Solo actualizar si no hay errores guardados localmente
+              if (!erroresExistentes.length) {
+                const errores = respuestas.filter(rr => !rr.ok).map(rr => ({
+                  pregunta: { pregunta: rr.pregunta, opciones: {} },
+                  elegida: rr.elegida,
+                  correcta: rr.correcta
+                }));
+                if (errores.length) localStorage.setItem(erroresKey, JSON.stringify(errores));
+              }
+            }
+          } catch(e) {}
+        }
       }
     });
     // Recalcular diaActual según completados reales
