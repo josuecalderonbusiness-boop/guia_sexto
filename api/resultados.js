@@ -1,47 +1,69 @@
 const { google } = require('googleapis');
 
-const SHEET_ID = process.env.SHEET_ID;
-
-function getAuth() {
-  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
-  return new google.auth.GoogleAuth({
-    credentials,
+async function getSheets() {
+  const creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+  const auth = new google.auth.GoogleAuth({
+    credentials: creds,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
+  return google.sheets({ version: 'v4', auth: await auth.getClient() });
 }
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 'no-store');
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'GET') return res.status(405).json({ ok: false });
 
-  const { nombre } = req.query;
+  const SHEET_ID = process.env.SHEET_ID;
+  const { nombre, todos, listaUsuarios } = req.query;
 
   try {
-    const auth = getAuth();
-    const sheets = google.sheets({ version: 'v4', auth });
+    const sheets = await getSheets();
 
-    const response = await sheets.spreadsheets.values.get({
+    // ── ADMIN: lista de usuarios ─────────────────────────────────
+    if (listaUsuarios === '1') {
+      const r = await sheets.spreadsheets.values.get({
+        spreadsheetId: SHEET_ID,
+        range: 'Usuarios!A:B',
+      });
+      const rows = (r.data.values || []).slice(1); // saltar encabezado si hay
+      const usuarios = rows
+        .filter(row => row[0])
+        .map(row => ({ codigo: row[0], nombre: row[1] || row[0] }));
+      return res.json({ ok: true, usuarios });
+    }
+
+    // ── Leer hoja Resultados ─────────────────────────────────────
+    const r = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: 'Resultados!A2:G500',
+      range: 'Resultados!A:H',
     });
+    const rows = r.data.values || [];
+    if (rows.length <= 1) return res.json({ ok: true, resultados: [] });
 
-    const rows = response.data.values || [];
-    const resultados = rows
-      .filter(row => row[0] && (!nombre || row[1]?.toLowerCase() === nombre?.toLowerCase()))
-      .map(row => ({
-        fecha:      row[0] || '',
-        nombre:     row[1] || '',
-        dia:        row[2] || '',
-        materia:    row[3] || '',
-        puntaje:    row[4] || '0',
-        total:      row[5] || '0',
-        porcentaje: (row[6] || '0%').replace('%', ''),
-      }));
+    const data = rows.slice(1).map(row => ({
+      fecha:      row[0] || '',
+      nombre:     row[1] || '',
+      dia:        row[2] || '',
+      materia:    row[3] || '',
+      puntaje:    row[4] || '0',
+      total:      row[5] || '0',
+      porcentaje: row[6] || '0',
+      respuestas: row[7] || '[]',
+    }));
 
-    res.status(200).json({ ok: true, resultados });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    // ── ADMIN: todos los resultados ──────────────────────────────
+    if (todos === '1') {
+      return res.json({ ok: true, resultados: data });
+    }
+
+    // ── ALUMNO: solo sus resultados ──────────────────────────────
+    if (!nombre) return res.json({ ok: false, error: 'Falta nombre' });
+    const filtrados = data.filter(r =>
+      r.nombre.trim().toLowerCase() === nombre.trim().toLowerCase()
+    );
+    return res.json({ ok: true, resultados: filtrados });
+
+  } catch (e) {
+    return res.status(500).json({ ok: false, error: e.message });
   }
 };

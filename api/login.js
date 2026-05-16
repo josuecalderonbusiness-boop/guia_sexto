@@ -1,57 +1,116 @@
 const { google } = require('googleapis');
 
-const SHEET_ID = process.env.SHEET_ID;
+const ADMIN_CODES = ['ADMIN2026']; // ← agrega aquí más códigos admin si quieres
 
-function getAuth() {
-  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
-  return new google.auth.GoogleAuth({
-    credentials,
+async function getSheets() {
+  const creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+  const auth = new google.auth.GoogleAuth({
+    credentials: creds,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
+  return google.sheets({ version: 'v4', auth: await auth.getClient() });
 }
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 'no-store');
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'Método no permitido' });
 
-  const { codigo } = req.body;
-  if (!codigo) return res.status(400).json({ ok: false, error: 'Falta el código' });
+  const body = req.body;
+  const SHEET_ID = process.env.SHEET_ID;
 
-  try {
-    const auth = getAuth();
-    const sheets = google.sheets({ version: 'v4', auth });
+  // ── LOGIN NORMAL ─────────────────────────────────────────────────
+  if (body.codigo && !body.adminAgregar && !body.adminEliminar) {
+    const codigo = body.codigo.trim().toUpperCase();
 
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SHEET_ID,
-      range: 'Usuarios!A2:B100',
-    });
-
-    const rows = response.data.values || [];
-    const rowNum = rows.findIndex(row => 
-      row[0]?.trim().toUpperCase() === codigo.trim().toUpperCase()
-    );
-    const usuario = rowNum >= 0 ? rows[rowNum] : null;
-
-    if (!usuario) {
-      return res.status(200).json({ ok: false, error: 'Código incorrecto. Verifica con tu profe.' });
+    // ¿Es admin?
+    if (ADMIN_CODES.includes(codigo)) {
+      return res.json({ ok: true, nombre: 'Administrador', codigo, esAdmin: true });
     }
 
-    // Actualizar nombre si viene nuevoNombre
-    if (req.body.nuevoNombre && rowNum >= 0) {
-      await sheets.spreadsheets.values.update({
+    // Buscar en hoja Usuarios
+    try {
+      const sheets = await getSheets();
+      const r = await sheets.spreadsheets.values.get({
         spreadsheetId: SHEET_ID,
-        range: `Usuarios!B${rowNum + 2}`,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[req.body.nuevoNombre]] }
+        range: 'Usuarios!A:B',
       });
+      const rows = r.data.values || [];
+      const encontrado = rows.find(row => row[0] && row[0].trim().toUpperCase() === codigo);
+      if (!encontrado) {
+        return res.json({ ok: false, error: 'Código no encontrado. Pídele el código a tu profe.' });
+      }
+      return res.json({ ok: true, nombre: encontrado[1] || codigo, codigo, esAdmin: false });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: 'Error al verificar código: ' + e.message });
     }
-    res.status(200).json({ ok: true, nombre: req.body.nuevoNombre || usuario[1] || usuario[0], codigo: usuario[0] });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'Error del servidor' });
   }
+
+  // ── ADMIN: AGREGAR USUARIO ───────────────────────────────────────
+  if (body.adminAgregar) {
+    const { codigo, nombre } = body.adminAgregar;
+    if (!codigo || !nombre) return res.json({ ok: false, error: 'Faltan datos' });
+    try {
+      const sheets = await getSheets();
+      // Verificar que no existe
+      const r = await sheets.spreadsheets.values.get({
+        spreadsheetId: SHEET_ID, range: 'Usuarios!A:B',
+      });
+      const rows = r.data.values || [];
+      const existe = rows.find(row => row[0] && row[0].trim().toUpperCase() === codigo.toUpperCase());
+      if (existe) return res.json({ ok: false, error: 'Ese código ya existe' });
+
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SHEET_ID,
+        range: 'Usuarios!A:B',
+        valueInputOption: 'RAW',
+        requestBody: { values: [[codigo.toUpperCase(), nombre]] },
+      });
+      return res.json({ ok: true });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
+  // ── ADMIN: ELIMINAR USUARIO ──────────────────────────────────────
+  if (body.adminEliminar) {
+    const { codigo } = body.adminEliminar;
+    try {
+      const sheets = await getSheets();
+      const r = await sheets.spreadsheets.values.get({
+        spreadsheetId: SHEET_ID, range: 'Usuarios!A:B',
+      });
+      const rows = r.data.values || [];
+      const idx = rows.findIndex(row => row[0] && row[0].trim().toUpperCase() === codigo.toUpperCase());
+      if (idx === -1) return res.json({ ok: false, error: 'Usuario no encontrado' });
+
+      // Obtener sheetId de la hoja Usuarios
+      const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
+      const hoja = meta.data.sheets.find(s => s.properties.title === 'Usuarios');
+      if (!hoja) return res.json({ ok: false, error: 'Hoja Usuarios no encontrada' });
+
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId: SHEET_ID,
+        requestBody: {
+          requests: [{
+            deleteDimension: {
+              range: {
+                sheetId: hoja.properties.sheetId,
+                dimension: 'ROWS',
+                startIndex: idx,
+                endIndex: idx + 1,
+              }
+            }
+          }]
+        }
+      });
+      return res.json({ ok: true });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
+  return res.json({ ok: false, error: 'Solicitud no reconocida' });
 };

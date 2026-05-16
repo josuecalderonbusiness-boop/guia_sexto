@@ -230,6 +230,54 @@
   .res-barra-pct { font-size: 0.7rem; font-weight: 700; }
   .res-barra { width: 100%; border-radius: 6px 6px 0 0; min-height: 4px; }
   .res-barra-dia { font-size: 0.65rem; color: #888; font-weight: 600; }
+
+  /* ADMIN */
+  #screen-admin { display:none; min-height:100vh; background:#0F172A; }
+  .admin-sidebar { background:#1E293B; width:220px; min-height:100vh; padding:20px 14px; position:fixed; top:0; left:0; z-index:100; display:flex; flex-direction:column; gap:6px; }
+  .admin-logo { font-family:'Fredoka One',cursive; color:white; font-size:1.2rem; margin-bottom:14px; text-align:center; }
+  .admin-logo span { display:block; font-family:'Nunito',sans-serif; font-size:0.72rem; color:#64748B; font-weight:600; margin-top:2px; }
+  .admin-nav-btn { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.88rem; text-align:left; transition:all 0.2s; width:100%; background:transparent; color:#94A3B8; }
+  .admin-nav-btn:hover { background:rgba(255,255,255,0.07); color:white; }
+  .admin-nav-btn.activo { background:rgba(99,102,241,0.25); color:#818CF8; }
+  .admin-main { margin-left:220px; padding:28px; min-height:100vh; background:#0F172A; color:white; }
+  .admin-title { font-family:'Fredoka One',cursive; font-size:1.5rem; margin-bottom:4px; color:white; }
+  .admin-sub { color:#64748B; font-size:0.85rem; margin-bottom:22px; }
+  .admin-section { display:none; }
+  .admin-section.activa { display:block; }
+  .admin-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  .stat-card { background:#1E293B; border-radius:14px; padding:18px; border:1px solid #334155; }
+  .stat-card .stat-num { font-family:'Fredoka One',cursive; font-size:1.9rem; }
+  .stat-card .stat-lbl { color:#64748B; font-size:0.78rem; font-weight:600; margin-top:4px; }
+  .admin-table-wrap { background:#1E293B; border-radius:14px; overflow:hidden; border:1px solid #334155; }
+  .admin-table { width:100%; border-collapse:collapse; }
+  .admin-table th { background:#1E293B; padding:11px 14px; text-align:left; font-size:0.78rem; color:#64748B; font-weight:700; text-transform:uppercase; }
+  .admin-table td { padding:11px 14px; border-bottom:1px solid #1a2744; font-size:0.88rem; }
+  .admin-table tr:hover td { background:rgba(255,255,255,0.03); }
+  .bpct { padding:3px 10px; border-radius:50px; font-weight:800; font-size:0.76rem; }
+  .bv { background:rgba(81,207,102,0.18); color:#51CF66; }
+  .bn { background:rgba(255,146,43,0.18); color:#FF922B; }
+  .br { background:rgba(255,107,107,0.18); color:#FF6B6B; }
+  .bg { background:rgba(148,163,184,0.12); color:#64748B; }
+  .perfil-header { display:flex; align-items:center; gap:14px; margin-bottom:22px; background:#1E293B; border-radius:14px; padding:18px; border:1px solid #334155; }
+  .perfil-avatar { width:52px; height:52px; border-radius:12px; background:linear-gradient(135deg,#6366F1,#8B5CF6); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+  .falencias-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
+  .falencia-card { background:#1E293B; border-radius:14px; padding:18px; border:1px solid #334155; }
+  .falencia-card h4 { font-size:0.8rem; color:#94A3B8; font-weight:700; margin-bottom:10px; text-transform:uppercase; }
+  .falencia-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:0.82rem; }
+  .fbar-bg { flex:1; background:#0F172A; border-radius:50px; height:7px; overflow:hidden; }
+  .fbar-fill { height:100%; border-radius:50px; }
+  .fbar-lbl { font-weight:800; color:white; min-width:34px; text-align:right; font-size:0.78rem; }
+  .input-admin { background:#0F172A; border:1px solid #334155; color:white; border-radius:10px; padding:10px 13px; font-family:'Nunito',sans-serif; font-size:0.88rem; outline:none; transition:border-color 0.2s; }
+  .input-admin:focus { border-color:#6366F1; }
+  .btn-ap { background:linear-gradient(135deg,#6366F1,#8B5CF6); color:white; border:none; border-radius:10px; padding:10px 18px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem; cursor:pointer; }
+  .btn-ap:hover { opacity:0.88; }
+  .btn-ad { background:rgba(239,68,68,0.14); color:#F87171; border:1px solid rgba(239,68,68,0.28); border-radius:8px; padding:5px 12px; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.8rem; cursor:pointer; }
+  .btn-ad:hover { background:rgba(239,68,68,0.28); }
+  .btn-ar { background:rgba(251,191,36,0.14); color:#FBBF24; border:1px solid rgba(251,191,36,0.28); border-radius:8px; padding:5px 12px; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.8rem; cursor:pointer; }
+  .btn-ar:hover { background:rgba(251,191,36,0.28); }
+  .usuario-row { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #0F172A; gap:8px; flex-wrap:wrap; }
+  .usuario-row:last-child { border-bottom:none; }
+  @media(max-width:700px) { .admin-sidebar{display:none;} .admin-main{margin-left:0;padding:16px;} .admin-stats{grid-template-columns:repeat(2,1fr);} }
 </style>
 </head>
 <body>
@@ -315,6 +363,63 @@
   </div>
 </div>
 
+<div id="screen-admin">
+  <div class="admin-sidebar">
+    <div class="admin-logo">🎓 Admin<span>Monterrosales Homeschool</span></div>
+    <button class="admin-nav-btn activo" onclick="adminNav('dashboard')" id="nav-dashboard"><span>📊</span> Dashboard</button>
+    <button class="admin-nav-btn" onclick="adminNav('alumnos')" id="nav-alumnos"><span>👥</span> Alumnos</button>
+    <button class="admin-nav-btn" onclick="adminNav('falencias')" id="nav-falencias"><span>⚠️</span> Falencias grupo</button>
+    <button class="admin-nav-btn" onclick="adminNav('usuarios')" id="nav-usuarios"><span>🔑</span> Usuarios</button>
+    <div style="flex:1"></div>
+    <button class="admin-nav-btn" onclick="cerrarSesion()" style="color:#F87171"><span>🚪</span> Salir</button>
+  </div>
+  <div class="admin-main">
+
+    <div class="admin-section activa" id="admin-dashboard">
+      <h2 class="admin-title">📊 Dashboard general</h2>
+      <p class="admin-sub" id="admin-fecha">Cargando...</p>
+      <div class="admin-stats">
+        <div class="stat-card"><div class="stat-num" style="color:#818CF8" id="stat-alumnos">–</div><div class="stat-lbl">Alumnos activos</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#34D399" id="stat-examenes">–</div><div class="stat-lbl">Exámenes completados</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#FBBF24" id="stat-promedio">–%</div><div class="stat-lbl">Promedio general</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#F87171" id="stat-riesgo">–</div><div class="stat-lbl">En riesgo (&lt;60%)</div></div>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Alumno</th><th>MAT</th><th>BIO</th><th>QUI</th><th>SOC</th><th>LEN</th><th>Promedio</th><th></th></tr></thead>
+          <tbody id="dashboard-tabla"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-section" id="admin-alumnos">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <button class="btn-volver" onclick="adminNav('dashboard')" style="background:#1E293B;color:white">← Volver</button>
+        <div><h2 class="admin-title" style="margin-bottom:0" id="perfil-titulo">Perfil</h2><p class="admin-sub" style="margin-bottom:0" id="perfil-codigo-txt"></p></div>
+      </div>
+      <div id="perfil-contenido"></div>
+    </div>
+
+    <div class="admin-section" id="admin-falencias">
+      <h2 class="admin-title">⚠️ Falencias del grupo</h2>
+      <p class="admin-sub">Temas con más errores en toda la clase</p>
+      <div class="falencias-grid" id="falencias-contenido"><div class="loading"><div class="spinner"></div><span style="color:#64748B">Analizando...</span></div></div>
+    </div>
+
+    <div class="admin-section" id="admin-usuarios">
+      <h2 class="admin-title">🔑 Gestión de usuarios</h2>
+      <p class="admin-sub">Agregar o eliminar códigos de acceso</p>
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <input class="input-admin" id="nuevo-codigo" placeholder="Código (ej: PEDRO2026)" maxlength="20" style="text-transform:uppercase;width:190px"/>
+        <input class="input-admin" id="nuevo-nombre" placeholder="Nombre del alumno" maxlength="40" style="width:210px"/>
+        <button class="btn-ap" onclick="agregarUsuario()">➕ Agregar</button>
+      </div>
+      <div class="admin-table-wrap"><div id="usuarios-lista"><div class="loading"><div class="spinner"></div><span style="color:#64748B">Cargando...</span></div></div></div>
+    </div>
+
+  </div>
+</div>
+
 <script>
 const MATERIAS = {
   MAT: { nombre: 'Matemáticas', emoji: '🔢', clase: 'mat-btn', color: '#FF6B6B', gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)' },
@@ -344,7 +449,7 @@ function intentarDesbloquearSiguienteDia() {
 }
 
 function mostrar(id) {
-  ['screen-login','screen-inicio','screen-examen','screen-resultado','screen-misresultados'].forEach(s => {
+  ['screen-login','screen-inicio','screen-examen','screen-resultado','screen-misresultados','screen-admin'].forEach(s => {
     document.getElementById(s).style.display = 'none';
   });
   document.getElementById(id).style.display = id === 'screen-login' ? 'flex' : 'block';
@@ -373,11 +478,17 @@ async function entrar() {
     }
     estado.nombre = data.nombre;
     estado.codigo = data.codigo;
+    estado.esAdmin = data.esAdmin || false;
     guardarEstadoLocal();
     mostrarHeaderNombre();
-    mostrar('screen-inicio');
-    await sincronizarCompletadosDesdeSheets();
-    renderInicio();
+    if (estado.esAdmin) {
+      mostrar('screen-admin');
+      adminInit();
+    } else {
+      mostrar('screen-inicio');
+      await sincronizarCompletadosDesdeSheets();
+      renderInicio();
+    }
   } catch(e) {
     document.getElementById('login-error').textContent = 'Error de conexión. Intenta de nuevo.';
     document.getElementById('login-error').style.display = 'block';
@@ -761,6 +872,238 @@ async function verMisResultados() {
   }
 }
 
+// ── ADMIN ────────────────────────────────────────────────────────────
+let adminData = { todos: [], resultados: [] };
+
+function adminNav(sec) {
+  ['dashboard','alumnos','falencias','usuarios'].forEach(s => {
+    document.getElementById('admin-'+s).classList.remove('activa');
+    const b = document.getElementById('nav-'+s); if(b) b.classList.remove('activo');
+  });
+  document.getElementById('admin-'+sec).classList.add('activa');
+  const b = document.getElementById('nav-'+sec); if(b) b.classList.add('activo');
+  if (sec === 'falencias' && adminData.resultados.length) renderFalencias();
+  if (sec === 'usuarios') cargarUsuarios();
+}
+
+async function adminInit() {
+  document.getElementById('admin-fecha').textContent = 'Cargando datos... ' + new Date().toLocaleString('es-CO');
+  try {
+    const [ru, rr] = await Promise.all([
+      fetch('/api/resultados?todos=1'),
+      fetch('/api/resultados?todos=1')
+    ]);
+    const dr = await rr.json();
+    if (!dr.ok) return;
+    const resultados = dr.resultados || [];
+    adminData.resultados = resultados;
+
+    // Agrupar por alumno
+    const porAlumno = {};
+    resultados.forEach(r => {
+      const n = r.nombre || 'Sin nombre';
+      if (!porAlumno[n]) porAlumno[n] = [];
+      porAlumno[n].push(r);
+    });
+    adminData.todos = Object.entries(porAlumno).map(([nombre, exams]) => ({ nombre, exams }));
+
+    // Stats globales
+    const totalAlumnos = adminData.todos.length;
+    const totalExamenes = resultados.length;
+    const pcts = resultados.map(r => parseInt(r.porcentaje)||0);
+    const promGlobal = pcts.length ? Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length) : 0;
+    const enRiesgo = adminData.todos.filter(a => {
+      const ps = a.exams.map(e=>parseInt(e.porcentaje)||0);
+      return ps.length && (ps.reduce((x,y)=>x+y,0)/ps.length) < 60;
+    }).length;
+
+    document.getElementById('stat-alumnos').textContent = totalAlumnos;
+    document.getElementById('stat-examenes').textContent = totalExamenes;
+    document.getElementById('stat-promedio').textContent = promGlobal + '%';
+    document.getElementById('stat-riesgo').textContent = enRiesgo;
+    document.getElementById('admin-fecha').textContent = 'Actualizado: ' + new Date().toLocaleString('es-CO');
+
+    renderDashboardTabla();
+  } catch(e) {
+    document.getElementById('admin-fecha').textContent = '⚠️ Error cargando datos';
+  }
+}
+
+function pctBadge(pct) {
+  if (pct === null || pct === undefined || isNaN(pct)) return '<span class="bpct bg">–</span>';
+  if (pct >= 80) return `<span class="bpct bv">${pct}%</span>`;
+  if (pct >= 60) return `<span class="bpct bn">${pct}%</span>`;
+  return `<span class="bpct br">${pct}%</span>`;
+}
+
+function promedioAlumno(exams) {
+  if (!exams.length) return null;
+  const ps = exams.map(e => parseInt(e.porcentaje)||0);
+  return Math.round(ps.reduce((a,b)=>a+b,0)/ps.length);
+}
+
+function pctMateria(exams, matNombre) {
+  const f = exams.filter(e => e.materia === matNombre);
+  if (!f.length) return null;
+  return Math.round(f.map(e=>parseInt(e.porcentaje)||0).reduce((a,b)=>a+b,0)/f.length);
+}
+
+const MAT_NOMBRES = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+
+function renderDashboardTabla() {
+  const tbody = document.getElementById('dashboard-tabla');
+  if (!adminData.todos.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#64748B;padding:30px">Sin datos aún</td></tr>';
+    return;
+  }
+  tbody.innerHTML = adminData.todos.map(a => {
+    const prom = promedioAlumno(a.exams);
+    const mats = Object.values(MAT_NOMBRES).map(m => pctBadge(pctMateria(a.exams, m))).join('');
+    return `<tr>
+      <td style="font-weight:700;color:white">${a.nombre}</td>
+      ${Object.values(MAT_NOMBRES).map(m => `<td>${pctBadge(pctMateria(a.exams,m))}</td>`).join('')}
+      <td>${pctBadge(prom)}</td>
+      <td><button class="btn-ar" onclick="verPerfil('${a.nombre.replace(/'/g,"\\'")}')">Ver perfil</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function verPerfil(nombre) {
+  adminNav('alumnos');
+  const alumno = adminData.todos.find(a => a.nombre === nombre);
+  if (!alumno) return;
+  document.getElementById('perfil-titulo').textContent = alumno.nombre;
+  document.getElementById('perfil-codigo-txt').textContent = alumno.exams.length + ' exámenes completados';
+
+  const prom = promedioAlumno(alumno.exams);
+  document.getElementById('perfil-contenido').innerHTML = `
+    <div class="perfil-header">
+      <div class="perfil-avatar">👤</div>
+      <div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.3rem">${alumno.nombre}</div>
+        <div style="color:#64748B;font-size:0.85rem">${alumno.exams.length} exámenes · Promedio general: ${prom !== null ? prom+'%' : '–'}</div>
+      </div>
+      <div style="margin-left:auto">${pctBadge(prom)}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+      ${Object.entries(MAT_NOMBRES).map(([key, matNombre]) => {
+        const examsMat = alumno.exams.filter(e => e.materia === matNombre);
+        if (!examsMat.length) return `<div class="falencia-card"><h4>${matNombre}</h4><p style="color:#64748B;font-size:0.85rem">Sin exámenes aún</p></div>`;
+        const bars = examsMat.map(e => {
+          const p = parseInt(e.porcentaje)||0;
+          const bg = p>=80?'#51CF66':p>=60?'#FF922B':'#FF6B6B';
+          const h = Math.max(4,Math.round((p/100)*60));
+          return `<div style="text-align:center;flex:1">
+            <div style="font-size:0.72rem;font-weight:700;color:${bg};margin-bottom:4px">${p}%</div>
+            <div style="height:${h}px;background:${bg};border-radius:4px 4px 0 0"></div>
+            <div style="font-size:0.65rem;color:#64748B;margin-top:4px">${e.dia}</div>
+          </div>`;
+        }).join('');
+        const respFalladas = examsMat.flatMap(e => {
+          try { const rs = typeof e.respuestas==='string'?JSON.parse(e.respuestas):e.respuestas; return (rs||[]).filter(r=>!r.ok).map(r=>r.pregunta); } catch(x){return[];}
+        });
+        return `<div class="falencia-card">
+          <h4 style="color:white;font-family:'Fredoka One',cursive;font-size:1rem;margin-bottom:12px">${MATERIAS[key]?.emoji||''} ${matNombre}</h4>
+          <div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:10px">${bars}</div>
+          ${respFalladas.length ? `<div style="margin-top:8px;border-top:1px solid #334155;padding-top:8px"><p style="font-size:0.75rem;color:#64748B;font-weight:700;margin-bottom:6px">PREGUNTAS FALLADAS:</p>${respFalladas.slice(0,3).map(p=>`<p style="font-size:0.78rem;color:#94A3B8;margin-bottom:4px">• ${p.substring(0,60)}...</p>`).join('')}${respFalladas.length>3?`<p style="font-size:0.75rem;color:#64748B">+${respFalladas.length-3} más</p>`:''}</div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="margin-top:20px">
+      <button class="btn-ad" onclick="resetearProgreso('${alumno.nombre.replace(/'/g,"\\'")}')">🔄 Resetear progreso de ${alumno.nombre}</button>
+    </div>
+  `;
+}
+
+function renderFalencias() {
+  const cont = document.getElementById('falencias-contenido');
+  const resultados = adminData.resultados;
+  if (!resultados.length) { cont.innerHTML = '<p style="color:#64748B">Sin datos suficientes.</p>'; return; }
+
+  const porMateria = {};
+  resultados.forEach(r => {
+    const m = r.materia || 'General';
+    if (!porMateria[m]) porMateria[m] = { total: 0, falladas: {} };
+    try {
+      const rs = typeof r.respuestas==='string'?JSON.parse(r.respuestas):r.respuestas;
+      (rs||[]).forEach(resp => {
+        porMateria[m].total++;
+        if (!resp.ok) {
+          const tema = resp.pregunta ? resp.pregunta.substring(0,40) : 'Sin info';
+          porMateria[m].falladas[tema] = (porMateria[m].falladas[tema]||0) + 1;
+        }
+      });
+    } catch(e) {}
+  });
+
+  cont.innerHTML = Object.entries(porMateria).map(([mat, data]) => {
+    const top = Object.entries(data.falladas).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    if (!top.length) return '';
+    const items = top.map(([tema, n]) => {
+      const pct = Math.round((n / adminData.todos.length) * 100);
+      const bg = pct>=60?'#F87171':pct>=30?'#FBBF24':'#51CF66';
+      return `<div class="falencia-item">
+        <div style="font-size:0.8rem;color:#94A3B8;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tema}...</div>
+        <div class="fbar-bg"><div class="fbar-fill" style="width:${Math.min(pct,100)}%;background:${bg}"></div></div>
+        <div class="fbar-lbl" style="color:${bg}">${n}✗</div>
+      </div>`;
+    }).join('');
+    return `<div class="falencia-card"><h4>${mat}</h4>${items}</div>`;
+  }).join('') || '<p style="color:#64748B">Sin errores registrados aún.</p>';
+}
+
+async function cargarUsuarios() {
+  const lista = document.getElementById('usuarios-lista');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div><span style="color:#64748B">Cargando...</span></div>';
+  try {
+    const res = await fetch('/api/resultados?listaUsuarios=1');
+    const data = await res.json();
+    const usuarios = data.usuarios || [];
+    if (!usuarios.length) { lista.innerHTML = '<p style="color:#64748B;padding:16px">Sin usuarios registrados.</p>'; return; }
+    lista.innerHTML = usuarios.map(u => `
+      <div class="usuario-row">
+        <div>
+          <div style="font-weight:700;color:white">${u.nombre}</div>
+          <div style="font-size:0.8rem;color:#64748B;font-family:monospace">${u.codigo}</div>
+        </div>
+        <button class="btn-ad" onclick="eliminarUsuario('${u.codigo}','${u.nombre.replace(/'/g,"\\'")}')">🗑️ Eliminar</button>
+      </div>
+    `).join('');
+  } catch(e) {
+    lista.innerHTML = '<p style="color:#F87171;padding:16px">⚠️ Error cargando usuarios. Verifica /api/resultados?listaUsuarios=1</p>';
+  }
+}
+
+async function agregarUsuario() {
+  const codigo = document.getElementById('nuevo-codigo').value.trim().toUpperCase();
+  const nombre = document.getElementById('nuevo-nombre').value.trim();
+  if (!codigo || !nombre) { alert('Completa código y nombre'); return; }
+  try {
+    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({adminAgregar:{codigo,nombre}}) });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('nuevo-codigo').value = '';
+      document.getElementById('nuevo-nombre').value = '';
+      cargarUsuarios();
+    } else { alert(data.error || 'Error al agregar'); }
+  } catch(e) { alert('Error de conexión'); }
+}
+
+async function eliminarUsuario(codigo, nombre) {
+  if (!confirm(`¿Eliminar a ${nombre} (${codigo})?`)) return;
+  try {
+    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({adminEliminar:{codigo}}) });
+    const data = await res.json();
+    if (data.ok) cargarUsuarios();
+    else alert(data.error || 'Error al eliminar');
+  } catch(e) { alert('Error de conexión'); }
+}
+
+async function resetearProgreso(nombre) {
+  if (!confirm(`¿Resetear TODO el progreso de ${nombre}? Esto borrará sus resultados del Sheet.`)) return;
+  alert('Para resetear progreso, borra manualmente las filas de ' + nombre + ' en la hoja Resultados del Google Sheet.');
+}
+
 // ── VOLVER ───────────────────────────────────────────────────────────
 function volverInicio() {
   mostrar('screen-inicio');
@@ -772,8 +1115,13 @@ function volverInicio() {
 cargarEstado();
 if (estado.nombre) {
   mostrarHeaderNombre();
-  mostrar('screen-inicio');
-  sincronizarCompletadosDesdeSheets().then(() => renderInicio());
+  if (estado.esAdmin) {
+    mostrar('screen-admin');
+    adminInit();
+  } else {
+    mostrar('screen-inicio');
+    sincronizarCompletadosDesdeSheets().then(() => renderInicio());
+  }
 } else {
   mostrar('screen-login');
 }
