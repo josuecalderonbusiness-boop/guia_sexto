@@ -313,8 +313,10 @@
 <body>
 
 <div class="header">
-  <img src="/imagenes/logos/brainy.png" style="height:80px;margin-bottom:4px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))"/>
-  <h1 style="font-family:'Fredoka One',cursive;font-size:2.2rem;color:white">Brainy</h1>
+  <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px">
+    <img src="/imagenes/logos/brainy_mascota.png" style="height:90px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))"/>
+    <img src="/imagenes/logos/brainy.png" style="height:70px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))"/>
+  </div>
   <p>¡Aprende un poco cada día!</p>
   <div id="header-nombre-wrap" style="display:none">
     <div class="nombre-badge" id="header-nombre" onclick="cambiarNombre()">
@@ -326,7 +328,7 @@
 
 <div id="screen-login">
   <div class="login-card fade-in">
-    <img src="/imagenes/logos/brainy.png" style="height:100px;margin-bottom:8px"/>
+    <img src="/favicon.png" style="height:80px;margin-bottom:8px"/>
     <h2>¡Hola! ¿Cuál es tu código?</h2>
     <p>Escribe el código que te dio tu profe</p>
     <input class="input-name" type="text" id="input-nombre"
