@@ -341,6 +341,18 @@
   </div>
 </div>
 
+<div id="screen-grado" style="display:none;min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px">
+  <p style="font-family:'Fredoka One',cursive;font-size:1.6rem;margin-bottom:8px;text-align:center">¿En qué grado estás?</p>
+  <p style="color:#888;margin-bottom:32px;text-align:center">Elige tu grado para ver tus exámenes</p>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+    <button onclick="elegirGrado(2)" style="width:100px;height:110px;border-radius:20px;border:3px solid #51CF66;background:#E8FFE8;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>2°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#37B24D">Disponible</span></button>
+    <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>3°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
+    <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>4°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
+    <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>5°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
+    <button onclick="elegirGrado(6)" style="width:100px;height:110px;border-radius:20px;border:3px solid #339AF0;background:#E8F4FF;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>6°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#1971C2">Disponible</span></button>
+  </div>
+</div>
+
 <div id="screen-inicio">
   <p class="dias-title">📅 Elige tu examen de hoy</p>
   <div style="text-align:center;margin-bottom:20px">
@@ -521,7 +533,7 @@ function intentarDesbloquearSiguienteDia() {
 }
 
 function mostrar(id) {
-  ['screen-login','screen-inicio','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo'].forEach(s => {
+  ['screen-login','screen-grado','screen-inicio','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo'].forEach(s => {
     document.getElementById(s).style.display = 'none';
   });
   document.getElementById(id).style.display = id === 'screen-login' ? 'flex' : 'block';
@@ -557,9 +569,7 @@ async function entrar() {
       mostrar('screen-admin');
       adminInit();
     } else {
-      mostrar('screen-inicio');
-      await sincronizarCompletadosDesdeSheets();
-      renderInicio();
+      mostrar('screen-grado');
     }
   } catch(e) {
     document.getElementById('login-error').textContent = 'Error de conexión. Intenta de nuevo.';
@@ -567,6 +577,14 @@ async function entrar() {
     btn.textContent = '¡Entrar! 🚀';
     btn.disabled = false;
   }
+}
+
+async function elegirGrado(grado) {
+  estado.grado = grado;
+  guardarEstadoLocal();
+  mostrar('screen-inicio');
+  await sincronizarCompletadosDesdeSheets();
+  renderInicio();
 }
 
 function mostrarHeaderNombre() {
