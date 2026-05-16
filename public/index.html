@@ -767,7 +767,39 @@ function responder(letra) {
     feedback.textContent = `❌ Era la opción ${correcta}. ¡Sigue adelante!`;
     feedback.className = 'feedback-msg show fail';
     examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: false });
-    setTimeout(() => siguiente(), 2500);
+    let autoTimer = setTimeout(() => siguiente(), 6000);
+    const btnExplicar = document.createElement('button');
+    btnExplicar.textContent = '🤖 ¿Por qué era esa?';
+    btnExplicar.style.cssText = 'margin-top:10px;padding:10px 20px;background:linear-gradient(135deg,#845EF7,#6741D9);color:white;border:none;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.9rem;cursor:pointer;display:block;width:100%';
+    btnExplicar.onclick = async () => {
+      clearTimeout(autoTimer);
+      btnExplicar.textContent = '⏳ Cargando explicación...';
+      btnExplicar.disabled = true;
+      try {
+        const res = await fetch('/api/explicar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pregunta: q.pregunta, opciones: q.opciones, elegida, correcta })
+        });
+        const data = await res.json();
+        const explicacionDiv = document.createElement('div');
+        explicacionDiv.style.cssText = 'margin-top:10px;padding:14px 18px;background:linear-gradient(135deg,#F0EBFF,#E8F4FF);border:2px solid #845EF7;border-radius:14px;font-size:0.95rem;font-weight:600;line-height:1.5;color:#1A1A2E';
+        explicacionDiv.textContent = data.ok ? data.explicacion : 'No se pudo cargar la explicación.';
+        const btnContinuar = document.createElement('button');
+        btnContinuar.textContent = 'Continuar →';
+        btnContinuar.style.cssText = 'margin-top:10px;padding:12px 20px;background:linear-gradient(135deg,#51CF66,#37B24D);color:white;border:none;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;display:block;width:100%';
+        btnContinuar.onclick = () => siguiente();
+        const wrap = document.createElement('div');
+        wrap.appendChild(explicacionDiv);
+        wrap.appendChild(btnContinuar);
+        btnExplicar.replaceWith(wrap);
+      } catch(e) {
+        btnExplicar.textContent = '🤖 ¿Por qué era esa?';
+        btnExplicar.disabled = false;
+        autoTimer = setTimeout(() => siguiente(), 4000);
+      }
+    };
+    document.getElementById('feedback-msg').after(btnExplicar);
   }
 
   fetch('/api/progreso',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:estado.codigo,dia:examenActual.dia,materia:examenActual.materia,idx:examenActual.idx,puntaje:examenActual.puntaje,total:examenActual.preguntas.length,respuestas:examenActual.respuestas})}).catch(()=>{});
