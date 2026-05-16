@@ -621,14 +621,7 @@ async function sincronizarCompletadosDesdeSheets() {
               const erroresKey = `errores_${diaNum}_${matKey}`;
               const erroresExistentes = JSON.parse(localStorage.getItem(erroresKey) || '[]');
               // Solo actualizar si no hay errores guardados localmente
-              if (!erroresExistentes.length) {
-                const errores = respuestas.filter(rr => !rr.ok).map(rr => ({
-                  pregunta: { pregunta: rr.pregunta, opciones: rr.opciones || {} },
-                  elegida: rr.elegida,
-                  correcta: rr.correcta
-                }));
-                if (errores.length) localStorage.setItem(erroresKey, JSON.stringify(errores));
-              }
+              // No reconstruir errores desde Sheets — no traen opciones completas
             }
           } catch(e) {}
         }
