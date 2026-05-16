@@ -1058,17 +1058,18 @@ Explícale en máximo 3 oraciones cortas y simples:
 Usa lenguaje sencillo, amigable, sin tecnicismos innecesarios. NO uses LaTeX ni símbolos especiales. Empieza directo con la explicación, sin saludos.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/explicar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
+        pregunta: q.pregunta,
+        opciones: q.opciones,
+        elegida,
+        correcta
       })
     });
     const data = await res.json();
-    const texto = data.content?.[0]?.text || 'No se pudo cargar la explicación.';
+    const texto = data.ok ? data.explicacion : 'No se pudo cargar la explicación.';
     document.getElementById('explicacion-cargando').style.display = 'none';
     const textoEl = document.getElementById('explicacion-texto');
     textoEl.style.display = 'block';
