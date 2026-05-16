@@ -392,7 +392,6 @@ function mostrarHeaderNombre() {
 }
 
 function cerrarSesion() {
-  if (!confirm('¿Seguro que quieres salir? Puedes volver a entrar con tu código.')) return;
   localStorage.removeItem('examen_estado');
   estado = { nombre: '', diaActual: 1, completados: {} };
   document.getElementById('header-nombre-wrap').style.display = 'none';
