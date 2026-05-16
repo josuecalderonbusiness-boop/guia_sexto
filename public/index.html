@@ -605,7 +605,7 @@ async function sincronizarCompletadosDesdeSheets() {
               // Solo actualizar si no hay errores guardados localmente
               if (!erroresExistentes.length) {
                 const errores = respuestas.filter(rr => !rr.ok).map(rr => ({
-                  pregunta: { pregunta: rr.pregunta, opciones: {} },
+                  pregunta: { pregunta: rr.pregunta, opciones: rr.opciones || {} },
                   elegida: rr.elegida,
                   correcta: rr.correcta
                 }));
@@ -847,11 +847,11 @@ async function terminarExamen() {
   fetch('/api/progreso?codigo='+encodeURIComponent(estado.codigo),{method:'DELETE'}).catch(()=>{});
   estado.completados[`${dia}_${materia}`] = true;
   // Guardar errores para refuerzo
-  const erroresParaRefuerzo = respuestas.filter(r => !r.ok).map(r => ({
-    pregunta: examenActual.preguntas.find(p => p.pregunta === r.pregunta),
-    elegida: r.elegida,
-    correcta: r.correcta
-  })).filter(e => e.pregunta);
+  const erroresParaRefuerzo = respuestas.filter(r => !r.ok).map(r => {
+    const pregObj = examenActual.preguntas.find(p => p.pregunta === r.pregunta);
+    if (!pregObj || !pregObj.opciones) return null;
+    return { pregunta: { pregunta: pregObj.pregunta, opciones: pregObj.opciones, respuesta: pregObj.respuesta, imagen: pregObj.imagen||'', video: pregObj.video||'' }, elegida: r.elegida, correcta: r.correcta };
+  }).filter(Boolean);
   localStorage.setItem(`errores_${dia}_${materia}`, JSON.stringify(erroresParaRefuerzo));
   intentarDesbloquearSiguienteDia();
   guardarEstadoLocal();
@@ -1036,8 +1036,9 @@ function iniciarRefuerzoDesdeResultado() {
 
 function iniciarRefuerzoDesdeMenu(dia, materia) {
   const key = `errores_${dia}_${materia}`;
-  const errores = JSON.parse(localStorage.getItem(key) || '[]');
-  if (!errores.length) { alert('No hay errores guardados para este examen.'); return; }
+  const erroresRaw = JSON.parse(localStorage.getItem(key) || '[]');
+  const errores = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
+if (!errores.length) { localStorage.removeItem(key); alert('Datos desactualizados. Haz el examen de nuevo.'); return; }
   arrancarRefuerzo(dia, materia, errores, null);
 }
 
@@ -1066,7 +1067,8 @@ async function renderPreguntaRefuerzo() {
 
   // Mostrar pregunta con spinner de explicación
   const letras = ['A','B','C','D'];
-  const opcionesHtml = letras.map(l => `
+  if (!q || !q.opciones) { document.getElementById('refuerzo-container').innerHTML = '<div style="padding:24px;text-align:center;color:#C92A2A;font-weight:700">⚠️ Datos incompletos. Haz el examen de nuevo para regenerar el refuerzo.</div>'; return; }
+const opcionesHtml = letras.map(l => `
     <button class="opcion-btn" onclick="responderRefuerzo('${l}')" id="rop-${l}">
       <span class="opcion-letra">${l}</span>
       <span>${q.opciones[l]}</span>
