@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 
-carpeta = r'C:\guia_sexto\public\imagenes\bio\dia1'
+carpeta = r'C:\guia_sexto\public\imagenes\bio\dia2'
 
 for nombre in os.listdir(carpeta):
     if nombre.lower().endswith('.png'):
