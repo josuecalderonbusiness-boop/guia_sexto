@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 
-carpeta = r'C:\guia_sexto\public\imagenes\soc\dia2'
+carpeta = r'C:\guia_sexto\public\imagenes\bio\dia5'
 
 for nombre in os.listdir(carpeta):
     ext = os.path.splitext(nombre)[1].lower()
