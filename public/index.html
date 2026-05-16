@@ -278,6 +278,35 @@
   .usuario-row { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #0F172A; gap:8px; flex-wrap:wrap; }
   .usuario-row:last-child { border-bottom:none; }
   @media(max-width:700px) { .admin-sidebar{display:none;} .admin-main{margin-left:0;padding:16px;} .admin-stats{grid-template-columns:repeat(2,1fr);} }
+
+  /* REFUERZO */
+  #screen-refuerzo { display:none; padding:0; }
+  .refuerzo-header {
+    padding:20px 24px 16px; background:white;
+    border-bottom:3px solid #F0F0F0; position:sticky; top:0; z-index:10;
+  }
+  .refuerzo-badge { padding:6px 16px; border-radius:50px; font-weight:800; font-size:0.9rem; background:linear-gradient(135deg,#845EF7,#6741D9); color:white; }
+  .refuerzo-container { padding:24px 20px; max-width:720px; margin:0 auto; }
+  .explicacion-card {
+    background:linear-gradient(135deg,#F0EBFF,#E8F4FF);
+    border:3px solid #845EF7; border-radius:20px; padding:20px 24px;
+    margin-bottom:24px; position:relative;
+  }
+  .explicacion-card::before { content:'🤖 Claude explica:'; font-size:0.78rem; font-weight:800; color:#845EF7; display:block; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px; }
+  .explicacion-texto { font-size:1rem; font-weight:600; line-height:1.6; color:#1A1A2E; }
+  .explicacion-cargando { display:flex; align-items:center; gap:10px; color:#845EF7; font-weight:700; }
+  .spinner-pequeño { width:20px; height:20px; border:3px solid #E0D0FF; border-top-color:#845EF7; border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0; }
+  .tu-resp-mal { background:#FFE8E8; border:2px solid #FF6B6B; border-radius:12px; padding:10px 16px; margin-bottom:12px; font-size:0.88rem; font-weight:700; color:#C92A2A; }
+  .refuerzo-resultado {
+    display:none; padding:32px 20px; max-width:600px; margin:0 auto; text-align:center;
+  }
+  .comparacion-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
+  .comp-card { border-radius:16px; padding:20px; text-align:center; }
+  .comp-card .comp-num { font-family:'Fredoka One',cursive; font-size:2.5rem; }
+  .comp-card .comp-label { font-size:0.85rem; font-weight:700; margin-top:4px; }
+  .comp-antes { background:#FFE8E8; color:#C92A2A; }
+  .comp-despues { background:#E8FFE8; color:#2B8A3E; }
+  .mejora-badge { font-family:'Fredoka One',cursive; font-size:1.3rem; padding:12px 28px; border-radius:50px; display:inline-block; margin:12px 0; }
 </style>
 </head>
 <body>
@@ -358,8 +387,46 @@
     <div id="res-detalle"></div>
   </div>
   <div class="btns-resultado">
+    <button class="btn-otra-materia" id="btn-corrige" onclick="iniciarRefuerzoDesdeResultado()" style="display:none;border-color:#845EF7;color:#845EF7">🔁 Corrige tus errores con IA</button>
     <button class="btn-otra-materia" onclick="volverInicio()">📚 Hacer otra materia</button>
     <button class="btn-inicio-final" onclick="volverInicio()">🏠 Ir al inicio</button>
+  </div>
+</div>
+
+<div id="screen-refuerzo">
+  <div class="refuerzo-header">
+    <div class="examen-top">
+      <button class="btn-volver" onclick="salirRefuerzo()">← Volver</button>
+      <span class="refuerzo-badge" id="refuerzo-badge">🔁 Refuerzo</span>
+      <span style="font-weight:800;font-size:0.95rem" id="refuerzo-dia-label"></span>
+    </div>
+    <div class="progress-bar-wrap" style="margin-top:12px">
+      <div class="progress-bar-fill" id="refuerzo-progress-fill" style="width:0%;background:linear-gradient(135deg,#845EF7,#6741D9)"></div>
+    </div>
+    <div class="progress-label">
+      <span id="refuerzo-progress-text">Pregunta 1 de ?</span>
+      <span id="refuerzo-progress-pct">0%</span>
+    </div>
+  </div>
+  <div class="refuerzo-container" id="refuerzo-container"></div>
+  <div class="refuerzo-resultado" id="refuerzo-resultado">
+    <div style="font-size:4rem;margin-bottom:12px" id="rref-emoji">🌟</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:1.8rem;margin-bottom:8px" id="rref-titulo">¡Mejoraste!</div>
+    <div style="color:#666;margin-bottom:24px" id="rref-sub"></div>
+    <div class="comparacion-grid">
+      <div class="comp-card comp-antes">
+        <div class="comp-num" id="rref-antes">0%</div>
+        <div class="comp-label">Primera vez</div>
+      </div>
+      <div class="comp-card comp-despues">
+        <div class="comp-num" id="rref-despues">0%</div>
+        <div class="comp-label">Tras el refuerzo</div>
+      </div>
+    </div>
+    <div class="mejora-badge" id="rref-mejora-badge"></div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">
+      <button class="btn-inicio-final" onclick="salirRefuerzo()">🏠 Volver al inicio</button>
+    </div>
   </div>
 </div>
 
@@ -449,7 +516,7 @@ function intentarDesbloquearSiguienteDia() {
 }
 
 function mostrar(id) {
-  ['screen-login','screen-inicio','screen-examen','screen-resultado','screen-misresultados','screen-admin'].forEach(s => {
+  ['screen-login','screen-inicio','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo'].forEach(s => {
     document.getElementById(s).style.display = 'none';
   });
   document.getElementById(id).style.display = id === 'screen-login' ? 'flex' : 'block';
@@ -585,6 +652,18 @@ async function renderInicio() {
           ${mat.nombre.split(' ')[0]}
         </button>`;
     }
+    // Botones de refuerzo por materia si tiene errores guardados
+    let refuerzoHtml = '';
+    for (const [key, mat] of Object.entries(MATERIAS)) {
+      const erroresKey = `errores_${dia}_${key}`;
+      const erroresGuardados = JSON.parse(localStorage.getItem(erroresKey) || 'null');
+      if (erroresGuardados && erroresGuardados.length > 0 && materiaCompletada(dia, key)) {
+        refuerzoHtml += `<button onclick="iniciarRefuerzoDesdeMenu(${dia},'${key}')"
+          style="margin-top:8px;width:100%;padding:8px 14px;background:linear-gradient(135deg,#F0EBFF,#E8F4FF);border:2px solid #845EF7;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;color:#6741D9;text-align:left">
+          🔁 Refuerzo ${mat.emoji} ${mat.nombre.split(' ')[0]} · ${erroresGuardados.length} error${erroresGuardados.length>1?'es':''}
+        </button>`;
+      }
+    }
     const lockIcon = !disponible ? '🔒 ' : (completo ? '✅ ' : '');
     card.innerHTML = `
       <div class="dia-header">
@@ -595,6 +674,7 @@ async function renderInicio() {
         </div>
       </div>
       <div class="materias-grid">${materiasHtml}</div>
+      ${refuerzoHtml}
     `;
     cont.appendChild(card);
   }
@@ -710,6 +790,13 @@ async function terminarExamen() {
 
   fetch('/api/progreso?codigo='+encodeURIComponent(estado.codigo),{method:'DELETE'}).catch(()=>{});
   estado.completados[`${dia}_${materia}`] = true;
+  // Guardar errores para refuerzo
+  const erroresParaRefuerzo = respuestas.filter(r => !r.ok).map(r => ({
+    pregunta: examenActual.preguntas.find(p => p.pregunta === r.pregunta),
+    elegida: r.elegida,
+    correcta: r.correcta
+  })).filter(e => e.pregunta);
+  localStorage.setItem(`errores_${dia}_${materia}`, JSON.stringify(erroresParaRefuerzo));
   intentarDesbloquearSiguienteDia();
   guardarEstadoLocal();
 
@@ -751,6 +838,11 @@ async function terminarExamen() {
   mostrar('screen-resultado');
   window.scrollTo(0,0);
   lanzarConfetti(pct);
+  // Mostrar botón refuerzo si hubo errores
+  const errores = respuestas.filter(r => !r.ok);
+  const btnCorrige = document.getElementById('btn-corrige');
+  if (errores.length > 0) btnCorrige.style.display = 'block';
+  else btnCorrige.style.display = 'none';
 }
 
 function lanzarConfetti(pct) {
@@ -870,6 +962,230 @@ async function verMisResultados() {
   } catch(e) {
     cont.innerHTML = '<div class="error-msg">⚠️ Error cargando resultados. Revisa la conexión.</div>';
   }
+}
+
+// ── REFUERZO ─────────────────────────────────────────────────────────
+let refuerzoActual = { dia:1, materia:'', errores:[], idx:0, puntaje:0, pctOriginal:0 };
+
+function iniciarRefuerzoDesdeResultado() {
+  const { dia, materia, respuestas, preguntas, puntaje } = examenActual;
+  const errores = respuestas.filter(r => !r.ok).map(r => ({
+    pregunta: preguntas.find(p => p.pregunta === r.pregunta),
+    elegida: r.elegida,
+    correcta: r.correcta
+  })).filter(e => e.pregunta);
+  const pct = Math.round((puntaje / preguntas.length) * 100);
+  arrancarRefuerzo(dia, materia, errores, pct);
+}
+
+function iniciarRefuerzoDesdeMenu(dia, materia) {
+  const key = `errores_${dia}_${materia}`;
+  const errores = JSON.parse(localStorage.getItem(key) || '[]');
+  if (!errores.length) { alert('No hay errores guardados para este examen.'); return; }
+  arrancarRefuerzo(dia, materia, errores, null);
+}
+
+function arrancarRefuerzo(dia, materia, errores, pctOriginal) {
+  const mat = MATERIAS[materia];
+  refuerzoActual = { dia, materia, errores, idx: 0, puntaje: 0, pctOriginal, respuestas: [] };
+  document.getElementById('refuerzo-badge').textContent = `🔁 Refuerzo ${mat.emoji} ${mat.nombre}`;
+  document.getElementById('refuerzo-dia-label').textContent = `📅 Día ${dia}`;
+  document.getElementById('refuerzo-resultado').style.display = 'none';
+  document.getElementById('refuerzo-container').style.display = 'block';
+  mostrar('screen-refuerzo');
+  window.scrollTo(0,0);
+  renderPreguntaRefuerzo();
+}
+
+async function renderPreguntaRefuerzo() {
+  const { errores, idx } = refuerzoActual;
+  const total = errores.length;
+  const e = errores[idx];
+  const q = e.pregunta;
+  const pct = Math.round((idx / total) * 100);
+
+  document.getElementById('refuerzo-progress-fill').style.width = pct + '%';
+  document.getElementById('refuerzo-progress-text').textContent = `Pregunta ${idx+1} de ${total}`;
+  document.getElementById('refuerzo-progress-pct').textContent = pct + '%';
+
+  // Mostrar pregunta con spinner de explicación
+  const letras = ['A','B','C','D'];
+  const opcionesHtml = letras.map(l => `
+    <button class="opcion-btn" onclick="responderRefuerzo('${l}')" id="rop-${l}">
+      <span class="opcion-letra">${l}</span>
+      <span>${q.opciones[l]}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('refuerzo-container').innerHTML = `
+    <div class="fade-in">
+      <p class="pregunta-num">🔁 Refuerzo ${idx+1} de ${total}</p>
+      <div class="tu-resp-mal">❌ Antes respondiste: Opción ${e.elegida} — "${q.opciones[e.elegida]}"</div>
+      <div class="explicacion-card" id="explicacion-card">
+        <div class="explicacion-cargando" id="explicacion-cargando">
+          <div class="spinner-pequeño"></div>
+          <span>Claude está preparando una explicación para ti...</span>
+        </div>
+        <div class="explicacion-texto" id="explicacion-texto" style="display:none"></div>
+      </div>
+      ${q.imagen ? `<img src="${q.imagen}" style="width:100%;max-width:480px;border-radius:14px;margin-bottom:16px;display:block;border:3px solid #E8E8E8;" onerror="this.style.display='none'"/>` : ''}
+      <p class="pregunta-text">${q.pregunta}</p>
+      <div class="opciones-list" id="refuerzo-opciones" style="opacity:0.4;pointer-events:none">${opcionesHtml}</div>
+      <div class="feedback-msg" id="refuerzo-feedback"></div>
+    </div>
+  `;
+
+  // Llamar a Claude API para explicación
+  await generarExplicacionIA(q, e.elegida, e.correcta);
+
+  // Habilitar opciones tras explicación
+  document.getElementById('refuerzo-opciones').style.opacity = '1';
+  document.getElementById('refuerzo-opciones').style.pointerEvents = 'auto';
+}
+
+async function generarExplicacionIA(q, elegida, correcta) {
+  const prompt = `Eres un profesor amable que explica a un niño de 11-12 años (grado 6) por qué se equivocó en una pregunta de examen.
+
+Pregunta: "${q.pregunta}"
+El niño respondió: Opción ${elegida} — "${q.opciones[elegida]}"
+La respuesta correcta era: Opción ${correcta} — "${q.opciones[correcta]}"
+
+Explícale en máximo 3 oraciones cortas y simples:
+1. Por qué su respuesta estaba mal
+2. Por qué la respuesta correcta es la correcta
+3. Un tip fácil para recordarlo
+
+Usa lenguaje sencillo, amigable, sin tecnicismos innecesarios. NO uses LaTeX ni símbolos especiales. Empieza directo con la explicación, sin saludos.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const texto = data.content?.[0]?.text || 'No se pudo cargar la explicación.';
+    document.getElementById('explicacion-cargando').style.display = 'none';
+    const textoEl = document.getElementById('explicacion-texto');
+    textoEl.style.display = 'block';
+    textoEl.textContent = texto;
+  } catch(err) {
+    document.getElementById('explicacion-cargando').style.display = 'none';
+    const textoEl = document.getElementById('explicacion-texto');
+    textoEl.style.display = 'block';
+    textoEl.textContent = 'Lee bien la pregunta e intenta responderla de nuevo. ¡Tú puedes!';
+  }
+}
+
+function responderRefuerzo(letra) {
+  const e = refuerzoActual.errores[refuerzoActual.idx];
+  const correcta = e.correcta.toUpperCase();
+  const elegida = letra.toUpperCase();
+  const feedback = document.getElementById('refuerzo-feedback');
+
+  ['A','B','C','D'].forEach(l => {
+    const b = document.getElementById(`rop-${l}`);
+    if (b) b.disabled = true;
+  });
+
+  if (elegida === correcta) {
+    document.getElementById(`rop-${elegida}`).classList.add('correcta');
+    feedback.textContent = '🎉 ¡Esta vez lo lograste! ¡Muy bien!';
+    feedback.className = 'feedback-msg show ok';
+    refuerzoActual.puntaje++;
+  } else {
+    document.getElementById(`rop-${elegida}`).classList.add('incorrecta');
+    const bc = document.getElementById(`rop-${correcta}`);
+    if (bc) bc.classList.add('correcta-revelar');
+    feedback.textContent = `❌ La correcta sigue siendo ${correcta}. ¡Repasa la explicación!`;
+    feedback.className = 'feedback-msg show fail';
+  }
+
+  refuerzoActual.respuestas.push({ ok: elegida === correcta });
+  setTimeout(() => siguienteRefuerzo(), 2000);
+}
+
+async function siguienteRefuerzo() {
+  refuerzoActual.idx++;
+  if (refuerzoActual.idx < refuerzoActual.errores.length) {
+    renderPreguntaRefuerzo();
+  } else {
+    terminarRefuerzo();
+  }
+}
+
+async function terminarRefuerzo() {
+  const { dia, materia, puntaje, errores, pctOriginal, respuestas } = refuerzoActual;
+  const total = errores.length;
+  const pctNuevo = Math.round((puntaje / total) * 100);
+  const mat = MATERIAS[materia];
+
+  // Guardar en Sheets
+  try {
+    await fetch('/api/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: estado.nombre,
+        dia: `${dia} (Refuerzo)`,
+        materia: mat.nombre,
+        puntaje,
+        total,
+        respuestas,
+        fecha: new Date().toLocaleString('es-CO')
+      })
+    });
+  } catch(e) {}
+
+  // Si mejoró todos, limpiar errores guardados
+  if (puntaje === total) {
+    localStorage.removeItem(`errores_${dia}_${materia}`);
+  }
+
+  // Mostrar resultado
+  document.getElementById('refuerzo-container').style.display = 'none';
+  const resDiv = document.getElementById('refuerzo-resultado');
+  resDiv.style.display = 'block';
+
+  const mejora = pctOriginal !== null ? pctNuevo - pctOriginal : null;
+  let emoji, titulo, sub;
+  if (pctNuevo === 100) { emoji = '🏆'; titulo = '¡Perfecto en el refuerzo!'; sub = '¡Corregiste todos tus errores!'; }
+  else if (pctNuevo >= 60) { emoji = '📈'; titulo = '¡Mejoraste!'; sub = `Corregiste ${puntaje} de ${total} errores. ¡Sigue así!`; }
+  else { emoji = '💪'; titulo = '¡Sigue practicando!'; sub = `Corregiste ${puntaje} de ${total}. ¡Repasa los temas y vuelve a intentarlo!`; }
+
+  document.getElementById('rref-emoji').textContent = emoji;
+  document.getElementById('rref-titulo').textContent = titulo;
+  document.getElementById('rref-sub').textContent = sub;
+
+  if (pctOriginal !== null) {
+    document.getElementById('rref-antes').textContent = pctOriginal + '%';
+    document.getElementById('rref-despues').textContent = pctNuevo + '%';
+    const badge = document.getElementById('rref-mejora-badge');
+    if (mejora > 0) {
+      badge.textContent = `📈 +${mejora}% de mejora`;
+      badge.style.background = '#E8FFE8'; badge.style.color = '#2B8A3E';
+    } else if (mejora === 0) {
+      badge.textContent = '➡️ Mismo puntaje — ¡practica más!';
+      badge.style.background = '#FFF3CD'; badge.style.color = '#856404';
+    } else {
+      badge.textContent = '💡 El refuerzo te ayuda a entender mejor';
+      badge.style.background = '#F0EBFF'; badge.style.color = '#6741D9';
+    }
+  } else {
+    document.querySelector('.comparacion-grid').style.display = 'none';
+  }
+
+  window.scrollTo(0,0);
+}
+
+function salirRefuerzo() {
+  mostrar('screen-inicio');
+  renderInicio();
+  window.scrollTo(0,0);
 }
 
 // ── ADMIN ────────────────────────────────────────────────────────────
