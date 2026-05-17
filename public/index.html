@@ -1128,7 +1128,8 @@ async function continuarExamen(p) {
   const mat = MATERIAS[p.materia];
   const res = await fetch(`/api/preguntas?dia=${p.dia}&materia=${p.materia}`);
   const data = await res.json();
-  examenActual = { dia: p.dia, materia: p.materia, preguntas: data.preguntas, idx: p.idx+1, puntaje: p.puntaje, respuestas: p.respuestas, intentos: 0 };
+  const idxSiguiente = p.idx + 1;
+  examenActual = { dia: p.dia, materia: p.materia, preguntas: data.preguntas, idx: idxSiguiente, puntaje: p.puntaje, respuestas: p.respuestas, intentos: 0 };
   document.getElementById('examen-badge').textContent = `${mat.emoji} ${mat.nombre}`;
   document.getElementById('examen-badge').style.background = mat.gradiente;
   document.getElementById('examen-badge').style.color = 'white';
@@ -1137,7 +1138,11 @@ async function continuarExamen(p) {
   document.getElementById('examen-dia-label').textContent = `📅 Día ${p.dia}`;
   document.getElementById('progress-fill').style.background = mat.gradiente;
   mostrar('screen-examen');
-  renderPregunta();
+  if (idxSiguiente >= data.preguntas.length) {
+    terminarExamen();
+  } else {
+    renderPregunta();
+  }
 }
 
 // ── MIS RESULTADOS ───────────────────────────────────────────────────
