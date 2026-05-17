@@ -1020,7 +1020,7 @@ async function terminarExamen() {
   const { dia, materia, puntaje, preguntas, respuestas } = examenActual;
   const total = preguntas.length;
   const pct = Math.round((puntaje / total) * 100);
-  const mat = MATERIAS[materia] || { nombre: (MATERIAS_JERO||{})[materia]?.nombre || materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' };
+  const mat = (!examenActual.esJero && MATERIAS[materia]) ? MATERIAS[materia] : (MATERIAS_JERO?.[materia] ? { nombre: MATERIAS_JERO[materia].nombre, gradiente: MATERIAS_JERO[materia].bg, color: '#FF6B6B', emoji: MATERIAS_JERO[materia].emoji } : { nombre: materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' });
   // Limpiar pantalla inmediatamente para no quedarse en el spinner
   const pc = document.getElementById('pregunta-container');
   if (pc) pc.innerHTML = '<div class="loading"><div class="spinner"></div><span>Guardando resultado...</span></div>';
@@ -2314,7 +2314,7 @@ async function iniciarLeccionJero(materia, leccion) {
 }
 
 // Parchar terminarExamen para marcar lección de Jero como completada
-const _terminarExamenOriginal = terminarExamen;
+const _terminarExamenOriginal = terminarExamen.bind({});
 async function terminarExamen() {
   if (examenActual.esJero) {
     const { materia, leccionJero, puntaje, preguntas } = examenActual;
