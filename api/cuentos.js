@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: 'Cuentos!A2:O100',
+      range: 'Cuentos!A2:P100',
       valueRenderOption: 'UNFORMATTED_VALUE',
     });
 
