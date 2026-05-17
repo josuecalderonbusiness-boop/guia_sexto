@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Brainy</title>
 <meta name="description" content="Hecho con amor por papá y mamá, para que aprender sea tu aventura favorita. 🧠✨"/>
-<meta name="version" content="errores-multidispositivo-v2"/>
+<meta name="version" content="errores-multidispositivo-v3"/>
 <link rel="icon" type="image/png" href="/favicon.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
 <style>
@@ -641,26 +641,36 @@ async function sincronizarCompletadosDesdeSheets() {
   } catch(e) { console.warn('No se pudo sincronizar completados', e); }
 }
 
-// Detectar qué materias/días tienen errores en Sheets y actualizar localStorage
+// Sincronizar errores desde Sheets a localStorage (silencioso, segundo plano)
 async function sincronizarBotonesRefuerzoDesdeSheets() {
   if (!estado.codigo) return;
   try {
-    const res = await fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&todos=1`);
-    if (!res.ok) return;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch(
+      `/api/errores?codigo=${encodeURIComponent(estado.codigo)}&todos=1`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timer);
+    if (!res.ok) return;           // 404/500 → silencioso (hoja puede no existir aún)
     const data = await res.json();
-    if (!data.ok || !data.entradas) return;
-    // Guardar en localStorage para que renderInicio los muestre
+    if (!data.ok || !Array.isArray(data.entradas)) return;
+    let sincronizados = 0;
     data.entradas.forEach(e => {
-      if (e.errores && e.errores.length > 0) {
-        const key = `errores_${e.dia}_${e.materia}`;
-        const existentes = JSON.parse(localStorage.getItem(key) || '[]');
-        // Solo actualizar si localStorage está vacío (para no pisar datos frescos)
-        if (existentes.length === 0) {
-          localStorage.setItem(key, JSON.stringify(e.errores));
-        }
+      if (!e.errores || !e.errores.length) return;
+      const key = `errores_${e.dia}_${e.materia}`;
+      const existentes = JSON.parse(localStorage.getItem(key) || '[]');
+      // Solo escribir si localStorage no tiene datos frescos
+      if (existentes.length === 0) {
+        localStorage.setItem(key, JSON.stringify(e.errores));
+        sincronizados++;
       }
     });
-  } catch(e) {}
+    // Refrescar el render solo si encontramos algo nuevo
+    if (sincronizados > 0) renderInicio();
+  } catch(e) {
+    // Silencioso — red cortada, hoja inexistente, timeout → no importa
+  }
 }
 
 function cambiarNombre() {
@@ -1092,49 +1102,68 @@ function iniciarRefuerzoDesdeResultado() {
 async function iniciarRefuerzoDesdeMenu(dia, materia) {
   const key = `errores_${dia}_${materia}`;
 
-  // 1. Intentar desde localStorage primero (más rápido)
+  // 1. Intentar desde localStorage primero (más rápido, sin red)
   const erroresRaw = JSON.parse(localStorage.getItem(key) || '[]');
   const erroresLocal = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
-
   if (erroresLocal.length > 0) {
     arrancarRefuerzo(dia, materia, erroresLocal, null);
     return;
   }
 
-  // 2. Si no hay local, buscar en Sheets (otro dispositivo guardó los errores)
+  // 2. Sin localStorage → buscar en Sheets
   if (!estado.codigo) {
-    alert('Inicia sesión para cargar el refuerzo desde cualquier dispositivo.');
+    alert('Inicia sesión para acceder al refuerzo desde cualquier dispositivo.');
     return;
   }
 
-  // Mostrar indicador de carga en el botón
+  // Guardar referencia al botón ANTES del try/finally
   const btnId = `btn-refuerzo-${dia}-${materia}`;
   const btnEl = document.getElementById(btnId);
-  const textoOriginal = btnEl ? btnEl.textContent : '';
-  if (btnEl) { btnEl.textContent = '⏳ Cargando...'; btnEl.disabled = true; }
+  const textoOriginal = btnEl ? btnEl.innerHTML : '';
 
   try {
+    if (btnEl) {
+      btnEl.innerHTML = '⏳ Buscando en la nube...';
+      btnEl.disabled = true;
+      btnEl.style.opacity = '0.7';
+    }
+
     const res = await fetch(
-      `/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${materia}`
+      `/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${encodeURIComponent(materia)}`,
+      { signal: AbortSignal.timeout(8000) }   // timeout 8s
     );
+
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
     const data = await res.json();
 
-    if (data.ok && data.errores && data.errores.length > 0) {
-      const erroresSheets = data.errores.filter(e => e?.pregunta?.opciones?.A !== undefined);
-      if (erroresSheets.length > 0) {
-        // Guardar en localStorage para próxima vez (caché)
-        localStorage.setItem(key, JSON.stringify(erroresSheets));
-        arrancarRefuerzo(dia, materia, erroresSheets, null);
-        return;
+    if (data.ok && Array.isArray(data.errores) && data.errores.length > 0) {
+      const validos = data.errores.filter(e => e?.pregunta?.opciones?.A !== undefined);
+      if (validos.length > 0) {
+        // Cachear en localStorage para la próxima vez
+        localStorage.setItem(key, JSON.stringify(validos));
+        arrancarRefuerzo(dia, materia, validos, null);
+        return;   // sale del try → finally restaura si algo falla, pero aquí ya cambia pantalla
       }
     }
 
-    // 3. No hay errores en ningún lado
-    if (btnEl) { btnEl.textContent = textoOriginal; btnEl.disabled = false; }
-    alert('No hay errores guardados para este refuerzo. Haz el examen primero en este u otro dispositivo.');
-  } catch(e) {
-    if (btnEl) { btnEl.textContent = textoOriginal; btnEl.disabled = false; }
-    alert('Error de conexión al cargar el refuerzo. Revisa el internet e intenta de nuevo.');
+    // No hay errores guardados en Sheets tampoco
+    alert('Aún no hay errores guardados en la nube para este refuerzo.
+¿Ya hiciste este examen en el otro dispositivo? Asegúrate de que tenga internet al terminar.');
+
+  } catch(err) {
+    if (err.name === 'TimeoutError') {
+      alert('Se tardó demasiado. Revisa tu conexión e intenta de nuevo.');
+    } else {
+      alert('No se pudo conectar al servidor. Revisa el internet e intenta de nuevo.');
+    }
+  } finally {
+    // SIEMPRE restaurar el botón, sin importar qué pasó
+    if (btnEl) {
+      btnEl.innerHTML = textoOriginal;
+      btnEl.disabled = false;
+      btnEl.style.opacity = '1';
+    }
   }
 }
 

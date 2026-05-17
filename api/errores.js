@@ -10,12 +10,23 @@ function getAuth() {
   });
 }
 
+// Lee todas las filas de la hoja Errores. Si la hoja no existe, devuelve [].
+async function readAllRows(sheets) {
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: 'Errores!A2:D500',
+    });
+    return response.data.values || [];
+  } catch(e) {
+    // La hoja 'Errores' aun no existe → devolver vacío en lugar de explotar
+    if (e.message && e.message.includes('Unable to parse range')) return [];
+    throw e;
+  }
+}
+
 async function findRow(sheets, codigo, dia, materia) {
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range: 'Errores!A2:D500',
-  });
-  const rows = response.data.values || [];
+  const rows = await readAllRows(sheets);
   const idx = rows.findIndex(r =>
     r[0]?.trim().toUpperCase() === codigo.trim().toUpperCase() &&
     String(r[1]) === String(dia) &&
@@ -35,18 +46,14 @@ module.exports = async (req, res) => {
     const auth = getAuth();
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // GET — leer errores
+    // ── GET ─────────────────────────────────────────────────────────────────
     if (req.method === 'GET') {
       const { codigo, dia, materia, todos } = req.query;
       if (!codigo) return res.status(400).json({ ok: false, error: 'Falta codigo' });
 
-      // ?todos=1 — devolver todas las entradas del alumno (para sincronizacion)
+      // ?todos=1 — todas las entradas del alumno (para sincronizacion multi-dispositivo)
       if (todos === '1') {
-        const response = await sheets.spreadsheets.values.get({
-          spreadsheetId: SHEET_ID,
-          range: 'Errores!A2:D500',
-        });
-        const rows = response.data.values || [];
+        const rows = await readAllRows(sheets);
         const entradas = rows
           .filter(r => r[0]?.trim().toUpperCase() === codigo.trim().toUpperCase())
           .map(r => {
@@ -58,20 +65,18 @@ module.exports = async (req, res) => {
         return res.json({ ok: true, entradas });
       }
 
-      // Lectura individual
+      // Lectura individual por dia+materia
       if (!dia || !materia)
         return res.status(400).json({ ok: false, error: 'Faltan parametros dia/materia' });
 
       const { rows, idx } = await findRow(sheets, codigo, dia, materia);
       if (idx < 0) return res.json({ ok: true, errores: [] });
-
-      const row = rows[idx];
       let errores = [];
-      try { errores = JSON.parse(row[3] || '[]'); } catch(e) {}
+      try { errores = JSON.parse(rows[idx][3] || '[]'); } catch(e) {}
       return res.json({ ok: true, errores });
     }
 
-    // POST — guardar errores
+    // ── POST ─────────────────────────────────────────────────────────────────
     if (req.method === 'POST') {
       const { codigo, dia, materia, errores } = req.body;
       if (!codigo || !dia || !materia)
@@ -98,7 +103,7 @@ module.exports = async (req, res) => {
       return res.json({ ok: true });
     }
 
-    // DELETE — borrar errores cuando refuerzo completado al 100%
+    // ── DELETE ────────────────────────────────────────────────────────────────
     if (req.method === 'DELETE') {
       const { codigo, dia, materia } = req.query;
       if (!codigo || !dia || !materia)
@@ -116,7 +121,7 @@ module.exports = async (req, res) => {
 
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error(err);
+    console.error('errores.js error:', err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 };
