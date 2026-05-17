@@ -37,7 +37,7 @@ res.setHeader('Cache-Control', 'no-store');
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: `${sheetName}!A2:H35`,
+      range: `${sheetName}!A2:I35`,
 valueRenderOption: 'UNFORMATTED_VALUE',
     });
 
@@ -55,7 +55,8 @@ valueRenderOption: 'UNFORMATTED_VALUE',
         },
         respuesta: (row[5] || 'A').toUpperCase(),
         imagen: row[6] || '',
-        video: row[7] || '',
+        video: row[7] && row[7].startsWith('http') ? row[7] : '',
+        explicacion: row[8] || '',
       }));
 
     res.status(200).json({ ok: true, preguntas, sheetName });

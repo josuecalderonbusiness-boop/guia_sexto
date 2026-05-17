@@ -271,13 +271,14 @@ Formato JSON exacto:
       p.opciones?.C || '',
       p.opciones?.D || '',
       (p.respuesta || 'A').toUpperCase(),
-      '',           // imagen (vacío — se puede agregar después)
-      p.explicacion || '',
+      '',              // G: imagen
+      '',              // H: video
+      p.explicacion || '',  // I: explicación
     ]);
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
-      range: `${sheetName}!A2:H${rows.length + 1}`,
+      range: `${sheetName}!A2:I${rows.length + 1}`,
       valueInputOption: 'RAW',
       requestBody: { values: rows },
     });
