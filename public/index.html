@@ -1005,6 +1005,9 @@ async function terminarExamen() {
   const total = preguntas.length;
   const pct = Math.round((puntaje / total) * 100);
   const mat = MATERIAS[materia];
+  // Limpiar pantalla inmediatamente para no quedarse en el spinner
+  const pc = document.getElementById('pregunta-container');
+  if (pc) pc.innerHTML = '<div class="loading"><div class="spinner"></div><span>Guardando resultado...</span></div>';
 
   fetch('/api/progreso?codigo='+encodeURIComponent(estado.codigo),{method:'DELETE'}).catch(()=>{});
   estado.completados[`${dia}_${materia}`] = true;
@@ -1037,15 +1040,20 @@ async function terminarExamen() {
   intentarDesbloquearSiguienteDia();
   guardarEstadoLocal();
 
+  // Guardar en Sheets con timeout de 8 segundos para no bloquear la UI
   try {
+    const ctrl = new AbortController();
+    const tOut = setTimeout(() => ctrl.abort(), 8000);
     await fetch('/api/guardar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         nombre: estado.nombre, dia, materia: mat.nombre,
         puntaje, total, respuestas, fecha: new Date().toLocaleString('es-CO')
-      })
+      }),
+      signal: ctrl.signal
     });
+    clearTimeout(tOut);
   } catch(e) { console.warn('No se pudo guardar en Sheets', e); }
 
   let emoji, titulo, sub;
