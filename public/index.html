@@ -945,7 +945,7 @@ function responder(letra) {
     feedback.className = 'feedback-msg show ok';
     examenActual.puntaje++;
     examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: true });
-    setTimeout(() => siguiente(), 1500);
+    let ya = false; setTimeout(() => { if(!ya){ya=true;siguiente();} }, 1500);
   } else {
     btnEl.classList.add('incorrecta');
     const btnCorrecta = document.getElementById(`op-${correcta}`);
@@ -953,7 +953,9 @@ function responder(letra) {
     feedback.textContent = `❌ Era la opción ${correcta}. ¡Sigue adelante!`;
     feedback.className = 'feedback-msg show fail';
     examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: false });
-    let autoTimer = setTimeout(() => siguiente(), 6000);
+    let sigLlamado = false;
+    function sigUnaVez() { if (!sigLlamado) { sigLlamado = true; siguiente(); } }
+    let autoTimer = setTimeout(() => sigUnaVez(), 6000);
     const btnExplicar = document.createElement('button');
     btnExplicar.textContent = '🤖 ¿Por qué era esa?';
     btnExplicar.style.cssText = 'margin-top:10px;padding:10px 20px;background:linear-gradient(135deg,#845EF7,#6741D9);color:white;border:none;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.9rem;cursor:pointer;display:block;width:100%';
@@ -974,7 +976,7 @@ function responder(letra) {
         const btnContinuar = document.createElement('button');
         btnContinuar.textContent = 'Continuar →';
         btnContinuar.style.cssText = 'margin-top:10px;padding:12px 20px;background:linear-gradient(135deg,#51CF66,#37B24D);color:white;border:none;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;display:block;width:100%';
-        btnContinuar.onclick = () => siguiente();
+        btnContinuar.onclick = () => sigUnaVez();
         const wrap = document.createElement('div');
         wrap.appendChild(explicacionDiv);
         wrap.appendChild(btnContinuar);
@@ -982,7 +984,7 @@ function responder(letra) {
       } catch(e) {
         btnExplicar.textContent = '🤖 ¿Por qué era esa?';
         btnExplicar.disabled = false;
-        autoTimer = setTimeout(() => siguiente(), 4000);
+        autoTimer = setTimeout(() => sigUnaVez(), 4000);
       }
     };
     document.getElementById('feedback-msg').after(btnExplicar);
@@ -995,9 +997,10 @@ function siguiente() {
   examenActual.idx++;
   if (examenActual.idx < examenActual.preguntas.length) {
     renderPregunta();
-  } else {
+  } else if (examenActual.idx === examenActual.preguntas.length) {
     terminarExamen();
   }
+  // si idx > length, ignorar — ya se llamó terminarExamen
 }
 
 async function terminarExamen() {
