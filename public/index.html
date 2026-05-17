@@ -424,8 +424,9 @@
     <p>Elige qué quieres aprender hoy 🌟</p>
   </div>
   <div class="jero-materias" id="jero-materias-container"></div>
-  <div style="text-align:center;margin-top:20px">
-    <button onclick="verMisResultados()" style="background:linear-gradient(135deg,#1A1A2E,#0F3460);color:white;border:none;border-radius:16px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2)">📊 Mis Resultados</button>
+  <div style="text-align:center;margin-top:20px;display:flex;flex-direction:column;gap:12px;align-items:center">
+    <button onclick="verBiblioteca()" style="background:linear-gradient(135deg,#845EF7,#6741D9);color:white;border:none;border-radius:16px;padding:14px 36px;font-family:Nunito,sans-serif;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 16px rgba(132,94,247,0.4);width:100%;max-width:320px">📚 Mis Cuentos</button>
+    <button onclick="verMisResultados()" style="background:linear-gradient(135deg,#1A1A2E,#0F3460);color:white;border:none;border-radius:16px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2);width:100%;max-width:320px">📊 Mis Resultados</button>
   </div>
 </div>
 
@@ -478,7 +479,22 @@
   </div>
 </div>
 
-<div id="screen-refuerzo">
+<div id="screen-cuentos" style="display:none;padding:20px 16px;max-width:600px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+    <button class="btn-volver" onclick="volverInicio()">← Volver</button>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:1.6rem">📚 Biblioteca</h2>
+  </div>
+  <div id="cuentos-lista"></div>
+</div>
+
+<div id="screen-lector" style="display:none">
+  <div style="position:sticky;top:0;z-index:10;padding:16px 20px;display:flex;align-items:center;justify-content:space-between" id="lector-header">
+    <button class="btn-volver" id="lector-btn-volver">← Volver</button>
+    <span style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:white" id="lector-titulo"></span>
+    <span style="font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.7)" id="lector-cap"></span>
+  </div>
+  <div id="lector-contenido" style="max-width:680px;margin:0 auto;padding:20px 20px 40px"></div>
+</div>
   <div class="refuerzo-header">
     <div class="examen-top">
       <button class="btn-volver" onclick="salirRefuerzo()">← Volver</button>
@@ -601,7 +617,7 @@ function intentarDesbloquearSiguienteDia() {
 }
 
 function mostrar(id) {
-  ['screen-login','screen-grado','screen-inicio','screen-jero','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo'].forEach(s => {
+  ['screen-login','screen-grado','screen-inicio','screen-jero','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo','screen-cuentos','screen-lector'].forEach(s => {
     document.getElementById(s).style.display = 'none';
   });
   document.getElementById(id).style.display = id === 'screen-login' ? 'flex' : 'block';
@@ -1499,7 +1515,230 @@ async function terminarRefuerzo() {
   window.scrollTo(0,0);
 }
 
-function salirRefuerzo() {
+// ── BIBLIOTECA DE CUENTOS ─────────────────────────────────────────────
+let cuentoActual = { serie: '', capitulo: 0, color: '#0F0F2E' };
+
+async function verBiblioteca() {
+  mostrar('screen-cuentos');
+  window.scrollTo(0, 0);
+  const lista = document.getElementById('cuentos-lista');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div><span>Cargando biblioteca...</span></div>';
+  try {
+    const res = await fetch('/api/cuentos');
+    const data = await res.json();
+    if (!data.ok || !data.series.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:40px;color:#888"><div style="font-size:3rem">📭</div><p style="margin-top:12px;font-weight:700">Aún no hay cuentos disponibles.</p></div>';
+      return;
+    }
+    lista.innerHTML = data.series.map(serie => `
+      <div style="background:${serie.color};border-radius:24px;padding:20px;margin-bottom:20px;box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+        <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:white;margin-bottom:4px">📖 ${serie.nombre}</h3>
+        <p style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-bottom:16px">${serie.capitulos.length} capítulo${serie.capitulos.length > 1 ? 's' : ''}</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${serie.capitulos.map(cap => `
+            <button onclick="abrirCapitulo('${serie.nombre.replace(/'/g,"\\'")}', ${cap.numero})"
+              style="background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.25);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;width:100%;text-align:left"
+              onmouseover="this.style.background='rgba(255,255,255,0.25)'"
+              onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+              <span style="font-family:'Fredoka One',cursive;font-size:1.5rem;color:rgba(255,255,255,0.5);flex-shrink:0">${cap.numero}</span>
+              <div>
+                <div style="font-family:'Fredoka One',cursive;font-size:1rem;color:white">${cap.titulo}</div>
+                <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-top:2px">Capítulo ${cap.numero}</div>
+              </div>
+              <span style="margin-left:auto;color:rgba(255,255,255,0.5);font-size:1.2rem">▶</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    lista.innerHTML = '<div class="error-msg">⚠️ Error cargando la biblioteca. Revisa la conexión.</div>';
+  }
+}
+
+async function abrirCapitulo(serie, capitulo) {
+  mostrar('screen-lector');
+  window.scrollTo(0, 0);
+  const contenido = document.getElementById('lector-contenido');
+  contenido.innerHTML = '<div class="loading"><div class="spinner"></div><span>Abriendo capítulo...</span></div>';
+
+  try {
+    const res = await fetch(`/api/cuentos?serie=${encodeURIComponent(serie)}&capitulo=${capitulo}`);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+
+    const cap = data.capitulo;
+    cuentoActual = { serie, capitulo, color: cap.color };
+
+    // Header con color del cuento
+    const header = document.getElementById('lector-header');
+    header.style.background = cap.color;
+    document.getElementById('lector-titulo').textContent = cap.serie;
+    document.getElementById('lector-cap').textContent = `Capítulo ${cap.numero}`;
+    document.getElementById('lector-btn-volver').onclick = () => {
+      mostrar('screen-cuentos');
+      window.scrollTo(0, 0);
+    };
+
+    // Fondo del lector con color del cuento
+    document.getElementById('screen-lector').style.background = cap.color;
+    document.getElementById('screen-lector').style.minHeight = '100vh';
+
+    // Título del capítulo
+    let html = `
+      <div style="text-align:center;margin-bottom:32px;padding-top:8px">
+        <div style="font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;letter-spacing:2px;text-transform:uppercase">Capítulo ${cap.numero}</div>
+        <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;color:white;line-height:1.2">${cap.titulo}</h2>
+        <div style="width:60px;height:3px;background:rgba(255,255,255,0.3);border-radius:2px;margin:16px auto 0"></div>
+      </div>
+    `;
+
+    // Bloques de texto e imágenes
+    cap.bloques.forEach((bloque, i) => {
+      if (bloque.imagen && bloque.imagen.startsWith('http')) {
+        html += `<img src="${bloque.imagen}" style="width:100%;border-radius:16px;margin-bottom:20px;display:block;box-shadow:0 8px 24px rgba(0,0,0,0.4)" onerror="this.style.display='none'"/>`;
+      }
+      html += `
+        <p style="font-size:1.05rem;line-height:1.8;color:rgba(255,255,255,0.92);font-weight:600;margin-bottom:24px;text-indent:1.5em">
+          ${bloque.texto}
+        </p>
+      `;
+      // Separador entre bloques excepto el último
+      if (i < cap.bloques.length - 1) {
+        html += `<div style="text-align:center;color:rgba(255,255,255,0.2);font-size:1.2rem;margin-bottom:24px">✦ ✦ ✦</div>`;
+      }
+    });
+
+    // Sección de preguntas
+    if (cap.preguntas && cap.preguntas.length > 0) {
+      html += `
+        <div style="margin-top:40px;padding-top:32px;border-top:2px solid rgba(255,255,255,0.15)">
+          <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:white;text-align:center;margin-bottom:8px">¿Entendiste el capítulo? 🧠</h3>
+          <p style="color:rgba(255,255,255,0.6);text-align:center;font-size:0.9rem;margin-bottom:24px">Responde estas preguntas sobre lo que leíste</p>
+          <div id="preguntas-cuento"></div>
+        </div>
+      `;
+    }
+
+    contenido.innerHTML = html;
+
+    // Renderizar preguntas si hay
+    if (cap.preguntas && cap.preguntas.length > 0) {
+      renderPreguntasCuento(cap.preguntas, 0, cap.color);
+    }
+
+  } catch(e) {
+    contenido.innerHTML = `<div class="error-msg">⚠️ Error cargando el capítulo. Intenta de nuevo.</div>`;
+  }
+}
+
+let preguntasCuentoActual = [];
+let idxPreguntaCuento = 0;
+let puntajeCuento = 0;
+
+function renderPreguntasCuento(preguntas, idx, color) {
+  preguntasCuentoActual = preguntas;
+  idxPreguntaCuento = idx;
+  const cont = document.getElementById('preguntas-cuento');
+  if (!cont) return;
+
+  if (idx >= preguntas.length) {
+    // Resultado final
+    const pct = Math.round((puntajeCuento / preguntas.length) * 100);
+    const emoji = pct === 100 ? '🏆' : pct >= 60 ? '⭐' : '💪';
+    cont.innerHTML = `
+      <div style="text-align:center;padding:24px;background:rgba(255,255,255,0.1);border-radius:20px">
+        <div style="font-size:3rem;margin-bottom:12px">${emoji}</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.6rem;color:white;margin-bottom:8px">
+          ${pct === 100 ? '¡Perfecto!' : pct >= 60 ? '¡Bien hecho!' : '¡Sigue leyendo!'}
+        </div>
+        <div style="font-size:1rem;color:rgba(255,255,255,0.8);margin-bottom:20px">
+          Respondiste ${puntajeCuento} de ${preguntas.length} correctamente
+        </div>
+        <button onclick="verBiblioteca()" style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);color:white;border-radius:14px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer">
+          📚 Volver a la biblioteca
+        </button>
+      </div>
+    `;
+    lanzarConfetti(pct);
+    return;
+  }
+
+  const q = preguntas[idx];
+  const letras = ['A','B','C','D'];
+  cont.innerHTML = `
+    <div class="fade-in">
+      <div style="font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;text-align:center">
+        Pregunta ${idx + 1} de ${preguntas.length}
+      </div>
+      <div style="background:rgba(255,255,255,0.1);border-radius:16px;padding:18px;margin-bottom:16px">
+        <p style="font-size:1rem;font-weight:700;color:white;line-height:1.5">${q.pregunta}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${letras.map(l => `
+          <button class="opcion-cuento" onclick="responderCuento('${l}')" id="cop-${l}"
+            style="background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;text-align:left;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+            onmouseout="if(!this.disabled)this.style.background='rgba(255,255,255,0.1)'">
+            <span style="background:rgba(255,255,255,0.2);color:white;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex-shrink:0">${l}</span>
+            <span style="color:white;font-weight:600;font-size:0.95rem">${q.opciones[l]}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div id="feedback-cuento" style="margin-top:16px"></div>
+    </div>
+  `;
+}
+
+function responderCuento(letra) {
+  const q = preguntasCuentoActual[idxPreguntaCuento];
+  const correcta = q.respuesta.toUpperCase();
+  const elegida = letra.toUpperCase();
+  const feedback = document.getElementById('feedback-cuento');
+
+  // Deshabilitar botones
+  ['A','B','C','D'].forEach(l => {
+    const b = document.getElementById(`cop-${l}`);
+    if (b) {
+      b.disabled = true;
+      b.onmouseover = null;
+      b.onmouseout = null;
+    }
+  });
+
+  const btnElegido = document.getElementById(`cop-${elegida}`);
+  const btnCorrecto = document.getElementById(`cop-${correcta}`);
+
+  if (elegida === correcta) {
+    btnElegido.style.background = 'rgba(81,207,102,0.3)';
+    btnElegido.style.borderColor = '#51CF66';
+    puntajeCuento++;
+  } else {
+    btnElegido.style.background = 'rgba(255,107,107,0.3)';
+    btnElegido.style.borderColor = '#FF6B6B';
+    if (btnCorrecto) {
+      btnCorrecto.style.background = 'rgba(81,207,102,0.3)';
+      btnCorrecto.style.borderColor = '#51CF66';
+    }
+  }
+
+  // Mostrar explicación
+  feedback.innerHTML = `
+    <div style="padding:14px 18px;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:14px;margin-bottom:12px">
+      <div style="font-size:0.8rem;font-weight:800;color:rgba(255,255,255,0.6);margin-bottom:6px">${elegida === correcta ? '✅ ¡Correcto!' : '❌ Incorrecto'}</div>
+      <p style="color:rgba(255,255,255,0.9);font-size:0.9rem;font-weight:600;line-height:1.5">💡 ${q.explicacion}</p>
+    </div>
+    <button onclick="siguientePreguntaCuento()" style="width:100%;padding:14px;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.3);border-radius:14px;color:white;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer">
+      ${idxPreguntaCuento + 1 < preguntasCuentoActual.length ? 'Siguiente pregunta →' : 'Ver resultado 🏆'}
+    </button>
+  `;
+}
+
+function siguientePreguntaCuento() {
+  idxPreguntaCuento++;
+  renderPreguntasCuento(preguntasCuentoActual, idxPreguntaCuento, cuentoActual.color);
+  document.getElementById('preguntas-cuento')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
   mostrar('screen-inicio');
   renderInicio();
   window.scrollTo(0,0);

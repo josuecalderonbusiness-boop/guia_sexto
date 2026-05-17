@@ -82,24 +82,49 @@ Devuelve UNICAMENTE JSON valido sin texto adicional ni bloques de codigo markdow
   ]
 }}
 
-Genera exactamente 5 preguntas de comprension lectora distribuidas asi:
+Genera exactamente 8 preguntas distribuidas asi:
+
+--- BLOQUE 1: COMPRENSION LECTORA (5 preguntas) ---
 
 2 LITERALES (lo que esta explicito en el texto):
 - Identificacion de personajes principales y secundarios
 - Lugar, tiempo y secuencia de eventos
-- Ejemplo: Que paso primero, que hizo X, donde ocurrio
+- Ejemplo: Que paso primero, que hizo X, donde ocurrio, quien encontro la llave
 
 2 INFERENCIALES (lo que se deduce pero no esta escrito):
 - Deducir sentimientos o motivaciones de los personajes
-- Predecir resultados: si el personaje hizo esto, que crees que pasara
+- Predecir resultados: si el personaje hizo esto, que crees que pasara ahora
 - Deducir el proposito del texto o la ensenanza
 - Ejemplo: Por que crees que Mateo sintio miedo, que crees que hara Isla ahora
 
 1 CRITICA (opinion personal sustentada):
-- El nino debe tomar posicion y justificarla
+- El nino debe tomar posicion y justificarla con lo que leyo
 - Ejemplo: Estas de acuerdo con lo que hizo Eco, que habrias hecho tu en lugar de Mateo
 
-Cada pregunta debe tener 4 opciones creibles donde las incorrectas sean errores tipicos de comprension, no respuestas absurdas. La explicacion debe ensenарle al nino por que su respuesta estaba bien o mal usando frases del cuento como evidencia.
+--- BLOQUE 2: GRAMATICA APLICADA AL TEXTO (3 preguntas) ---
+Usa oraciones TEXTUALES o muy cercanas al cuento para hacer preguntas de gramatica.
+No inventes oraciones nuevas — usa frases que aparecen en el capituloq que escribiste.
+
+1 pregunta de SUSTANTIVOS o ADJETIVOS:
+- Identificar el sustantivo propio o comun en una frase del cuento
+- Identificar el adjetivo que describe a un personaje u objeto del cuento
+- Ejemplo: En la frase "una llave oxidada", el adjetivo que describe la llave es...
+
+1 pregunta de VERBOS Y TIEMPOS VERBALES:
+- Identificar el verbo en una frase del cuento
+- Identificar en que tiempo esta: pasado, presente o futuro
+- Ejemplo: En la frase "Mateo encontro la llave", el verbo esta en tiempo...
+
+1 pregunta de SINONIMOS, ANTONIMOS o CONECTORES:
+- Encontrar un sinonimo o antonimo de una palabra usada en el cuento
+- Identificar el conector logico usado en una frase del cuento y su funcion
+- Ejemplo: En el cuento, la palabra "curioso" significa lo mismo que...
+
+REGLAS para todas las preguntas:
+- 4 opciones creibles (A, B, C, D), una sola correcta
+- Los distractores deben ser errores tipicos que cometen los ninos de 8 anos
+- La explicacion debe ser breve, amigable y usar frases del cuento como evidencia
+- Lenguaje simple y claro para nino de 8 anos
 """
 
 def llamar_openai(prompt):
