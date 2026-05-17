@@ -1275,9 +1275,10 @@ async function verMisResultados() {
         const pct = parseInt(r.porcentaje);
         const h = Math.max(4, Math.round((pct / 100) * 80));
         const bg = pct >= 80 ? '#51CF66' : pct >= 60 ? '#FF922B' : '#FF6B6B';
-        html += `<div class="res-barra-wrap">
+        const exKey = JSON.stringify({nombre: estado.nombre, dia: r.dia, materia: r.materia, respuestas: r.respuestas, puntaje: r.puntaje, total: r.total}).replace(/"/g,'&quot;');
+        html += `<div class="res-barra-wrap" onclick="verExamenAdmin(${exKey})" style="cursor:pointer" title="Ver detalle">
           <span class="res-barra-pct" style="color:${bg}">${pct}%</span>
-          <div class="res-barra" style="height:${h}px;background:${bg}"></div>
+          <div class="res-barra" style="height:${h}px;background:${bg};border-radius:6px 6px 0 0;transition:opacity 0.2s" onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'"></div>
           <span class="res-barra-dia">${r.dia}</span>
         </div>`;
       });
@@ -2082,7 +2083,18 @@ function verPerfil(nombre) {
         return `<div class="falencia-card">
           <h4 style="color:white;font-family:'Fredoka One',cursive;font-size:1rem;margin-bottom:12px">${MATERIAS[key]?.emoji||''} ${matNombre}</h4>
           <div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:10px">${bars}</div>
-          ${respFalladas.length ? `<div style="margin-top:8px;border-top:1px solid #334155;padding-top:8px"><p style="font-size:0.75rem;color:#64748B;font-weight:700;margin-bottom:6px">PREGUNTAS FALLADAS:</p>${respFalladas.slice(0,3).map(p=>`<p style="font-size:0.78rem;color:#94A3B8;margin-bottom:4px">• ${p.substring(0,60)}...</p>`).join('')}${respFalladas.length>3?`<p style="font-size:0.75rem;color:#64748B">+${respFalladas.length-3} más</p>`:''}</div>` : ''}
+          <div style="margin-top:8px;border-top:1px solid #334155;padding-top:8px;display:flex;flex-direction:column;gap:6px">
+            ${examsMat.map(e => {
+              const p = parseInt(e.porcentaje)||0;
+              const bg = p>=80?'#51CF66':p>=60?'#FF922B':'#FF6B6B';
+              const exKey = JSON.stringify({nombre: alumno.nombre, dia: e.dia, materia: e.materia, respuestas: e.respuestas, puntaje: e.puntaje, total: e.total}).replace(/"/g,'&quot;');
+              return `<button onclick="verExamenAdmin(${exKey})"
+                style="width:100%;padding:8px 12px;background:#0F172A;border:1px solid #334155;border-radius:10px;color:white;font-family:Nunito,sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center">
+                <span>📋 ${e.dia}</span>
+                <span style="color:${bg};font-weight:800">${p}%</span>
+              </button>`;
+            }).join('')}
+          </div>
         </div>`;
       }).join('')}
     </div>
@@ -2090,6 +2102,51 @@ function verPerfil(nombre) {
       <button class="btn-ad" onclick="resetearProgreso('${alumno.nombre.replace(/'/g,"\\'")}')">🔄 Resetear progreso de ${alumno.nombre}</button>
     </div>
   `;
+}
+
+function verExamenAdmin(exam) {
+  // Parsear respuestas
+  let respuestas = [];
+  try { respuestas = typeof exam.respuestas === 'string' ? JSON.parse(exam.respuestas) : (exam.respuestas || []); } catch(e) {}
+
+  const pct = Math.round(((exam.puntaje||0) / (exam.total||1)) * 100);
+  const emoji = pct===100?'🏆':pct>=80?'🌟':pct>=60?'👍':'💪';
+
+  const detalleHtml = respuestas.map((r, i) => `
+    <div style="display:flex;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:8px;background:${r.ok?'rgba(81,207,102,0.08)':'rgba(255,107,107,0.08)'};border:1px solid ${r.ok?'rgba(81,207,102,0.2)':'rgba(255,107,107,0.2)'}">
+      <span style="font-size:1rem;flex-shrink:0">${r.ok?'✅':'❌'}</span>
+      <div style="flex:1;min-width:0">
+        <p style="font-size:0.82rem;color:white;font-weight:700;margin-bottom:${r.ok?0:4}px;word-wrap:break-word">${i+1}. ${r.pregunta||''}</p>
+        ${!r.ok ? `<p style="font-size:0.75rem;color:#F87171;margin:0">Respondió: <b>${r.elegida}</b> · Correcta: <b>${r.correcta}</b></p>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  // Crear modal
+  const modal = document.createElement('div');
+  modal.id = 'modal-examen-admin';
+  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;overflow-y:auto;padding:20px;box-sizing:border-box';
+  modal.innerHTML = `
+    <div style="max-width:680px;margin:0 auto;background:#1E293B;border-radius:20px;padding:24px;border:1px solid #334155">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <h3 style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:white;margin-bottom:4px">${emoji} ${exam.nombre} — ${exam.dia}</h3>
+          <p style="color:#64748B;font-size:0.85rem">${exam.materia} · ${exam.puntaje||0} de ${exam.total||0} correctas · ${pct}%</p>
+        </div>
+        <button onclick="document.getElementById('modal-examen-admin').remove()"
+          style="background:#334155;border:none;border-radius:10px;padding:8px 16px;color:white;font-family:Nunito,sans-serif;font-weight:800;cursor:pointer;font-size:0.9rem">✕ Cerrar</button>
+      </div>
+      <div style="background:#0F172A;border-radius:14px;padding:16px;margin-bottom:16px;display:flex;gap:20px;justify-content:center;text-align:center">
+        <div><div style="font-family:'Fredoka One',cursive;font-size:2rem;color:${pct>=80?'#51CF66':pct>=60?'#FF922B':'#FF6B6B'}">${pct}%</div><div style="color:#64748B;font-size:0.75rem">Porcentaje</div></div>
+        <div><div style="font-family:'Fredoka One',cursive;font-size:2rem;color:#51CF66">${exam.puntaje||0}</div><div style="color:#64748B;font-size:0.75rem">Correctas</div></div>
+        <div><div style="font-family:'Fredoka One',cursive;font-size:2rem;color:#F87171">${(exam.total||0)-(exam.puntaje||0)}</div><div style="color:#64748B;font-size:0.75rem">Errores</div></div>
+      </div>
+      <div>${detalleHtml || '<p style="color:#64748B;text-align:center;padding:20px">Sin detalle de respuestas disponible</p>'}</div>
+    </div>
+  `;
+  // Cerrar al click fuera
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
 }
 
 function renderFalencias() {
