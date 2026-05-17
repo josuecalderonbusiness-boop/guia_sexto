@@ -35,14 +35,15 @@ module.exports = async (req, res) => {
       const sheets = await getSheets();
       const r = await sheets.spreadsheets.values.get({
         spreadsheetId: SHEET_ID,
-        range: 'Usuarios!A:B',
+        range: 'Usuarios!A:C',
       });
       const rows = r.data.values || [];
       const encontrado = rows.find(row => row[0] && row[0].trim().toUpperCase() === codigo);
       if (!encontrado) {
         return res.json({ ok: false, error: 'Código no encontrado. Pídele el código a tu profe.' });
       }
-      return res.json({ ok: true, nombre: encontrado[1] || codigo, codigo, esAdmin: false });
+      const grado = encontrado[2] ? parseInt(encontrado[2]) || encontrado[2] : null;
+      return res.json({ ok: true, nombre: encontrado[1] || codigo, codigo, esAdmin: false, grado });
     } catch (e) {
       return res.status(500).json({ ok: false, error: 'Error al verificar código: ' + e.message });
     }
@@ -62,11 +63,12 @@ module.exports = async (req, res) => {
       const existe = rows.find(row => row[0] && row[0].trim().toUpperCase() === codigo.toUpperCase());
       if (existe) return res.json({ ok: false, error: 'Ese código ya existe' });
 
+      const gradoNuevo = body.adminAgregar.grado || '';
       await sheets.spreadsheets.values.append({
         spreadsheetId: SHEET_ID,
-        range: 'Usuarios!A:B',
+        range: 'Usuarios!A:C',
         valueInputOption: 'RAW',
-        requestBody: { values: [[codigo.toUpperCase(), nombre]] },
+        requestBody: { values: [[codigo.toUpperCase(), nombre, String(gradoNuevo)]] },
       });
       return res.json({ ok: true });
     } catch (e) {

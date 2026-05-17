@@ -16,12 +16,20 @@ res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { dia, materia } = req.query;
-  if (!dia || !materia) {
-    return res.status(400).json({ error: 'Faltan parámetros dia y materia' });
-  }
+  const { dia, materia, grado, leccion } = req.query;
 
-  const sheetName = `Dia${dia}_${materia.toUpperCase()}`;
+  // Modo Jero (grado 2): G2_MAT_L01
+  // Modo Tomas (grado 6): Dia1_MAT
+  let sheetName;
+  if (grado && leccion) {
+    const lNum = String(leccion).padStart(2, '0');
+    sheetName = `G${grado}_${(materia||'').toUpperCase()}_L${lNum}`;
+  } else {
+    if (!dia || !materia) {
+      return res.status(400).json({ error: 'Faltan parámetros dia y materia' });
+    }
+    sheetName = `Dia${dia}_${materia.toUpperCase()}`;
+  }
 
   try {
     const auth = getAuth();
