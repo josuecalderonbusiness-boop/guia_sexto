@@ -1534,6 +1534,7 @@ async function verBiblioteca() {
     }
     lista.innerHTML = data.series.map(serie => `
       <div style="background:${serie.color};border-radius:24px;padding:20px;margin-bottom:20px;box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+        ${serie.portada ? `<img src="${serie.portada}" style="width:100%;border-radius:16px;margin-bottom:16px;display:block;max-height:200px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,0.4)" onerror="this.style.display='none'"/>` : ''}
         <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:white;margin-bottom:4px">📖 ${serie.nombre}</h3>
         <p style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-bottom:16px">${serie.capitulos.length} capítulo${serie.capitulos.length > 1 ? 's' : ''}</p>
         <div style="display:flex;flex-direction:column;gap:10px">

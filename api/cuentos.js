@@ -75,8 +75,12 @@ module.exports = async (req, res) => {
       series[nombreSerie].capitulos.push({
         numero: row[1] || '',
         titulo: row[2] || '',
-        imagen: row[5] || '', // imagen del bloque 1 como portada
+        imagen: row[5] || '',
       });
+      // Portada de la serie — solo la toma del primer capítulo
+      if (!series[nombreSerie].portada) {
+        series[nombreSerie].portada = row[15] || row[5] || '';
+      }
     });
 
     return res.json({
