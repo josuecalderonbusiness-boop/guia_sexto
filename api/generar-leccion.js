@@ -128,31 +128,8 @@ const NOMBRES_MATERIA = {
 // ── Materias que REQUIEREN un texto/situación base antes de las preguntas ──
 // Para estas materias, el prompt le pide a la IA que genere el texto primero
 // y que CADA pregunta incluya ese texto en el campo "contexto".
-const MATERIAS_CON_TEXTO_BASE = {
-  // LCA lecciones de comprensión lectora (1, 2, 3, 15, 18): necesitan cuento/fábula
-  LCA: {
-    leccionesConTexto: [1, 2, 3, 15, 18],
-    tipoTexto: (leccion) => {
-      if (leccion === 15) return 'cuento corto de 3 párrafos con inicio, nudo y desenlace claros';
-      if (leccion === 18) return 'texto informativo corto (3 párrafos) sobre un tema de ciencias o naturaleza';
-      if (leccion === 2)  return 'fábula corta con moraleja al final';
-      if (leccion === 3)  return 'fábula corta con moraleja al final';
-      return 'cuento corto de 3 párrafos con personajes, lugar y eventos en orden';
-    },
-    instruccionesExtra: (leccion) => {
-      if (leccion <= 3 || leccion === 15 || leccion === 18) {
-        return `
-IMPORTANTE para esta lección:
-- PRIMERO genera un "${MATERIAS_CON_TEXTO_BASE.LCA.tipoTexto(leccion)}" apropiado para niños de 7-8 años
-- El cuento/texto debe tener entre 120 y 180 palabras, lenguaje simple y una trama clara
-- TODAS las preguntas deben referirse EXCLUSIVAMENTE a ese texto que generaste
-- El campo "contexto" de CADA pregunta debe contener el texto completo tal cual lo generaste
-- Las preguntas deben evaluar comprensión lectora real: personajes, eventos, inferencias, secuencia`;
-      }
-      return '';
-    },
-  },
-};
+// LCA ya no tiene lecciones de comprensión lectora — eso quedó en los Cuentos
+const MATERIAS_CON_TEXTO_BASE = {};
 
 function necesitaTextoBase(mat, leccion) {
   const config = MATERIAS_CON_TEXTO_BASE[mat];
