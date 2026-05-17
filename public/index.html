@@ -720,35 +720,48 @@ async function sincronizarCompletadosDesdeSheets() {
   } catch(e) { console.warn('No se pudo sincronizar completados', e); }
 }
 
-// Sincronizar errores desde Sheets a localStorage (silencioso, segundo plano)
+// Sincroniza qué materias tienen errores, usando Resultados como fuente de verdad
 async function sincronizarBotonesRefuerzoDesdeSheets() {
-  if (!estado.codigo) return;
+  if (!estado.nombre) return;
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 6000);
+    const timer = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(
-      `/api/errores?codigo=${encodeURIComponent(estado.codigo)}&todos=1`,
+      '/api/resultados?nombre=' + encodeURIComponent(estado.nombre),
       { signal: controller.signal }
     );
     clearTimeout(timer);
-    if (!res.ok) return;           // 404/500 → silencioso (hoja puede no existir aún)
+    if (!res.ok) return;
     const data = await res.json();
-    if (!data.ok || !Array.isArray(data.entradas)) return;
-    let sincronizados = 0;
-    data.entradas.forEach(e => {
-      if (!e.errores || !e.errores.length) return;
-      const key = `errores_${e.dia}_${e.materia}`;
-      const existentes = JSON.parse(localStorage.getItem(key) || '[]');
-      // Solo escribir si localStorage no tiene datos frescos
-      if (existentes.length === 0) {
-        localStorage.setItem(key, JSON.stringify(e.errores));
-        sincronizados++;
+    if (!data.ok || !data.resultados) return;
+
+    const NOMBRES = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+    let cambios = 0;
+
+    data.resultados.forEach(r => {
+      const matKey = Object.keys(NOMBRES).find(k => NOMBRES[k] === r.materia);
+      const diaNum = r.dia ? r.dia.replace('Día ','').replace('Dia ','').trim() : null;
+      if (!matKey || !diaNum || isNaN(parseInt(diaNum))) return;
+      if (r.dia.includes('Refuerzo')) return; // ignorar sesiones de refuerzo
+
+      let respuestas = [];
+      try { respuestas = typeof r.respuestas === 'string' ? JSON.parse(r.respuestas) : r.respuestas; } catch(e) {}
+      const numErrores = respuestas.filter(rr => !rr.ok).length;
+
+      // Guardar conteo en caché para que renderInicio muestre el botón
+      const cacheKey = `errores_cache_${diaNum}_${matKey}`;
+      const anterior = localStorage.getItem(cacheKey);
+      if (numErrores > 0 && anterior !== String(numErrores)) {
+        localStorage.setItem(cacheKey, String(numErrores));
+        cambios++;
+      } else if (numErrores === 0) {
+        localStorage.removeItem(cacheKey);
       }
     });
-    // Refrescar el render solo si encontramos algo nuevo
-    if (sincronizados > 0) renderInicio();
+
+    if (cambios > 0) renderInicio();
   } catch(e) {
-    // Silencioso — red cortada, hoja inexistente, timeout → no importa
+    // Silencioso
   }
 }
 
@@ -762,6 +775,16 @@ function cambiarNombre() {
   estado.nombre = nuevo.trim();
   guardarEstadoLocal();
   document.getElementById('header-nombre-text').textContent = estado.nombre;
+}
+
+// Detecta qué dia/materia tienen errores guardados en localStorage O en caché de resultados
+function tieneErroresGuardados(dia, mat) {
+  const key = `errores_${dia}_${mat}`;
+  const local = JSON.parse(localStorage.getItem(key) || '[]');
+  if (local.filter(e => e?.pregunta?.opciones?.A !== undefined).length > 0) return local.length;
+  // Buscar en caché de resultados (guardado por sincronizarBotonesRefuerzoDesdeSheets)
+  const cacheKey = `errores_cache_${dia}_${mat}`;
+  return parseInt(localStorage.getItem(cacheKey) || '0');
 }
 
 async function renderInicio() {
@@ -804,12 +827,11 @@ async function renderInicio() {
     // Botones de refuerzo por materia si tiene errores guardados
     let refuerzoHtml = '';
     for (const [key, mat] of Object.entries(MATERIAS)) {
-      const erroresKey = `errores_${dia}_${key}`;
-      const erroresGuardados = JSON.parse(localStorage.getItem(erroresKey) || 'null');
-      if (erroresGuardados && erroresGuardados.length > 0 && materiaCompletada(dia, key)) {
+      const numErr = tieneErroresGuardados(dia, key);
+      if (numErr > 0 && materiaCompletada(dia, key)) {
         refuerzoHtml += `<button id="btn-refuerzo-${dia}-${key}" onclick="iniciarRefuerzoDesdeMenu(${dia},'${key}')"
           style="margin-top:8px;width:100%;padding:8px 14px;background:linear-gradient(135deg,#F0EBFF,#E8F4FF);border:2px solid #845EF7;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;color:#6741D9;text-align:left">
-          🔁 Refuerzo ${mat.emoji} ${mat.nombre.split(' ')[0]} · ${erroresGuardados.length} error${erroresGuardados.length>1?'es':''}
+          🔁 Refuerzo ${mat.emoji} ${mat.nombre.split(' ')[0]} · ${numErr} error${numErr>1?'es':''}
         </button>`;
       }
     }
@@ -1165,6 +1187,58 @@ async function verMisResultados() {
 }
 
 // ── REFUERZO ─────────────────────────────────────────────────────────
+
+// Reconstruye errores cruzando Resultados con las preguntas del Sheet
+async function cargarErroresDesdeResultados(dia, materia) {
+  const mat = MATERIAS[materia];
+  const diaLabel = `Día ${dia}`;
+
+  // 1. Obtener resultados del alumno
+  const resR = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+  const dataR = await resR.json();
+  if (!dataR.ok || !dataR.resultados) return [];
+
+  // Buscar el resultado de este dia+materia (el más reciente si hay varios)
+  const resultadosFiltrados = dataR.resultados.filter(r =>
+    r.materia === mat.nombre &&
+    (r.dia === diaLabel || r.dia === `Dia ${dia}` || r.dia === String(dia))
+  );
+  if (!resultadosFiltrados.length) return [];
+
+  // Tomar el más reciente
+  const resultado = resultadosFiltrados[resultadosFiltrados.length - 1];
+  let respuestas = [];
+  try {
+    respuestas = typeof resultado.respuestas === 'string'
+      ? JSON.parse(resultado.respuestas)
+      : resultado.respuestas;
+  } catch(e) { return []; }
+
+  const erroresBasicos = respuestas.filter(r => !r.ok);
+  if (!erroresBasicos.length) return [];
+
+  // 2. Obtener preguntas del Sheet para cruzar opciones
+  const resP = await fetch(`/api/preguntas?dia=${dia}&materia=${materia}`);
+  const dataP = await resP.json();
+  if (!dataP.ok || !dataP.preguntas) return [];
+
+  // 3. Cruzar: para cada error, buscar la pregunta completa con opciones
+  const erroresCompletos = [];
+  for (const err of erroresBasicos) {
+    const pregObj = dataP.preguntas.find(p =>
+      p.pregunta && err.pregunta &&
+      p.pregunta.trim().substring(0, 40) === err.pregunta.trim().substring(0, 40)
+    );
+    if (pregObj && pregObj.opciones && pregObj.opciones.A) {
+      erroresCompletos.push({
+        pregunta: pregObj,
+        elegida: err.elegida,
+        correcta: err.correcta
+      });
+    }
+  }
+  return erroresCompletos;
+}
 let refuerzoActual = { dia:1, materia:'', errores:[], idx:0, puntaje:0, pctOriginal:0 };
 
 function iniciarRefuerzoDesdeResultado() {
@@ -1181,7 +1255,7 @@ function iniciarRefuerzoDesdeResultado() {
 async function iniciarRefuerzoDesdeMenu(dia, materia) {
   const key = `errores_${dia}_${materia}`;
 
-  // 1. Intentar desde localStorage primero (más rápido, sin red)
+  // 1. localStorage (más rápido, sin red)
   const erroresRaw = JSON.parse(localStorage.getItem(key) || '[]');
   const erroresLocal = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
   if (erroresLocal.length > 0) {
@@ -1189,54 +1263,32 @@ async function iniciarRefuerzoDesdeMenu(dia, materia) {
     return;
   }
 
-  // 2. Sin localStorage → buscar en Sheets
-  if (!estado.codigo) {
-    alert('Inicia sesión para acceder al refuerzo desde cualquier dispositivo.');
-    return;
-  }
-
-  // Guardar referencia al botón ANTES del try/finally
+  // 2. Reconstruir desde Resultados + preguntas del Sheet
   const btnId = `btn-refuerzo-${dia}-${materia}`;
   const btnEl = document.getElementById(btnId);
   const textoOriginal = btnEl ? btnEl.innerHTML : '';
 
   try {
     if (btnEl) {
-      btnEl.innerHTML = '⏳ Buscando en la nube...';
+      btnEl.innerHTML = '⏳ Cargando refuerzo...';
       btnEl.disabled = true;
       btnEl.style.opacity = '0.7';
     }
 
-    const res = await fetch(
-      `/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${encodeURIComponent(materia)}`,
-      { signal: AbortSignal.timeout(8000) }   // timeout 8s
-    );
+    const errores = await cargarErroresDesdeResultados(dia, materia);
 
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-
-    const data = await res.json();
-
-    if (data.ok && Array.isArray(data.errores) && data.errores.length > 0) {
-      const validos = data.errores.filter(e => e?.pregunta?.opciones?.A !== undefined);
-      if (validos.length > 0) {
-        // Cachear en localStorage para la próxima vez
-        localStorage.setItem(key, JSON.stringify(validos));
-        arrancarRefuerzo(dia, materia, validos, null);
-        return;   // sale del try → finally restaura si algo falla, pero aquí ya cambia pantalla
-      }
+    if (errores.length > 0) {
+      // Cachear para la próxima vez
+      localStorage.setItem(key, JSON.stringify(errores));
+      arrancarRefuerzo(dia, materia, errores, null);
+      return;
     }
 
-    // No hay errores guardados en Sheets tampoco
-    alert('Aún no hay errores guardados en la nube para este refuerzo. ¿Ya hiciste este examen en el otro dispositivo? Asegúrate de que tenga internet al terminar.');
+    alert('No se encontraron errores para este refuerzo. ¡Puede que hayas aprobado todo!');
 
   } catch(err) {
-    if (err.name === 'TimeoutError') {
-      alert('Se tardó demasiado. Revisa tu conexión e intenta de nuevo.');
-    } else {
-      alert('No se pudo conectar al servidor. Revisa el internet e intenta de nuevo.');
-    }
+    alert('Error de conexión. Revisa el internet e intenta de nuevo.');
   } finally {
-    // SIEMPRE restaurar el botón, sin importar qué pasó
     if (btnEl) {
       btnEl.innerHTML = textoOriginal;
       btnEl.disabled = false;
