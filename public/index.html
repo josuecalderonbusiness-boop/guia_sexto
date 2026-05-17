@@ -815,6 +815,71 @@ function tieneErroresGuardados(dia, mat) {
   return parseInt(localStorage.getItem(cacheKey) || '0');
 }
 
+function tieneErroresGuardadosJero(leccion, mat) {
+  const key = `errores_G2_L${leccion}_${mat}`;
+  const local = JSON.parse(localStorage.getItem(key) || '[]');
+  if (local.filter(e => e?.pregunta?.opciones?.A !== undefined).length > 0) return local.length;
+  const cacheKey = `errores_cache_G2_L${leccion}_${mat}`;
+  return parseInt(localStorage.getItem(cacheKey) || '0');
+}
+
+async function iniciarRefuerzoJero(leccion, materia) {
+  const mat = MATERIAS_JERO[materia];
+  const key = `errores_G2_L${leccion}_${materia}`;
+  const erroresRaw = JSON.parse(localStorage.getItem(key) || '[]');
+  const erroresLocal = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
+  if (erroresLocal.length > 0) {
+    arrancarRefuerzoJero(leccion, materia, erroresLocal);
+    return;
+  }
+  const btnId = `btn-refuerzo-G2-${leccion}-${materia}`;
+  const btnEl = document.getElementById(btnId);
+  const textoOriginal = btnEl ? btnEl.innerHTML : '';
+  try {
+    if (btnEl) { btnEl.innerHTML = '⏳ Cargando...'; btnEl.disabled = true; btnEl.style.opacity = '0.7'; }
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+    if (!data.ok || !data.resultados) throw new Error('Sin resultados');
+    const resultado = data.resultados.find(r => r.dia === `G2_L${leccion}` && r.materia === mat.nombre);
+    if (!resultado) { alert('No se encontraron errores. ¡Puede que hayas aprobado todo!'); return; }
+    let respuestas = [];
+    try { respuestas = typeof resultado.respuestas === 'string' ? JSON.parse(resultado.respuestas) : resultado.respuestas; } catch(e) {}
+    const erroresBasicos = respuestas.filter(r => !r.ok);
+    if (!erroresBasicos.length) { alert('No se encontraron errores. ¡Puede que hayas aprobado todo!'); return; }
+    const resP = await fetch(`/api/preguntas?grado=2&materia=${materia}&leccion=${leccion}`);
+    const dataP = await resP.json();
+    if (!dataP.ok || !dataP.preguntas) throw new Error('Sin preguntas');
+    const erroresCompletos = erroresBasicos.map(err => {
+      const pregObj = dataP.preguntas.find(p => p.pregunta && err.pregunta && p.pregunta.trim().substring(0,40) === err.pregunta.trim().substring(0,40));
+      if (!pregObj || !pregObj.opciones) return null;
+      return { pregunta: pregObj, elegida: err.elegida, correcta: err.correcta };
+    }).filter(Boolean);
+    if (erroresCompletos.length > 0) {
+      localStorage.setItem(key, JSON.stringify(erroresCompletos));
+      arrancarRefuerzoJero(leccion, materia, erroresCompletos);
+    } else { alert('No se pudieron cargar los errores. Intenta de nuevo.'); }
+  } catch(err) {
+    alert('Error de conexión. Revisa el internet e intenta de nuevo.');
+  } finally {
+    if (btnEl) { btnEl.innerHTML = textoOriginal; btnEl.disabled = false; btnEl.style.opacity = '1'; }
+  }
+}
+
+function arrancarRefuerzoJero(leccion, materia, errores) {
+  const mat = MATERIAS_JERO[materia];
+  refuerzoActual = {
+    dia: `G2_L${leccion}`, materia, errores, idx: 0, puntaje: 0, pctOriginal: null, respuestas: [],
+    esJero: true, leccionJero: leccion, matJero: mat
+  };
+  document.getElementById('refuerzo-badge').textContent = `🔁 Refuerzo ${mat.emoji} ${mat.nombre}`;
+  document.getElementById('refuerzo-dia-label').textContent = `⭐ Lección ${leccion}`;
+  document.getElementById('refuerzo-resultado').style.display = 'none';
+  document.getElementById('refuerzo-container').style.display = 'block';
+  mostrar('screen-refuerzo');
+  window.scrollTo(0,0);
+  renderPreguntaRefuerzo();
+}
+
 async function renderInicio() {
   intentarDesbloquearSiguienteDia();
   const cont = document.getElementById('dias-container');
@@ -1343,7 +1408,7 @@ async function iniciarRefuerzoDesdeMenu(dia, materia) {
 }
 
 function arrancarRefuerzo(dia, materia, errores, pctOriginal) {
-  const mat = MATERIAS[materia];
+  const mat = MATERIAS[materia] || MATERIAS_JERO[materia];
   refuerzoActual = { dia, materia, errores, idx: 0, puntaje: 0, pctOriginal, respuestas: [] };
   document.getElementById('refuerzo-badge').textContent = `🔁 Refuerzo ${mat.emoji} ${mat.nombre}`;
   document.getElementById('refuerzo-dia-label').textContent = `📅 Día ${dia}`;
@@ -1481,7 +1546,7 @@ async function terminarRefuerzo() {
   const { dia, materia, puntaje, errores, pctOriginal, respuestas } = refuerzoActual;
   const total = errores.length;
   const pctNuevo = Math.round((puntaje / total) * 100);
-  const mat = MATERIAS[materia];
+  const mat = refuerzoActual.esJero ? MATERIAS_JERO[materia] : MATERIAS[materia];
 
   // Guardar en Sheets
   try {
@@ -2250,6 +2315,20 @@ async function renderJero() {
       await iniciarLeccionJero(key, proxLec);
     };
     cont.appendChild(btn);
+
+    // Botones de refuerzo por lecciones completadas con errores
+    const completadasList = estado.jeroProgreso?.[key]?.completadas || [];
+    completadasList.forEach(lec => {
+      const numErr = tieneErroresGuardadosJero(lec, key);
+      if (numErr > 0) {
+        const btnRef = document.createElement('button');
+        btnRef.id = `btn-refuerzo-G2-${lec}-${key}`;
+        btnRef.style.cssText = `margin-top:8px;width:100%;padding:8px 14px;background:linear-gradient(135deg,#F0EBFF,#E8F4FF);border:2px solid #845EF7;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;color:#6741D9;text-align:left`;
+        btnRef.innerHTML = `🔁 Refuerzo ${mat.emoji} Lección ${lec} · ${numErr} error${numErr>1?'es':''}`;
+        btnRef.onclick = () => iniciarRefuerzoJero(lec, key);
+        cont.appendChild(btnRef);
+      }
+    });
   }
 }
 
