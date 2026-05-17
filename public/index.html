@@ -1017,6 +1017,7 @@ function siguiente() {
 }
 
 async function terminarExamen() {
+  await terminarExamen_JERO_PATCH();
   const { dia, materia, puntaje, preguntas, respuestas } = examenActual;
   const total = preguntas.length;
   const pct = Math.round((puntaje / total) * 100);
@@ -2313,9 +2314,8 @@ async function iniciarLeccionJero(materia, leccion) {
   }
 }
 
-// Parchar terminarExamen para marcar lección de Jero como completada
-const _terminarExamenOriginal = terminarExamen.bind({});
-async function terminarExamen() {
+// terminarExamen unificada (Jero + todos)
+async function terminarExamen_JERO_PATCH() {
   if (examenActual.esJero) {
     const { materia, leccionJero, puntaje, preguntas } = examenActual;
     if (!estado.jeroProgreso) estado.jeroProgreso = {};
@@ -2379,7 +2379,6 @@ async function terminarExamen() {
     if (pct >= 80) sonidoEstrella();
     else sonidoCorrecto();
   }
-  await _terminarExamenOriginal();
 }
 
 // ── VOLVER ───────────────────────────────────────────────────────────
