@@ -125,6 +125,41 @@ const NOMBRES_MATERIA = {
   SOC: 'Ciencias Sociales',
 };
 
+// ── Materias que REQUIEREN un texto/situación base antes de las preguntas ──
+// Para estas materias, el prompt le pide a la IA que genere el texto primero
+// y que CADA pregunta incluya ese texto en el campo "contexto".
+const MATERIAS_CON_TEXTO_BASE = {
+  // LCA lecciones de comprensión lectora (1, 2, 3, 15, 18): necesitan cuento/fábula
+  LCA: {
+    leccionesConTexto: [1, 2, 3, 15, 18],
+    tipoTexto: (leccion) => {
+      if (leccion === 15) return 'cuento corto de 3 párrafos con inicio, nudo y desenlace claros';
+      if (leccion === 18) return 'texto informativo corto (3 párrafos) sobre un tema de ciencias o naturaleza';
+      if (leccion === 2)  return 'fábula corta con moraleja al final';
+      if (leccion === 3)  return 'fábula corta con moraleja al final';
+      return 'cuento corto de 3 párrafos con personajes, lugar y eventos en orden';
+    },
+    instruccionesExtra: (leccion) => {
+      if (leccion <= 3 || leccion === 15 || leccion === 18) {
+        return `
+IMPORTANTE para esta lección:
+- PRIMERO genera un "${MATERIAS_CON_TEXTO_BASE.LCA.tipoTexto(leccion)}" apropiado para niños de 7-8 años
+- El cuento/texto debe tener entre 120 y 180 palabras, lenguaje simple y una trama clara
+- TODAS las preguntas deben referirse EXCLUSIVAMENTE a ese texto que generaste
+- El campo "contexto" de CADA pregunta debe contener el texto completo tal cual lo generaste
+- Las preguntas deben evaluar comprensión lectora real: personajes, eventos, inferencias, secuencia`;
+      }
+      return '';
+    },
+  },
+};
+
+function necesitaTextoBase(mat, leccion) {
+  const config = MATERIAS_CON_TEXTO_BASE[mat];
+  if (!config) return false;
+  return config.leccionesConTexto.includes(leccion);
+}
+
 function getAuth() {
   const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
   return new google.auth.GoogleAuth({
@@ -137,7 +172,7 @@ function callOpenAI(prompt) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       model: 'gpt-4o-mini',
-      max_tokens: 3000,
+      max_tokens: 4000,
       temperature: 0.7,
       messages: [{ role: 'user', content: prompt }],
     });
@@ -179,6 +214,57 @@ async function crearHoja(sheets, nombre) {
   });
 }
 
+// ── Construir el prompt según la materia y la lección ────────────────
+function buildPrompt(grado, mat, leccion, tema) {
+  const conTexto = necesitaTextoBase(mat, leccion);
+  const config = MATERIAS_CON_TEXTO_BASE[mat];
+  const instrExtra = conTexto && config ? config.instruccionesExtra(leccion) : '';
+
+  // Sección extra del JSON si hay contexto
+  const campoContexto = conTexto
+    ? `\n      "contexto": "TEXTO COMPLETO del cuento/texto aquí (el MISMO en todas las preguntas)",`
+    : '';
+
+  const instrContexto = conTexto
+    ? `
+⚠️ REGLA CRÍTICA PARA ESTA LECCIÓN:
+Esta es una lección de COMPRENSIÓN LECTORA. Debes:
+1. Inventar UN SOLO texto narrativo/informativo de 120-180 palabras, apropiado para niños de 7-8 años
+2. Escribir ese texto completo en el campo "contexto" de CADA pregunta (siempre el mismo texto)
+3. Que TODAS las preguntas sean sobre ese texto específico, no sobre temas generales
+4. El texto debe incluir: nombres de personajes, lugar, acciones claras y orden de eventos
+${instrExtra}`
+    : '';
+
+  return `Eres un profesor experto creando preguntas de examen para un niño de 7 años (grado ${grado} Colombia).
+
+TEMA: ${tema}
+MATERIA: ${NOMBRES_MATERIA[mat] || mat}
+${instrContexto}
+
+Genera EXACTAMENTE 15 preguntas de selección múltiple. Reglas OBLIGATORIAS:
+1. Lenguaje claro y simple para niño de 7-8 años, pero las preguntas deben evaluar COMPRENSIÓN REAL
+2. 4 opciones (A, B, C, D), UNA sola correcta
+3. Dificultad progresiva: preguntas 1-5 reconocimiento básico, 6-10 aplicación directa, 11-15 razonamiento
+4. Sin LaTeX ni símbolos matemáticos especiales. Usar texto plano: 3/4, raiz(16), 2x3
+5. Distractores CREÍBLES: errores típicos que cometen los niños
+6. Incluir al menos 2 preguntas con situaciones de la vida real
+7. Respuestas distribuidas: A×4, B×4, C×4, D×3 sin patrón visible
+8. Devuelve ÚNICAMENTE JSON válido, sin texto adicional, sin bloques de código markdown
+
+Formato JSON exacto:
+{
+  "preguntas": [
+    {
+      "pregunta": "texto de la pregunta",${campoContexto}
+      "opciones": { "A": "opción a", "B": "opción b", "C": "opción c", "D": "opción d" },
+      "respuesta": "B",
+      "explicacion": "explicación breve en 2 oraciones para el niño de 7 años"
+    }
+  ]
+}`;
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -201,43 +287,16 @@ module.exports = async (req, res) => {
     return res.status(400).json({ ok: false, error: `No hay tema definido para ${mat} lección ${lNum}` });
   }
 
-  const prompt = `Eres un profesor experto creando preguntas de examen para un niño de ${grado === 2 ? '7' : '11'} años (grado ${grado} Colombia).
-
-TEMA: ${tema}
-MATERIA: ${NOMBRES_MATERIA[mat] || mat}
-
-Genera EXACTAMENTE 15 preguntas de selección múltiple. Reglas OBLIGATORIAS:
-1. Lenguaje claro y simple para niño de 7-8 años, pero las preguntas deben evaluar COMPRENSIÓN REAL, no solo memorización
-2. 4 opciones (A, B, C, D), UNA sola correcta
-3. Dificultad progresiva: preguntas 1-5 reconocimiento básico, 6-10 aplicación directa, 11-15 razonamiento y problemas con contexto real
-4. Sin LaTeX ni símbolos matemáticos especiales. Usar texto plano: 3/4, raiz(16), 2x3
-5. Distractores CREÍBLES: usar errores típicos que cometen los niños (ej: confundir decenas con unidades, sumar cuando deben restar)
-6. Incluir al menos 3 preguntas con situación de la vida real (compras, frutas, juguetes, mascotas)
-7. Respuestas distribuidas: aproximadamente A×4, B×4, C×4, D×3 sin patrón visible
-8. Devuelve ÚNICAMENTE JSON válido, sin texto adicional, sin bloques de código
-
-Formato JSON exacto:
-{
-  "preguntas": [
-    {
-      "pregunta": "texto de la pregunta",
-      "opciones": { "A": "opción a", "B": "opción b", "C": "opción c", "D": "opción d" },
-      "respuesta": "B",
-      "explicacion": "explicación breve en 2 oraciones para el niño"
-    }
-  ]
-}`;
-
   try {
     const auth = getAuth();
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // Verificar si la hoja ya existe (ya fue generada antes)
+    // Verificar si la hoja ya existe y tiene contenido
     const existe = await sheetExiste(sheets, sheetName);
     if (existe) {
       const r = await sheets.spreadsheets.values.get({
         spreadsheetId: SHEET_ID,
-        range: `${sheetName}!A2:H20`,
+        range: `${sheetName}!A2:I20`,
         valueRenderOption: 'UNFORMATTED_VALUE',
       });
       if ((r.data.values || []).length > 0) {
@@ -245,7 +304,10 @@ Formato JSON exacto:
       }
     }
 
-    // Generar con OpenAI
+    // Construir prompt según materia y lección
+    const prompt = buildPrompt(grado, mat, lNum, tema);
+
+    // Llamar a OpenAI
     const raw = await callOpenAI(prompt);
     let parsed;
     try {
@@ -260,22 +322,40 @@ Formato JSON exacto:
       return res.status(500).json({ ok: false, error: `Solo ${preguntas.length} preguntas generadas`, raw });
     }
 
-    // Crear hoja si no existe
+    // ── Para lecciones con texto base: anteponer el contexto al enunciado ──
+    // El campo "contexto" se inyecta al inicio de la pregunta con un separador visual
+    // que el frontend mostrará como bloque destacado.
+    // Formato: "📖 TEXTO:\n{contexto}\n\n❓ PREGUNTA:\n{pregunta}"
+    // Si el frontend ya soporta el campo "contexto" puedes manejarlo allá,
+    // pero embebido en la pregunta es compatible con el Sheet tal como está.
+    const conTexto = necesitaTextoBase(mat, lNum);
+
+    const rows = preguntas.map(p => {
+      let enunciado = p.pregunta || '';
+
+      if (conTexto && p.contexto) {
+        // Embeber el texto del cuento en el enunciado para que el Sheet lo almacene
+        // El frontend detecta el separador "📖" y lo muestra en un bloque especial
+        enunciado = `📖 ${p.contexto}\n\n❓ ${p.pregunta}`;
+      }
+
+      return [
+        enunciado,
+        p.opciones?.A || '',
+        p.opciones?.B || '',
+        p.opciones?.C || '',
+        p.opciones?.D || '',
+        (p.respuesta || 'A').toUpperCase(),
+        '',              // G: imagen
+        '',              // H: video
+        p.explicacion || '',  // I: explicación popup
+      ];
+    });
+
+    // Crear hoja si no existía
     if (!existe) await crearHoja(sheets, sheetName);
 
-    // Escribir preguntas en el Sheet
-    const rows = preguntas.map(p => [
-      p.pregunta || '',
-      p.opciones?.A || '',
-      p.opciones?.B || '',
-      p.opciones?.C || '',
-      p.opciones?.D || '',
-      (p.respuesta || 'A').toUpperCase(),
-      '',              // G: imagen
-      '',              // H: video
-      p.explicacion || '',  // I: explicación
-    ]);
-
+    // Escribir en el Sheet
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
       range: `${sheetName}!A2:I${rows.length + 1}`,
@@ -289,6 +369,7 @@ Formato JSON exacto:
       generado: true,
       total: preguntas.length,
       tema,
+      conTextoBase: conTexto,
     });
 
   } catch (e) {

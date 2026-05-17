@@ -901,7 +901,7 @@ function renderPregunta() {
       <p class="pregunta-num">📝 Pregunta ${idx+1} de ${total}</p>
       ${q.imagen ? `<img src="${q.imagen}" style="width:100%;max-width:480px;border-radius:14px;margin-bottom:16px;display:block;border:3px solid #E8E8E8;" onerror="this.style.display='none'"/>` : ''}
        ${q.video && q.video.startsWith('http') ? `<a href="${q.video}" target="_blank" style="display:inline-block;margin-bottom:16px;padding:10px 20px;background:#FF0000;color:white;border-radius:12px;text-decoration:none;font-weight:800;font-size:0.95rem;">📺 Ver video explicativo antes de responder</a>` : ''}
-      <p class="pregunta-text">${q.pregunta}</p>
+      <p class="pregunta-text">${q.pregunta.startsWith('📖') ? (() => { const p = q.pregunta.split('\n\n❓ '); return `<div style="background:linear-gradient(135deg,#FFF9E6,#FFF3CC);border:3px solid #F6C90E;border-radius:18px;padding:18px 20px;margin-bottom:16px"><div style="font-size:0.75rem;font-weight:800;color:#C8960C;margin-bottom:10px">📖 LEE CON ATENCIÓN:</div><div style="font-size:0.97rem;font-weight:600;line-height:1.8;white-space:pre-wrap">${p[0].replace(/^📖\s*/,'')}</div></div><p class="pregunta-text">${p[1]}</p>`; })() : q.pregunta}</p>
       <div class="opciones-list">${opcionesHtml}</div>
       <div class="feedback-msg" id="feedback-msg"></div>
     </div>
