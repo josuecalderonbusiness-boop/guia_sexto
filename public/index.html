@@ -1812,9 +1812,35 @@ function getEstrellasJero(mat) {
   return '⭐⭐⭐';
 }
 
+async function sincronizarProgresoJeroDesdeSheets() {
+  if (!estado.codigo) return;
+  try {
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+    if (!data.ok || !data.resultados) return;
+    if (!estado.jeroProgreso) estado.jeroProgreso = {};
+    data.resultados.forEach(r => {
+      const matchLec = String(r.dia).match(/G2 Lecci[oó]n (\d+)/i);
+      if (!matchLec) return;
+      const lecNum = parseInt(matchLec[1]);
+      const NOMBRES_JERO = { MAT:'Matemáticas', LCA:'Lengua Castellana', ING:'Inglés', NAT:'Ciencias Naturales', SOC:'Ciencias Sociales' };
+      const matKey = Object.keys(NOMBRES_JERO).find(k => NOMBRES_JERO[k] === r.materia);
+      if (!matKey || !lecNum) return;
+      if (!estado.jeroProgreso[matKey]) estado.jeroProgreso[matKey] = { completadas: [] };
+      if (!estado.jeroProgreso[matKey].completadas.includes(lecNum)) {
+        estado.jeroProgreso[matKey].completadas.push(lecNum);
+      }
+    });
+    guardarEstadoLocal();
+    sincronizarBotonesRefuerzoDesdeSheets().catch(() => {});
+  } catch(e) { console.warn('No se pudo sincronizar progreso Jero', e); }
+}
+
 async function renderJero() {
   if (!estado.jeroProgreso) estado.jeroProgreso = {};
   document.getElementById('jero-titulo').textContent = `¡Hola, ${estado.nombre}! 👋`;
+  // Sincronizar progreso desde Sheets
+  await sincronizarProgresoJeroDesdeSheets();
   const cont = document.getElementById('jero-materias-container');
   cont.innerHTML = '';
 
@@ -1920,6 +1946,40 @@ async function terminarExamen() {
     if (!ya.includes(leccionJero)) ya.push(leccionJero);
     guardarEstadoLocal();
 
+    // Guardar resultado en Sheets
+    const matJero = MATERIAS_JERO[materia];
+    fetch('/api/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: estado.nombre,
+        dia: `G2_L${leccionJero}`,
+        materia: matJero.nombre,
+        puntaje,
+        total: preguntas.length,
+        respuestas: examenActual.respuestas,
+        fecha: new Date().toLocaleString('es-CO')
+      })
+    }).catch(() => {});
+    // Guardar errores en Sheets
+    const erroresJero = examenActual.respuestas.filter(r => !r.ok).map(r => {
+      const pregObj = examenActual.preguntas.find(p => p.pregunta === r.pregunta);
+      if (!pregObj || !pregObj.opciones) return null;
+      return { pregunta: pregObj, elegida: r.elegida, correcta: r.correcta };
+    }).filter(Boolean);
+    const errKeyJero = `errores_G2_L${leccionJero}_${materia}`;
+    localStorage.setItem(errKeyJero, JSON.stringify(erroresJero));
+    if (estado.codigo) {
+      if (erroresJero.length > 0) {
+        fetch('/api/errores', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ codigo: estado.codigo, dia: `G2_L${leccionJero}`, materia, errores: erroresJero })
+        }).catch(() => {});
+      } else {
+        fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=G2_L${leccionJero}&materia=${encodeURIComponent(materia)}`, { method: 'DELETE' }).catch(() => {});
+      }
+    }
     // Generar la siguiente lección en segundo plano (sin bloquear)
     const siguiente = leccionJero + 1;
     if (siguiente <= TOTAL_LECCIONES_JERO) {

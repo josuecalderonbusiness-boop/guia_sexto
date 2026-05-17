@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
         values: [[
           fechaStr,
           nombre || 'Estudiante',
-          `Día ${dia}`,
+          dia && String(dia).startsWith('G') ? String(dia).replace('G2_L', 'G2 Lección ') : `Día ${dia}`,
           materia,
           puntaje,
           total,
