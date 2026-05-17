@@ -215,42 +215,70 @@ async function crearHoja(sheets, nombre) {
 }
 
 // ── Construir el prompt según la materia y la lección ────────────────
+// Obtener temas de lecciones anteriores para el repaso (máx 3 temas)
+function temasRepaso(mat, leccionActual) {
+  const curriculum = CURRICULO[mat] || [];
+  const anteriores = curriculum.slice(0, leccionActual - 1);
+  if (!anteriores.length) return [];
+  // Tomar hasta 3 lecciones anteriores de forma aleatoria
+  const mezclados = anteriores.sort(() => Math.random() - 0.5);
+  return mezclados.slice(0, Math.min(3, mezclados.length));
+}
+
 function buildPrompt(grado, mat, leccion, tema) {
   const conTexto = necesitaTextoBase(mat, leccion);
   const config = MATERIAS_CON_TEXTO_BASE[mat];
   const instrExtra = conTexto && config ? config.instruccionesExtra(leccion) : '';
 
-  // Sección extra del JSON si hay contexto
+  // Sistema Duolingo: repaso solo si hay lecciones anteriores
+  const temasAnteriores = leccion > 1 ? temasRepaso(mat, leccion) : [];
+  const hayRepaso = temasAnteriores.length > 0;
+
+  const bloqueRepaso = hayRepaso ? `
+BLOQUE DE REPASO (preguntas 11 a 15):
+Las últimas 5 preguntas deben repasar temas ya vistos en lecciones anteriores.
+Distribuye las 5 preguntas entre estos temas anteriores:
+${temasAnteriores.map((t, i) => `- Tema anterior ${i + 1}: ${t.substring(0, 120)}...`).join('\n')}
+Estas preguntas deben ser más cortas y directas que las del tema nuevo.` : '';
+
+  const estructuraPreguntas = hayRepaso
+    ? `ESTRUCTURA OBLIGATORIA de las 15 preguntas:
+- Preguntas 1 a 5: TEMA NUEVO — reconocimiento básico y ejemplos directos
+- Preguntas 6 a 10: TEMA NUEVO — aplicación y razonamiento con situaciones reales
+- Preguntas 11 a 15: REPASO — temas de lecciones anteriores (más cortas y directas)
+${bloqueRepaso}`
+    : `ESTRUCTURA de las 15 preguntas:
+- Preguntas 1 a 5: reconocimiento básico y ejemplos directos
+- Preguntas 6 a 10: aplicación directa con contexto real
+- Preguntas 11 a 15: razonamiento y situaciones más elaboradas`;
+
   const campoContexto = conTexto
-    ? `\n      "contexto": "TEXTO COMPLETO del cuento/texto aquí (el MISMO en todas las preguntas)",`
+    ? `\n      "contexto": "TEXTO COMPLETO del cuento aquí (el MISMO en todas las preguntas del bloque nuevo)",`
     : '';
 
-  const instrContexto = conTexto
-    ? `
-⚠️ REGLA CRÍTICA PARA ESTA LECCIÓN:
-Esta es una lección de COMPRENSIÓN LECTORA. Debes:
-1. Inventar UN SOLO texto narrativo/informativo de 120-180 palabras, apropiado para niños de 7-8 años
-2. Escribir ese texto completo en el campo "contexto" de CADA pregunta (siempre el mismo texto)
-3. Que TODAS las preguntas sean sobre ese texto específico, no sobre temas generales
-4. El texto debe incluir: nombres de personajes, lugar, acciones claras y orden de eventos
-${instrExtra}`
-    : '';
+  const instrContexto = conTexto ? `
+⚠️ REGLA CRÍTICA: Esta lección usa COMPRENSIÓN LECTORA.
+1. Inventa UN SOLO texto de 120-180 palabras para niños de 7-8 años
+2. Pon ese texto completo en el campo "contexto" de las preguntas 1 a 10 (tema nuevo)
+3. Las preguntas 11-15 de repaso NO llevan contexto
+4. El texto debe tener personajes con nombre, lugar y acciones claras
+${instrExtra}` : '';
 
   return `Eres un profesor experto creando preguntas de examen para un niño de 7 años (grado ${grado} Colombia).
 
-TEMA: ${tema}
+TEMA NUEVO DE ESTA LECCIÓN: ${tema}
 MATERIA: ${NOMBRES_MATERIA[mat] || mat}
 ${instrContexto}
 
-Genera EXACTAMENTE 15 preguntas de selección múltiple. Reglas OBLIGATORIAS:
-1. Lenguaje claro y simple para niño de 7-8 años, pero las preguntas deben evaluar COMPRENSIÓN REAL
+${estructuraPreguntas}
+
+REGLAS OBLIGATORIAS para todas las preguntas:
+1. Lenguaje claro y simple para niño de 7-8 años
 2. 4 opciones (A, B, C, D), UNA sola correcta
-3. Dificultad progresiva: preguntas 1-5 reconocimiento básico, 6-10 aplicación directa, 11-15 razonamiento
-4. Sin LaTeX ni símbolos matemáticos especiales. Usar texto plano: 3/4, raiz(16), 2x3
-5. Distractores CREÍBLES: errores típicos que cometen los niños
-6. Incluir al menos 2 preguntas con situaciones de la vida real
-7. Respuestas distribuidas: A×4, B×4, C×4, D×3 sin patrón visible
-8. Devuelve ÚNICAMENTE JSON válido, sin texto adicional, sin bloques de código markdown
+3. Sin LaTeX ni símbolos especiales. Usar texto plano: 3/4, raiz(16), 2x3
+4. Distractores CREÍBLES: errores típicos que cometen los niños
+5. Respuestas distribuidas: A×4, B×4, C×4, D×3 sin patrón visible
+6. Devuelve ÚNICAMENTE JSON válido, sin texto adicional ni bloques markdown
 
 Formato JSON exacto:
 {
