@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Brainy</title>
 <meta name="description" content="Hecho con amor por papá y mamá, para que aprender sea tu aventura favorita. 🧠✨"/>
+<meta name="version" content="errores-multidispositivo-v2"/>
 <link rel="icon" type="image/png" href="/favicon.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
 <style>
@@ -635,7 +636,31 @@ async function sincronizarCompletadosDesdeSheets() {
       }
     }
     guardarEstadoLocal();
+    // Sincronizar botones de refuerzo desde Sheets en segundo plano
+    sincronizarBotonesRefuerzoDesdeSheets().catch(() => {});
   } catch(e) { console.warn('No se pudo sincronizar completados', e); }
+}
+
+// Detectar qué materias/días tienen errores en Sheets y actualizar localStorage
+async function sincronizarBotonesRefuerzoDesdeSheets() {
+  if (!estado.codigo) return;
+  try {
+    const res = await fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&todos=1`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.ok || !data.entradas) return;
+    // Guardar en localStorage para que renderInicio los muestre
+    data.entradas.forEach(e => {
+      if (e.errores && e.errores.length > 0) {
+        const key = `errores_${e.dia}_${e.materia}`;
+        const existentes = JSON.parse(localStorage.getItem(key) || '[]');
+        // Solo actualizar si localStorage está vacío (para no pisar datos frescos)
+        if (existentes.length === 0) {
+          localStorage.setItem(key, JSON.stringify(e.errores));
+        }
+      }
+    });
+  } catch(e) {}
 }
 
 function cambiarNombre() {
@@ -693,7 +718,7 @@ async function renderInicio() {
       const erroresKey = `errores_${dia}_${key}`;
       const erroresGuardados = JSON.parse(localStorage.getItem(erroresKey) || 'null');
       if (erroresGuardados && erroresGuardados.length > 0 && materiaCompletada(dia, key)) {
-        refuerzoHtml += `<button onclick="iniciarRefuerzoDesdeMenu(${dia},'${key}')"
+        refuerzoHtml += `<button id="btn-refuerzo-${dia}-${key}" onclick="iniciarRefuerzoDesdeMenu(${dia},'${key}')"
           style="margin-top:8px;width:100%;padding:8px 14px;background:linear-gradient(135deg,#F0EBFF,#E8F4FF);border:2px solid #845EF7;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;color:#6741D9;text-align:left">
           🔁 Refuerzo ${mat.emoji} ${mat.nombre.split(' ')[0]} · ${erroresGuardados.length} error${erroresGuardados.length>1?'es':''}
         </button>`;
@@ -863,7 +888,26 @@ async function terminarExamen() {
     if (!pregObj || !pregObj.opciones) return null;
     return { pregunta: { pregunta: pregObj.pregunta, opciones: pregObj.opciones, respuesta: pregObj.respuesta, imagen: pregObj.imagen||'', video: pregObj.video||'' }, elegida: r.elegida, correcta: r.correcta };
   }).filter(Boolean);
+  // Guardar errores localmente (fallback)
   localStorage.setItem(`errores_${dia}_${materia}`, JSON.stringify(erroresParaRefuerzo));
+  // Guardar errores en Sheets para acceso multi-dispositivo
+  if (estado.codigo && erroresParaRefuerzo.length > 0) {
+    fetch('/api/errores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        codigo: estado.codigo,
+        dia,
+        materia,
+        errores: erroresParaRefuerzo
+      })
+    }).catch(() => {});
+  } else if (estado.codigo && erroresParaRefuerzo.length === 0) {
+    // Sin errores: borrar entrada previa en Sheets si existe
+    fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${materia}`, {
+      method: 'DELETE'
+    }).catch(() => {});
+  }
   intentarDesbloquearSiguienteDia();
   guardarEstadoLocal();
 
@@ -1045,12 +1089,53 @@ function iniciarRefuerzoDesdeResultado() {
   arrancarRefuerzo(dia, materia, errores, pct);
 }
 
-function iniciarRefuerzoDesdeMenu(dia, materia) {
+async function iniciarRefuerzoDesdeMenu(dia, materia) {
   const key = `errores_${dia}_${materia}`;
+
+  // 1. Intentar desde localStorage primero (más rápido)
   const erroresRaw = JSON.parse(localStorage.getItem(key) || '[]');
-  const errores = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
-if (!errores.length) { localStorage.removeItem(key); alert('Datos desactualizados. Haz el examen de nuevo.'); return; }
-  arrancarRefuerzo(dia, materia, errores, null);
+  const erroresLocal = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
+
+  if (erroresLocal.length > 0) {
+    arrancarRefuerzo(dia, materia, erroresLocal, null);
+    return;
+  }
+
+  // 2. Si no hay local, buscar en Sheets (otro dispositivo guardó los errores)
+  if (!estado.codigo) {
+    alert('Inicia sesión para cargar el refuerzo desde cualquier dispositivo.');
+    return;
+  }
+
+  // Mostrar indicador de carga en el botón
+  const btnId = `btn-refuerzo-${dia}-${materia}`;
+  const btnEl = document.getElementById(btnId);
+  const textoOriginal = btnEl ? btnEl.textContent : '';
+  if (btnEl) { btnEl.textContent = '⏳ Cargando...'; btnEl.disabled = true; }
+
+  try {
+    const res = await fetch(
+      `/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${materia}`
+    );
+    const data = await res.json();
+
+    if (data.ok && data.errores && data.errores.length > 0) {
+      const erroresSheets = data.errores.filter(e => e?.pregunta?.opciones?.A !== undefined);
+      if (erroresSheets.length > 0) {
+        // Guardar en localStorage para próxima vez (caché)
+        localStorage.setItem(key, JSON.stringify(erroresSheets));
+        arrancarRefuerzo(dia, materia, erroresSheets, null);
+        return;
+      }
+    }
+
+    // 3. No hay errores en ningún lado
+    if (btnEl) { btnEl.textContent = textoOriginal; btnEl.disabled = false; }
+    alert('No hay errores guardados para este refuerzo. Haz el examen primero en este u otro dispositivo.');
+  } catch(e) {
+    if (btnEl) { btnEl.textContent = textoOriginal; btnEl.disabled = false; }
+    alert('Error de conexión al cargar el refuerzo. Revisa el internet e intenta de nuevo.');
+  }
 }
 
 function arrancarRefuerzo(dia, materia, errores, pctOriginal) {
@@ -1214,6 +1299,12 @@ async function terminarRefuerzo() {
   // Si mejoró todos, limpiar errores guardados
   if (puntaje === total) {
     localStorage.removeItem(`errores_${dia}_${materia}`);
+    // Borrar en Sheets también
+    if (estado.codigo) {
+      fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${encodeURIComponent(materia)}`, {
+        method: 'DELETE'
+      }).catch(() => {});
+    }
   }
 
   // Mostrar resultado
