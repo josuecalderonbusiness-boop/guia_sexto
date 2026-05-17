@@ -6,26 +6,26 @@ const SHEET_ID = process.env.SHEET_ID;
 // ── Currículo completo de Jero (grado 2) ────────────────────────────
 const CURRICULO = {
   MAT: [
-    'Números del 1 al 100: lectura, escritura y valor posicional (unidades y decenas)',
-    'Sumas sin llevar hasta 100',
-    'Sumas con llevadas hasta 100',
-    'Restas sin prestar hasta 100',
-    'Restas con préstamo hasta 100',
-    'Problemas de suma y resta de un paso con enunciado verbal',
-    'Secuencias numéricas: contar de 2 en 2, de 5 en 5 y de 10 en 10',
-    'Comparación de números: mayor que, menor que e igual a',
-    'Introducción a la multiplicación: el doble y el triple',
-    'Tablas del 2, 3, 4 y 5',
-    'Reparto en partes iguales: concepto de división intuitiva',
-    'Figuras geométricas planas: círculo, triángulo, cuadrado y rectángulo',
-    'Cuerpos geométricos: cubo, esfera, cilindro y cono',
-    'Medición de longitud: centímetros y metros con regla',
-    'El reloj: horas en punto y medias horas',
-    'El calendario: días, semanas y meses',
-    'Gráficas de barras sencillas: leer e interpretar datos',
-    'Problemas de dos pasos con suma y resta combinadas',
-    'Números ordinales del primero al décimo',
-    'Repaso general y problemas mixtos nivel grado 2',
+    'Valor posicional hasta 4 cifras: Unidades, Decenas, Centenas y Unidades de Mil. Lectura y escritura de números en cifras y en palabras. Descomposición aditiva (ej: 1345 = 1000+300+40+5). Equivalencias: cuántas unidades hay en 3 centenas, cuántas decenas forman 1 centena.',
+    'Comparación y orden de números hasta 4 cifras: uso de mayor que, menor que e igual a. Número anterior, posterior y entre. Series numéricas ascendentes y descendentes de 2 en 2, de 5 en 5, de 10 en 10 y de 100 en 100. Números ordinales del primero al vigésimo.',
+    'Adición (suma) hasta 4 dígitos con reagrupación en decenas y centenas simultáneamente. Términos: sumandos y total. Sumas verticales y horizontales.',
+    'Sustracción (resta) hasta 4 dígitos con desagrupación consecutiva. Caso especial: restar a números con ceros intermedios (ej: 500-124). Términos: minuendo, sustraendo y diferencia. Prueba de la resta: sustraendo + diferencia = minuendo.',
+    'Multiplicación: tablas del 2 al 9. Multiplicación como adición iterada (ej: 4+4+4+4+4 = 5x4). Arreglos rectangulares: filas por columnas. Propiedad conmutativa (3x5 = 5x3).',
+    'Reparto en partes iguales: división exacta intuitiva. Mitad (dividir entre 2) y doble (multiplicar por 2). Problemas de repartir objetos en grupos iguales.',
+    'Resolución de problemas de un paso con enunciado verbal: identificar palabras clave para suma (agrupar, reunir, en total), resta (perder, quedar, diferencia) y multiplicación (el triple, el doble, repetir).',
+    'Resolución de problemas de dos pasos combinando suma y resta. Extraer datos, realizar operación y redactar respuesta completa.',
+    'Geometría plana: círculo, triángulo, cuadrado, rectángulo, rombo y óvalo. Contar lados y vértices. Reconocer ángulos rectos y oblicuos.',
+    'Cuerpos geométricos: cubo, esfera, cilindro, cono y pirámide. Diferencia entre figuras planas y sólidos. Clasificar en los que ruedan y los que no ruedan.',
+    'Líneas: rectas, curvas, abiertas y cerradas. Líneas paralelas y perpendiculares. Simetría: identificar si una figura tiene eje de simetría.',
+    'Medición de longitud: centímetros y metros. Uso correcto de la regla (desde el 0). Unidades arbitrarias vs estándar.',
+    'El reloj analógico: aguja horaria (corta) y minutero (largo). Horas en punto y medias horas. El calendario: días, semanas y meses. Problemas con fechas.',
+    'Capacidad y masa: comparar qué objeto pesa más en una balanza. Qué recipiente almacena más líquido. Conceptos de lleno y vacío.',
+    'Gráficas de barras sencillas: leer e interpretar datos. Tablas de conteo. Responder preguntas: cuál es el mayor, cuál es el menor, cuántos más que.',
+    'Problemas mixtos nivel grado 2-3: combinar operaciones, geometría y medidas en situaciones reales.',
+    'Valor posicional avanzado: descomposición y composición de números. Forma desarrollada y compacta. Comparar y ordenar series de 4 números.',
+    'Operaciones combinadas: jerarquía básica. Problemas que requieren elegir la operación correcta entre suma, resta y multiplicación.',
+    'Tablas del 6, 7, 8 y 9. Patrones de multiplicación. Relación entre multiplicación y división básica.',
+    'Repaso general y evaluación integral: pensamiento numérico, operaciones, geometría, medidas y estadística nivel grado 2 transición a grado 3.',
   ],
   LCA: [
     'Lectura de sílabas simples y palabras cortas (2 a 3 sílabas)',
@@ -207,13 +207,14 @@ TEMA: ${tema}
 MATERIA: ${NOMBRES_MATERIA[mat] || mat}
 
 Genera EXACTAMENTE 15 preguntas de selección múltiple. Reglas OBLIGATORIAS:
-1. Lenguaje MUY simple, máximo 20 palabras por pregunta
+1. Lenguaje claro y simple para niño de 7-8 años, pero las preguntas deben evaluar COMPRENSIÓN REAL, no solo memorización
 2. 4 opciones (A, B, C, D), UNA sola correcta
-3. Dificultad progresiva: preguntas 1-5 fáciles, 6-10 medias, 11-15 difíciles
+3. Dificultad progresiva: preguntas 1-5 reconocimiento básico, 6-10 aplicación directa, 11-15 razonamiento y problemas con contexto real
 4. Sin LaTeX ni símbolos matemáticos especiales. Usar texto plano: 3/4, raiz(16), 2x3
-5. Distractores (respuestas incorrectas) creíbles, no absurdos
-6. Respuestas distribuidas: aproximadamente A×4, B×4, C×4, D×3 sin patrón visible
-7. Devuelve ÚNICAMENTE JSON válido, sin texto adicional, sin bloques de código
+5. Distractores CREÍBLES: usar errores típicos que cometen los niños (ej: confundir decenas con unidades, sumar cuando deben restar)
+6. Incluir al menos 3 preguntas con situación de la vida real (compras, frutas, juguetes, mascotas)
+7. Respuestas distribuidas: aproximadamente A×4, B×4, C×4, D×3 sin patrón visible
+8. Devuelve ÚNICAMENTE JSON válido, sin texto adicional, sin bloques de código
 
 Formato JSON exacto:
 {
