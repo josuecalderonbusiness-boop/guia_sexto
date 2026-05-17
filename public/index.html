@@ -1571,10 +1571,13 @@ async function abrirCapitulo(serie, capitulo) {
 
     const cap = data.capitulo;
     cuentoActual = { serie, capitulo, color: cap.color };
+    puntajeCuento = 0;
 
-    // Header con color del cuento
+    // Header
     const header = document.getElementById('lector-header');
-    header.style.background = cap.color;
+    header.style.background = 'rgba(15,15,46,0.92)';
+    header.style.backdropFilter = 'blur(12px)';
+    header.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
     document.getElementById('lector-titulo').textContent = cap.serie;
     document.getElementById('lector-cap').textContent = `Capítulo ${cap.numero}`;
     document.getElementById('lector-btn-volver').onclick = () => {
@@ -1582,55 +1585,157 @@ async function abrirCapitulo(serie, capitulo) {
       window.scrollTo(0, 0);
     };
 
-    // Fondo del lector con color del cuento
-    document.getElementById('screen-lector').style.background = cap.color;
-    document.getElementById('screen-lector').style.minHeight = '100vh';
+    // Fondo del lector
+    const screenLector = document.getElementById('screen-lector');
+    screenLector.style.background = cap.color || '#0F0F2E';
+    screenLector.style.minHeight = '100vh';
+    screenLector.style.position = 'relative';
+    screenLector.style.overflow = 'hidden';
 
-    // Título del capítulo
-    let html = `
-      <div style="text-align:center;margin-bottom:32px;padding-top:8px">
-        <div style="font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;letter-spacing:2px;text-transform:uppercase">Capítulo ${cap.numero}</div>
-        <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;color:white;line-height:1.2">${cap.titulo}</h2>
-        <div style="width:60px;height:3px;background:rgba(255,255,255,0.3);border-radius:2px;margin:16px auto 0"></div>
+    // Emojis flotantes en el fondo
+    const EMOJIS_CUENTO = ['🔑','🌀','🚪','✨','🌙','🔮','📖','⚡','🗝️','💫','🌌','🔭'];
+    let particlesHtml = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden">';
+    EMOJIS_CUENTO.forEach((e, i) => {
+      const left = Math.random() * 95;
+      const dur = 12 + Math.random() * 18;
+      const delay = Math.random() * 15;
+      const size = 1 + Math.random() * 1.2;
+      particlesHtml += `<div style="position:absolute;left:${left}%;font-size:${size}rem;opacity:0.07;animation:flotar-emoji ${dur}s ${delay}s linear infinite;user-select:none">${e}</div>`;
+    });
+    particlesHtml += '</div>';
+
+    // CSS animación flotante
+    if (!document.getElementById('cuento-style')) {
+      const style = document.createElement('style');
+      style.id = 'cuento-style';
+      style.textContent = `
+        @keyframes flotar-emoji {
+          0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+          10%  { opacity: 0.07; }
+          90%  { opacity: 0.07; }
+          100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes glow-titulo {
+          0%,100% { text-shadow: 0 0 20px rgba(132,94,247,0.5), 0 0 40px rgba(132,94,247,0.2); }
+          50%      { text-shadow: 0 0 40px rgba(132,94,247,0.9), 0 0 80px rgba(132,94,247,0.4); }
+        }
+        .titulo-glow { animation: glow-titulo 3s ease-in-out infinite; }
+        .pagina-cuento { display:none; animation: slide-pag 0.4s ease both; }
+        .pagina-cuento.activa { display:block; }
+        @keyframes slide-pag {
+          from { opacity:0; transform:translateX(40px); }
+          to   { opacity:1; transform:translateX(0); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Construir páginas (1 bloque por página)
+    let paginasHtml = '';
+    cap.bloques.forEach((bloque, i) => {
+      paginasHtml += `<div class="pagina-cuento ${i === 0 ? 'activa' : ''}" id="pag-cuento-${i}">`;
+      if (bloque.imagen && bloque.imagen.startsWith('http')) {
+        paginasHtml += `<img src="${bloque.imagen}" style="width:100%;border-radius:16px;margin-bottom:20px;display:block;box-shadow:0 8px 24px rgba(0,0,0,0.5)" onerror="this.style.display='none'"/>`;
+      }
+      paginasHtml += `<p style="font-size:1.05rem;line-height:1.85;color:rgba(255,255,255,0.9);font-weight:600;text-indent:1.5em;margin-bottom:0">${bloque.texto}</p>`;
+      paginasHtml += '</div>';
+    });
+
+    // Indicadores de página
+    let indicadoresHtml = cap.bloques.map((_, i) =>
+      `<div id="punto-${i}" onclick="irPaginaCuento(${i})" style="width:${i===0?'22px':'8px'};height:8px;border-radius:${i===0?'4px':'50%'};background:${i===0?'#845EF7':'rgba(255,255,255,0.2)'};cursor:pointer;transition:all 0.3s;${i===0?'box-shadow:0 0 8px rgba(132,94,247,0.7)':''}"></div>`
+    ).join('');
+
+    const totalPags = cap.bloques.length;
+    const html = `
+      ${particlesHtml}
+      <div style="position:relative;z-index:1;max-width:660px;margin:0 auto;padding:32px 20px 60px">
+        <div style="text-align:center;margin-bottom:28px">
+          <div style="font-size:0.72rem;font-weight:800;color:rgba(255,255,255,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px">Capítulo ${cap.numero}</div>
+          <h2 class="titulo-glow" style="font-family:'Fredoka One',cursive;font-size:1.9rem;color:white;line-height:1.15">${cap.titulo}</h2>
+          <div style="width:60px;height:3px;background:linear-gradient(90deg,transparent,rgba(132,94,247,0.6),transparent);border-radius:2px;margin:14px auto 0"></div>
+        </div>
+
+        <div id="paginas-cuento">${paginasHtml}</div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-top:28px">
+          <button id="btn-ant-cuento" onclick="cambiarPaginaCuento(-1)" disabled
+            style="flex:1;padding:12px;background:rgba(132,94,247,0.2);border:1px solid rgba(132,94,247,0.35);border-radius:14px;color:white;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;opacity:0.3">
+            ← Anterior
+          </button>
+          <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex:1" id="indicadores-cuento">
+            ${indicadoresHtml}
+          </div>
+          <button id="btn-sig-cuento" onclick="cambiarPaginaCuento(1)"
+            style="flex:1;padding:12px;background:rgba(132,94,247,0.2);border:1px solid rgba(132,94,247,0.35);border-radius:14px;color:white;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s">
+            Siguiente →
+          </button>
+        </div>
+
+        ${cap.preguntas && cap.preguntas.length > 0 ? `
+        <div id="seccion-preguntas-cuento" style="display:none;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.1)">
+          <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:white;text-align:center;margin-bottom:6px">¿Entendiste el capítulo? 🧠</h3>
+          <p style="color:rgba(255,255,255,0.5);text-align:center;font-size:0.85rem;margin-bottom:24px">Responde sobre lo que leíste</p>
+          <div id="preguntas-cuento"></div>
+        </div>` : ''}
       </div>
     `;
 
-    // Bloques de texto e imágenes
-    cap.bloques.forEach((bloque, i) => {
-      if (bloque.imagen && bloque.imagen.startsWith('http')) {
-        html += `<img src="${bloque.imagen}" style="width:100%;border-radius:16px;margin-bottom:20px;display:block;box-shadow:0 8px 24px rgba(0,0,0,0.4)" onerror="this.style.display='none'"/>`;
-      }
-      html += `
-        <p style="font-size:1.05rem;line-height:1.8;color:rgba(255,255,255,0.92);font-weight:600;margin-bottom:24px;text-indent:1.5em">
-          ${bloque.texto}
-        </p>
-      `;
-      // Separador entre bloques excepto el último
-      if (i < cap.bloques.length - 1) {
-        html += `<div style="text-align:center;color:rgba(255,255,255,0.2);font-size:1.2rem;margin-bottom:24px">✦ ✦ ✦</div>`;
-      }
-    });
-
-    // Sección de preguntas
-    if (cap.preguntas && cap.preguntas.length > 0) {
-      html += `
-        <div style="margin-top:40px;padding-top:32px;border-top:2px solid rgba(255,255,255,0.15)">
-          <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:white;text-align:center;margin-bottom:8px">¿Entendiste el capítulo? 🧠</h3>
-          <p style="color:rgba(255,255,255,0.6);text-align:center;font-size:0.9rem;margin-bottom:24px">Responde estas preguntas sobre lo que leíste</p>
-          <div id="preguntas-cuento"></div>
-        </div>
-      `;
-    }
-
     contenido.innerHTML = html;
 
-    // Renderizar preguntas si hay
+    // Estado de navegación
+    window._cuentoPagActual = 0;
+    window._cuentoTotalPags = totalPags;
+    window._cuentoPreguntas = cap.preguntas || [];
+    actualizarNavCuento();
+
     if (cap.preguntas && cap.preguntas.length > 0) {
       renderPreguntasCuento(cap.preguntas, 0, cap.color);
     }
 
   } catch(e) {
     contenido.innerHTML = `<div class="error-msg">⚠️ Error cargando el capítulo. Intenta de nuevo.</div>`;
+  }
+}
+
+function irPaginaCuento(idx) {
+  const total = window._cuentoTotalPags || 0;
+  document.querySelector('.pagina-cuento.activa')?.classList.remove('activa');
+  const nueva = document.getElementById(`pag-cuento-${idx}`);
+  if (nueva) { nueva.classList.add('activa'); nueva.style.animation='none'; nueva.offsetHeight; nueva.style.animation=''; }
+  window._cuentoPagActual = idx;
+  actualizarNavCuento();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cambiarPaginaCuento(dir) {
+  const nuevo = (window._cuentoPagActual || 0) + dir;
+  const total = window._cuentoTotalPags || 0;
+  if (nuevo < 0) return;
+  if (nuevo >= total) {
+    // Mostrar preguntas
+    const sec = document.getElementById('seccion-preguntas-cuento');
+    if (sec) { sec.style.display = 'block'; sec.scrollIntoView({ behavior: 'smooth' }); }
+    return;
+  }
+  irPaginaCuento(nuevo);
+}
+
+function actualizarNavCuento() {
+  const idx = window._cuentoPagActual || 0;
+  const total = window._cuentoTotalPags || 0;
+  const btnAnt = document.getElementById('btn-ant-cuento');
+  const btnSig = document.getElementById('btn-sig-cuento');
+  if (btnAnt) { btnAnt.disabled = idx === 0; btnAnt.style.opacity = idx === 0 ? '0.3' : '1'; }
+  if (btnSig) btnSig.textContent = idx === total - 1 ? '¡Responder! 🧠' : 'Siguiente →';
+  // Actualizar puntos
+  for (let i = 0; i < total; i++) {
+    const p = document.getElementById(`punto-${i}`);
+    if (!p) continue;
+    p.style.width = i === idx ? '22px' : '8px';
+    p.style.borderRadius = i === idx ? '4px' : '50%';
+    p.style.background = i === idx ? '#845EF7' : 'rgba(255,255,255,0.2)';
+    p.style.boxShadow = i === idx ? '0 0 8px rgba(132,94,247,0.7)' : 'none';
   }
 }
 
