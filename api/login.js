@@ -42,7 +42,8 @@ module.exports = async (req, res) => {
       if (!encontrado) {
         return res.json({ ok: false, error: 'Código no encontrado. Pídele el código a tu profe.' });
       }
-      const grado = encontrado[2] ? parseInt(encontrado[2]) || encontrado[2] : null;
+      const gradoRaw = encontrado[2] ? encontrado[2].toString().trim() : null;
+      const grado = gradoRaw ? (parseInt(gradoRaw) || gradoRaw) : null;
       return res.json({ ok: true, nombre: encontrado[1] || codigo, codigo, esAdmin: false, grado });
     } catch (e) {
       return res.status(500).json({ ok: false, error: 'Error al verificar código: ' + e.message });

@@ -649,12 +649,14 @@ async function entrar() {
     estado.nombre = data.nombre;
     estado.codigo = data.codigo;
     estado.esAdmin = data.esAdmin || false;
-    estado.grado = null;
+    estado.grado = data.grado || null;
     guardarEstadoLocal();
     mostrarHeaderNombre();
     if (estado.esAdmin) {
       mostrar('screen-admin');
       adminInit();
+    } else if (estado.grado) {
+      await elegirGrado(estado.grado);
     } else {
       mostrar('screen-grado');
     }
@@ -670,12 +672,13 @@ async function elegirGrado(grado) {
   estado.grado = grado;
   guardarEstadoLocal();
   mostrarHeaderNombre();
+  // Siempre sincronizar desde Sheets al entrar — igual para todos los grados
+  await sincronizarCompletadosDesdeSheets();
   if (grado === 2) {
     mostrar('screen-jero');
     renderJero();
   } else {
     mostrar('screen-inicio');
-    await sincronizarCompletadosDesdeSheets();
     renderInicio();
   }
 }
@@ -702,36 +705,42 @@ async function sincronizarCompletadosDesdeSheets() {
     const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
     const data = await res.json();
     if (!data.ok || !data.resultados) return;
-    const NOMBRES = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
-    data.resultados.forEach(r => {
-      const matKey = Object.keys(NOMBRES).find(k => NOMBRES[k] === r.materia);
-      const diaNum = r.dia ? r.dia.replace('Día ','').replace('Dia ','').trim() : null;
-      if (matKey && diaNum) {
-        estado.completados[`${diaNum}_${matKey}`] = true;
-        // Sincronizar errores desde Sheets a localStorage
-        if (!diaNum.includes('Refuerzo')) {
-          try {
-            const respuestas = typeof r.respuestas === 'string' ? JSON.parse(r.respuestas) : r.respuestas;
-            if (respuestas && respuestas.length) {
-              const erroresKey = `errores_${diaNum}_${matKey}`;
-              const erroresExistentes = JSON.parse(localStorage.getItem(erroresKey) || '[]');
-              // Solo actualizar si no hay errores guardados localmente
-              // No reconstruir errores desde Sheets — no traen opciones completas
-            }
-          } catch(e) {}
+
+    const NOMBRES_G6  = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+    const NOMBRES_G2  = { MAT:'Matemáticas', LCA:'Lengua Castellana', ING:'Inglés', NAT:'Ciencias Naturales', SOC:'Ciencias Sociales' };
+
+    // ── Grado 6: reconstruir completados por día ──────────────────
+    if (estado.grado !== 2) {
+      data.resultados.forEach(r => {
+        const matKey = Object.keys(NOMBRES_G6).find(k => NOMBRES_G6[k] === r.materia);
+        const diaNum = r.dia ? r.dia.replace('Día ','').replace('Dia ','').trim() : null;
+        if (matKey && diaNum && !isNaN(parseInt(diaNum))) {
+          estado.completados[`${diaNum}_${matKey}`] = true;
         }
+      });
+      for (let d = 1; d <= 6; d++) {
+        const todasCompletas = Object.keys(NOMBRES_G6).every(m => estado.completados[`${d}_${m}`]);
+        if (todasCompletas && estado.diaActual <= d) estado.diaActual = d + 1;
+      }
+      guardarEstadoLocal();
+      sincronizarBotonesRefuerzoDesdeSheets().catch(() => {});
+      return;
+    }
+
+    // ── Grado 2: reconstruir jeroProgreso desde Resultados ───────
+    if (!estado.jeroProgreso) estado.jeroProgreso = {};
+    data.resultados.forEach(r => {
+      const matchLec = String(r.dia).match(/G2 Lecci[oó]n\s*(\d+)/i);
+      if (!matchLec) return;
+      const lecNum = parseInt(matchLec[1]);
+      const matKey = Object.keys(NOMBRES_G2).find(k => NOMBRES_G2[k] === r.materia);
+      if (!matKey || !lecNum) return;
+      if (!estado.jeroProgreso[matKey]) estado.jeroProgreso[matKey] = { completadas: [] };
+      if (!estado.jeroProgreso[matKey].completadas.includes(lecNum)) {
+        estado.jeroProgreso[matKey].completadas.push(lecNum);
       }
     });
-    // Recalcular diaActual según completados reales
-    for (let d = 1; d <= 6; d++) {
-      const todasCompletas = Object.keys(NOMBRES).every(m => estado.completados[`${d}_${m}`]);
-      if (todasCompletas && estado.diaActual <= d) {
-        estado.diaActual = d + 1;
-      }
-    }
     guardarEstadoLocal();
-    // Sincronizar botones de refuerzo desde Sheets en segundo plano
-    sincronizarBotonesRefuerzoDesdeSheets().catch(() => {});
   } catch(e) { console.warn('No se pudo sincronizar completados', e); }
 }
 
@@ -1007,7 +1016,7 @@ async function terminarExamen() {
   const { dia, materia, puntaje, preguntas, respuestas } = examenActual;
   const total = preguntas.length;
   const pct = Math.round((puntaje / total) * 100);
-  const mat = MATERIAS[materia] || { nombre: MATERIAS_JERO[materia]?.nombre || materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' };
+  const mat = MATERIAS[materia] || { nombre: (MATERIAS_JERO||{})[materia]?.nombre || materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' };
   // Limpiar pantalla inmediatamente para no quedarse en el spinner
   const pc = document.getElementById('pregunta-container');
   if (pc) pc.innerHTML = '<div class="loading"><div class="spinner"></div><span>Guardando resultado...</span></div>';
@@ -1043,22 +1052,21 @@ async function terminarExamen() {
   intentarDesbloquearSiguienteDia();
   guardarEstadoLocal();
 
-  if (!examenActual.esJero) {
-    try {
-      const ctrl = new AbortController();
-      const tOut = setTimeout(() => ctrl.abort(), 8000);
-      await fetch('/api/guardar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: estado.nombre, dia, materia: mat.nombre,
-          puntaje, total, respuestas, fecha: new Date().toLocaleString('es-CO')
-        }),
-        signal: ctrl.signal
-      });
-      clearTimeout(tOut);
-    } catch(e) { console.warn('No se pudo guardar en Sheets', e); }
-  }
+  // Guardar en Sheets — solo para grado 6, Jero ya guardó arriba
+  if (!examenActual.esJero) try {
+    const ctrl = new AbortController();
+    const tOut = setTimeout(() => ctrl.abort(), 8000);
+    await fetch('/api/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: estado.nombre, dia, materia: mat.nombre,
+        puntaje, total, respuestas, fecha: new Date().toLocaleString('es-CO')
+      }),
+      signal: ctrl.signal
+    });
+    clearTimeout(tOut);
+  } catch(e) { console.warn('No se pudo guardar en Sheets', e); }
 
   let emoji, titulo, sub;
   if (pct === 100)    { emoji = '🏆'; titulo = '¡PERFECTO!';       sub = '¡Sacaste 100%! ¡Eres increíble!'; }
@@ -2312,21 +2320,27 @@ async function terminarExamen() {
     if (!ya.includes(leccionJero)) ya.push(leccionJero);
     guardarEstadoLocal();
 
-    // Guardar resultado en Sheets
+    // Guardar resultado en Sheets (con timeout, igual que grado 6)
     const matJero = MATERIAS_JERO[materia];
-    fetch('/api/guardar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nombre: estado.nombre,
-        dia: `G2_L${leccionJero}`,
-        materia: matJero.nombre,
-        puntaje,
-        total: preguntas.length,
-        respuestas: examenActual.respuestas,
-        fecha: new Date().toLocaleString('es-CO')
-      })
-    }).catch(() => {});
+    try {
+      const ctrlJ = new AbortController();
+      const tOutJ = setTimeout(() => ctrlJ.abort(), 8000);
+      await fetch('/api/guardar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: estado.nombre,
+          dia: `G2_L${leccionJero}`,
+          materia: matJero.nombre,
+          puntaje,
+          total: preguntas.length,
+          respuestas: examenActual.respuestas,
+          fecha: new Date().toLocaleString('es-CO')
+        }),
+        signal: ctrlJ.signal
+      });
+      clearTimeout(tOutJ);
+    } catch(e) { console.warn('No se pudo guardar resultado Jero', e); }
     // Guardar errores en Sheets
     const erroresJero = examenActual.respuestas.filter(r => !r.ok).map(r => {
       const pregObj = examenActual.preguntas.find(p => p.pregunta === r.pregunta);
