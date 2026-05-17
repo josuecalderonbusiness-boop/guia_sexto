@@ -378,6 +378,7 @@
     <div class="nombre-badge" id="header-nombre" onclick="cambiarNombre()">
       👤 <span id="header-nombre-text"></span> ✏️
     </div>
+    <span id="header-grado-badge" style="display:inline-block;background:rgba(255,255,255,0.2);color:white;padding:5px 12px;border-radius:50px;font-weight:800;font-size:0.85rem;margin-left:6px;vertical-align:middle"></span>
     <button class="btn-logout" onclick="cerrarSesion()">🚪 Salir</button>
   </div>
 </div>
@@ -630,19 +631,12 @@ async function entrar() {
     estado.nombre = data.nombre;
     estado.codigo = data.codigo;
     estado.esAdmin = data.esAdmin || false;
-    if (data.grado) estado.grado = data.grado;
+    estado.grado = null;
     guardarEstadoLocal();
     mostrarHeaderNombre();
     if (estado.esAdmin) {
       mostrar('screen-admin');
       adminInit();
-    } else if (estado.grado === 2) {
-      mostrar('screen-jero');
-      renderJero();
-    } else if (estado.grado) {
-      mostrar('screen-inicio');
-      await sincronizarCompletadosDesdeSheets();
-      renderInicio();
     } else {
       mostrar('screen-grado');
     }
@@ -657,6 +651,7 @@ async function entrar() {
 async function elegirGrado(grado) {
   estado.grado = grado;
   guardarEstadoLocal();
+  mostrarHeaderNombre();
   if (grado === 2) {
     mostrar('screen-jero');
     renderJero();
@@ -670,6 +665,8 @@ async function elegirGrado(grado) {
 function mostrarHeaderNombre() {
   document.getElementById('header-nombre-wrap').style.display = 'inline-block';
   document.getElementById('header-nombre-text').textContent = estado.nombre;
+  const gradoBadge = document.getElementById('header-grado-badge');
+  if (gradoBadge) gradoBadge.textContent = estado.grado ? `${estado.grado}°` : '';
 }
 
 function cerrarSesion() {
@@ -1960,12 +1957,8 @@ if (estado.nombre) {
   if (estado.esAdmin) {
     mostrar('screen-admin');
     adminInit();
-  } else if (estado.grado === 2) {
-    mostrar('screen-jero');
-    renderJero();
   } else {
-    mostrar('screen-inicio');
-    sincronizarCompletadosDesdeSheets().then(() => renderInicio());
+    mostrar('screen-grado');
   }
 } else {
   mostrar('screen-login');
