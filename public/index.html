@@ -401,11 +401,11 @@
   <p style="font-family:'Fredoka One',cursive;font-size:1.6rem;margin-bottom:8px;text-align:center">¿En qué grado estás?</p>
   <p style="color:#888;margin-bottom:32px;text-align:center">Elige tu grado para ver tus exámenes</p>
   <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
-    <button onclick="elegirGrado(2)" style="width:100px;height:110px;border-radius:20px;border:3px solid #51CF66;background:#E8FFE8;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>2°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#37B24D">Disponible</span></button>
+    <button onclick="elegirGrado(2)" id="btn-grado-2" style="width:100px;height:110px;border-radius:20px;border:3px solid #51CF66;background:#E8FFE8;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>2°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#37B24D">Disponible</span></button>
     <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>3°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
     <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>4°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
     <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>5°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
-    <button onclick="elegirGrado(6)" style="width:100px;height:110px;border-radius:20px;border:3px solid #339AF0;background:#E8F4FF;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>6°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#1971C2">Disponible</span></button>
+    <button onclick="elegirGrado(6)" id="btn-grado-6" style="width:100px;height:110px;border-radius:20px;border:3px solid #339AF0;background:#E8F4FF;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>6°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#1971C2">Disponible</span></button>
   </div>
 </div>
 
@@ -649,7 +649,8 @@ async function entrar() {
     estado.nombre = data.nombre;
     estado.codigo = data.codigo;
     estado.esAdmin = data.esAdmin || false;
-    estado.grado = data.grado || null;
+    estado.grado = null;
+    estado.gradoAsignado = data.grado || null;
     guardarEstadoLocal();
     mostrarHeaderNombre();
     if (estado.esAdmin) {
@@ -669,10 +670,13 @@ async function entrar() {
 }
 
 async function elegirGrado(grado) {
+  if (estado.gradoAsignado && grado !== estado.gradoAsignado) {
+    alert(`Tu grado es ${estado.gradoAsignado}°. Habla con tu profe para cambiar de grado.`);
+    return;
+  }
   estado.grado = grado;
   guardarEstadoLocal();
   mostrarHeaderNombre();
-  // Siempre sincronizar desde Sheets al entrar — igual para todos los grados
   await sincronizarCompletadosDesdeSheets();
   if (grado === 2) {
     mostrar('screen-jero');
