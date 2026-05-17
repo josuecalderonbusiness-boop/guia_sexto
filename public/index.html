@@ -1007,7 +1007,7 @@ async function terminarExamen() {
   const { dia, materia, puntaje, preguntas, respuestas } = examenActual;
   const total = preguntas.length;
   const pct = Math.round((puntaje / total) * 100);
-  const mat = MATERIAS[materia];
+  const mat = MATERIAS[materia] || { nombre: MATERIAS_JERO[materia]?.nombre || materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' };
   // Limpiar pantalla inmediatamente para no quedarse en el spinner
   const pc = document.getElementById('pregunta-container');
   if (pc) pc.innerHTML = '<div class="loading"><div class="spinner"></div><span>Guardando resultado...</span></div>';
@@ -1043,21 +1043,22 @@ async function terminarExamen() {
   intentarDesbloquearSiguienteDia();
   guardarEstadoLocal();
 
-  // Guardar en Sheets con timeout de 8 segundos para no bloquear la UI
-  try {
-    const ctrl = new AbortController();
-    const tOut = setTimeout(() => ctrl.abort(), 8000);
-    await fetch('/api/guardar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nombre: estado.nombre, dia, materia: mat.nombre,
-        puntaje, total, respuestas, fecha: new Date().toLocaleString('es-CO')
-      }),
-      signal: ctrl.signal
-    });
-    clearTimeout(tOut);
-  } catch(e) { console.warn('No se pudo guardar en Sheets', e); }
+  if (!examenActual.esJero) {
+    try {
+      const ctrl = new AbortController();
+      const tOut = setTimeout(() => ctrl.abort(), 8000);
+      await fetch('/api/guardar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: estado.nombre, dia, materia: mat.nombre,
+          puntaje, total, respuestas, fecha: new Date().toLocaleString('es-CO')
+        }),
+        signal: ctrl.signal
+      });
+      clearTimeout(tOut);
+    } catch(e) { console.warn('No se pudo guardar en Sheets', e); }
+  }
 
   let emoji, titulo, sub;
   if (pct === 100)    { emoji = '🏆'; titulo = '¡PERFECTO!';       sub = '¡Sacaste 100%! ¡Eres increíble!'; }
