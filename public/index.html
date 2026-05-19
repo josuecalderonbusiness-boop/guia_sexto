@@ -825,10 +825,12 @@ async function sincronizarCompletadosDesdeSheets() {
     // ── Grado 2: reconstruir jeroProgreso desde Resultados ───────
     if (!estado.jeroProgreso) estado.jeroProgreso = {};
     data.resultados.forEach(r => {
-      const matchLec = String(r.dia).match(/G2 Lecci[oó]n\s*(\d+)/i);
+      const matchLec = String(r.dia).match(/G2[ _]L(?:ecci[oó]n\s*)?(\d+)/i);
       if (!matchLec) return;
       const lecNum = parseInt(matchLec[1]);
-      const matKey = Object.keys(NOMBRES_G2).find(k => NOMBRES_G2[k] === r.materia);
+      const matKey = Object.keys(MATERIAS_JERO).find(k => MATERIAS_JERO[k].nombre === r.materia)
+        || {'Ciencias Naturales':'NAT','Ciencias Sociales':'SOC','Cs. Sociales':'SOC',
+            'Ciencias Nat.':'NAT','Cs. Nat.':'NAT','Lengua Castellana':'LCA'}[r.materia];
       if (!matKey || !lecNum) return;
       if (!estado.jeroProgreso[matKey]) estado.jeroProgreso[matKey] = { completadas: [] };
       if (!estado.jeroProgreso[matKey].completadas.includes(lecNum)) {
@@ -2475,7 +2477,7 @@ function abrirPanelHito(n) {
 }
 
 async function sincronizarProgresoJeroDesdeSheets() {
-  if (!estado.codigo) return;
+  if (!estado.nombre) return;
   try {
     const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
     const data = await res.json();
@@ -2485,8 +2487,9 @@ async function sincronizarProgresoJeroDesdeSheets() {
       const matchLec = String(r.dia).match(/G2 Lecci[oó]n (\d+)/i);
       if (!matchLec) return;
       const lecNum = parseInt(matchLec[1]);
-      const NOMBRES_JERO = { MAT:'Matemáticas', LCA:'Lengua Castellana', ING:'Inglés', NAT:'Ciencias Naturales', SOC:'Ciencias Sociales' };
-      const matKey = Object.keys(NOMBRES_JERO).find(k => NOMBRES_JERO[k] === r.materia);
+      const matKey = Object.keys(MATERIAS_JERO).find(k => MATERIAS_JERO[k].nombre === r.materia)
+        || {'Ciencias Naturales':'NAT','Ciencias Sociales':'SOC','Cs. Sociales':'SOC',
+            'Ciencias Nat.':'NAT','Cs. Nat.':'NAT','Lengua Castellana':'LCA'}[r.materia];
       if (!matKey || !lecNum) return;
       if (!estado.jeroProgreso[matKey]) estado.jeroProgreso[matKey] = { completadas: [] };
       if (!estado.jeroProgreso[matKey].completadas.includes(lecNum)) {
