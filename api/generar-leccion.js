@@ -241,12 +241,24 @@ ${bloqueRepaso}`
 4. El texto debe tener personajes con nombre, lugar y acciones claras
 ${instrExtra}` : '';
 
+  const reglasIngles = mat === 'ING' ? `
+REGLAS ESPECIALES PARA INGLÉS — CUMPLIMIENTO OBLIGATORIO:
+- El niño está en nivel PRINCIPIANTE (equivalente a Duolingo Etapa 2, Sección 1)
+- TODAS las preguntas, instrucciones y opciones van en ESPAÑOL
+- Solo las palabras/frases EN INGLÉS que el niño debe reconocer o traducir van en inglés
+- NUNCA escribas preguntas largas en inglés. Ejemplo correcto: "¿Cómo se dice 'perro' en inglés?"
+- Opciones correctas e incorrectas son palabras sueltas en inglés (dog / cat / bird / fish)
+- Las explicaciones van 100% en español, simples para un niño de 7 años
+- Máximo 6 palabras en inglés por pregunta
+- Formato de pregunta ideal: "¿Qué significa [palabra en inglés]?" o "¿Cómo se dice [palabra en español] en inglés?"
+` : '';
+
   return `Eres un profesor experto creando preguntas de examen para un niño de 7 años (grado ${grado} Colombia).
 
 TEMA NUEVO DE ESTA LECCIÓN: ${tema}
 MATERIA: ${NOMBRES_MATERIA[mat] || mat}
 ${instrContexto}
-
+${reglasIngles}
 ${estructuraPreguntas}
 
 REGLAS OBLIGATORIAS para todas las preguntas:
