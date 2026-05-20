@@ -455,6 +455,16 @@
   .comp-antes { background:#FFE8E8; color:#C92A2A; }
   .comp-despues { background:#E8FFE8; color:#2B8A3E; }
   .mejora-badge { font-family:'Fredoka One',cursive; font-size:1.3rem; padding:12px 28px; border-radius:50px; display:inline-block; margin:12px 0; }
+  /* ── COMPRENSIÓN DE LECTURA ─────────────────────────── */
+  #screen-comprension,#screen-lect-texto{display:none}
+  .lect-header{padding:16px 20px;background:white;border-bottom:3px solid #F0F0F0;position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px}
+  .nivel-card{background:white;border-radius:20px;padding:20px 22px;margin-bottom:14px;cursor:pointer;transition:all 0.2s;border:3px solid #E0E0E0;box-shadow:0 4px 16px rgba(0,0,0,.07);display:flex;align-items:center;gap:14px}
+  .nivel-emoji{font-size:2.4rem;flex-shrink:0}
+  .nivel-info{flex:1}
+  .nivel-titulo{font-family:'Fredoka One',cursive;font-size:1.15rem}
+  .nivel-sub{font-size:.83rem;color:#666;font-weight:600;margin-top:2px}
+  .nivel-estrellas{font-size:.9rem;margin-top:6px;min-height:20px}
+  .nivel-arrow{font-size:1.4rem;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -502,8 +512,9 @@
 
 <div id="screen-inicio">
   <p class="dias-title">📅 Elige tu examen de hoy</p>
-  <div style="text-align:center;margin-bottom:20px">
-    <button onclick="verMisResultados()" style="background:linear-gradient(135deg,#1A1A2E,#0F3460);color:white;border:none;border-radius:16px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2)">📊 Mis Resultados</button>
+  <div style="text-align:center;margin-bottom:20px;display:flex;flex-direction:column;gap:10px;align-items:center">
+    <button onclick="abrirComprension()" style="background:linear-gradient(135deg,#E65100,#F57C00);color:white;border:none;border-radius:16px;padding:13px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 4px 16px rgba(230,81,0,.35);width:264px">📖 Comprensión de Lectura</button>
+    <button onclick="verMisResultados()" style="background:linear-gradient(135deg,#1A1A2E,#0F3460);color:white;border:none;border-radius:16px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);width:264px">📊 Mis Resultados</button>
   </div>
   <div id="dias-container"></div>
 </div>
@@ -519,6 +530,23 @@
     <button onclick="verBiblioteca()" style="background:linear-gradient(135deg,#845EF7,#6741D9);color:white;border:none;border-radius:16px;padding:14px 36px;font-family:Nunito,sans-serif;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 16px rgba(132,94,247,0.4);width:100%;max-width:320px">📚 Mis Cuentos</button>
     <button onclick="verMisResultados()" style="background:linear-gradient(135deg,#1A1A2E,#0F3460);color:white;border:none;border-radius:16px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2);width:100%;max-width:320px">📊 Mis Resultados</button>
   </div>
+</div>
+
+<div id="screen-comprension">
+  <div style="display:flex;align-items:center;gap:12px;padding:20px 20px 0">
+    <button class="btn-volver" onclick="volverInicio()">← Volver</button>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:1.4rem">📖 Comprensión de Lectura</h2>
+  </div>
+  <p style="color:#666;font-size:.88rem;padding:8px 20px 16px;line-height:1.5">Lee cada texto con atención y responde las preguntas. ¡Cada texto es único! Acumula ⭐ por nivel.</p>
+  <div id="comprension-niveles" style="padding:0 20px;max-width:700px;margin:0 auto"></div>
+</div>
+
+<div id="screen-lect-texto">
+  <div class="lect-header">
+    <button class="btn-volver" onclick="mostrar('screen-comprension');renderComprensionMenu()">← Volver</button>
+    <span style="font-family:'Fredoka One',cursive;font-size:1.05rem;color:#1A1A2E">📖 Lee con atención</span>
+  </div>
+  <div id="lect-contenido"></div>
 </div>
 
 <div id="screen-examen">
@@ -710,7 +738,8 @@ function intentarDesbloquearSiguienteDia() {
 }
 
 function mostrar(id) {
-  ['screen-login','screen-grado','screen-inicio','screen-jero','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo','screen-cuentos','screen-lector'].forEach(s => {
+  ['screen-login','screen-grado','screen-inicio','screen-jero','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo','screen-cuentos','screen-lector','screen-comprension','screen-lect-texto'
+].forEach(s => {
     document.getElementById(s).style.display = 'none';
   });
   document.getElementById(id).style.display = id === 'screen-login' ? 'flex' : 'block';
@@ -2689,6 +2718,156 @@ async function terminarExamen_JERO_PATCH() {
     if (pct >= 80) sonidoEstrella();
     else sonidoCorrecto();
   }
+}
+
+// ── COMPRENSIÓN DE LECTURA ─────────────────────────────────────────────
+let comprensionActual = null;
+
+function abrirComprension() {
+  mostrar('screen-comprension');
+  renderComprensionMenu();
+  window.scrollTo(0,0);
+}
+
+function renderComprensionMenu() {
+  const NIVELES = [
+    {n:1,emoji:'🌱',titulo:'Nivel 1 — Básico',sub:'Textos informativos y narrativos para 6to grado',color:'#37B24D',border:'#51CF66'},
+    {n:2,emoji:'📚',titulo:'Nivel 2 — Intermedio',sub:'Historia, Ciencias, Biología y datos del mundo',color:'#1971C2',border:'#339AF0'},
+    {n:3,emoji:'🔥',titulo:'Nivel 3 — Avanzado',sub:'Ciencia profunda, Filosofía y pensamiento crítico',color:'#6741D9',border:'#845EF7'},
+  ];
+  const cont = document.getElementById('comprension-niveles');
+  cont.innerHTML = NIVELES.map(nv => {
+    const hechos = parseInt(localStorage.getItem('cl_n'+nv.n+'_count')||'0');
+    const estrellas = hechos > 0
+      ? '⭐'.repeat(Math.min(hechos,10))+(hechos>10?' <span style="font-size:.8rem;color:#888">+'+(hechos-10)+' más</span>':'')
+      : '<span style="color:#ccc;font-size:.85rem">☆ Sin intentos aún</span>';
+    return '<div class="nivel-card" style="border-color:'+nv.border+'" onclick="iniciarComprension('+nv.n+')">'
+      +'<span class="nivel-emoji">'+nv.emoji+'</span>'
+      +'<div class="nivel-info">'
+      +'<div class="nivel-titulo" style="color:'+nv.color+'">'+nv.titulo+'</div>'
+      +'<div class="nivel-sub">'+nv.sub+'</div>'
+      +'<div class="nivel-estrellas">'+estrellas+'</div>'
+      +'</div>'
+      +'<span class="nivel-arrow" style="color:'+nv.color+'">→</span>'
+      +'</div>';
+  }).join('');
+}
+
+async function iniciarComprension(nivel) {
+  mostrar('screen-lect-texto');
+  document.getElementById('lect-contenido').innerHTML =
+    '<div style="padding:80px 20px;text-align:center"><div class="loading" style="justify-content:center">'
+    +'<div class="spinner"></div><span>Buscando tu texto... 📖</span></div></div>';
+  try {
+    let res  = await fetch('/api/comprension?nivel='+nivel+'&nombre='+encodeURIComponent(estado.nombre));
+    let data = await res.json();
+    if (!data.ok) throw new Error(data.error||'Error al buscar texto');
+    if (data.generar) {
+      document.getElementById('lect-contenido').innerHTML =
+        '<div style="padding:80px 20px;text-align:center"><div class="loading" style="justify-content:center">'
+        +'<div class="spinner"></div><span>🤖 Generando texto nuevo para ti...</span></div></div>';
+      res  = await fetch('/api/comprension',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nivel})});
+      data = await res.json();
+    }
+    if (!data.ok) throw new Error(data.error||'Error al generar texto');
+    comprensionActual = {nivel,id:data.id,titulo:data.titulo,texto:data.texto,preguntas:data.preguntas};
+    renderTextoLectura();
+  } catch(e) {
+    document.getElementById('lect-contenido').innerHTML =
+      '<div style="padding:60px 20px;text-align:center">'
+      +'<div style="font-size:2.5rem;margin-bottom:12px">⚠️</div>'
+      +'<p style="font-weight:700;color:#C92A2A;margin-bottom:20px">'+e.message+'</p>'
+      +'<button onclick="iniciarComprension('+nivel+')" style="padding:12px 28px;background:#339AF0;color:white;'
+      +'border:none;border-radius:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer">'
+      +'🔄 Reintentar</button></div>';
+  }
+}
+
+function renderTextoLectura() {
+  const {nivel,titulo,texto,preguntas} = comprensionActual;
+  const COLORES = {1:'#37B24D',2:'#1971C2',3:'#6741D9'};
+  const color = COLORES[nivel]||'#339AF0';
+  let idx = 0;
+  let puntaje = 0;
+  let respondidas = 0;
+
+  function renderPreguntaActual() {
+    if (idx >= preguntas.length) {
+      mostrarResultadoComprension(puntaje, preguntas.length, nivel);
+      return;
+    }
+    const p = preguntas[idx];
+    const cont = document.getElementById('lect-contenido');
+    cont.innerHTML = '<div style="max-width:700px;margin:0 auto;padding:20px 20px 60px">'
+      +'<div style="background:white;border-radius:20px;padding:22px;box-shadow:0 4px 16px rgba(0,0,0,.08);margin-bottom:20px;border-top:4px solid '+color+'">'
+      +'<h3 style="font-family:\'Fredoka One\',cursive;font-size:1.1rem;color:'+color+';margin-bottom:10px">📄 '+titulo+'</h3>'
+      +'<p style="line-height:1.8;color:#333;font-size:.95rem;white-space:pre-wrap">'+texto+'</p>'
+      +'</div>'
+      +'<div style="background:white;border-radius:20px;padding:22px;box-shadow:0 4px 16px rgba(0,0,0,.08)">'
+      +'<div style="font-size:.78rem;color:#888;font-weight:700;margin-bottom:8px">PREGUNTA '+(idx+1)+' DE '+preguntas.length+'</div>'
+      +'<p style="font-weight:800;font-size:1rem;margin-bottom:16px;color:#1A1A2E">'+p.pregunta+'</p>'
+      +'<div id="opciones-cl"></div>'
+      +'</div></div>';
+
+    const opCont = document.getElementById('opciones-cl');
+    p.opciones.forEach((op, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = op;
+      btn.style.cssText = 'width:100%;text-align:left;padding:13px 16px;margin-bottom:10px;'
+        +'border:2px solid #E0E0E0;border-radius:14px;background:white;font-family:Nunito,sans-serif;'
+        +'font-weight:700;font-size:.95rem;cursor:pointer;transition:all 0.2s;color:#1A1A2E;display:block';
+      btn.onmouseover = () => { btn.style.borderColor = color; btn.style.background = '#F8F9FF'; };
+      btn.onmouseout  = () => { btn.style.borderColor = '#E0E0E0'; btn.style.background = 'white'; };
+      btn.onclick = () => {
+        const correcta = p.opciones[p.respuesta];
+        const ok = op === correcta;
+        if (ok) puntaje++;
+        // Bloquear todos los botones
+        opCont.querySelectorAll('button').forEach((b,j) => {
+          b.disabled = true;
+          b.style.cursor = 'default';
+          if (p.opciones[j] === correcta) { b.style.background='#E8FFE8'; b.style.borderColor='#37B24D'; b.style.color='#2B8A3E'; }
+          else if (b === btn && !ok)       { b.style.background='#FFE8E8'; b.style.borderColor='#FF6B6B'; b.style.color='#C92A2A'; }
+        });
+        // Explicación
+        const expDiv = document.createElement('div');
+        expDiv.style.cssText = 'margin-top:14px;padding:14px 16px;border-radius:14px;font-size:.88rem;line-height:1.6;font-weight:600;'
+          +(ok ? 'background:#E8FFE8;color:#2B8A3E;border:2px solid #51CF66' : 'background:#FFF3E0;color:#E65100;border:2px solid #FFB300');
+        expDiv.innerHTML = (ok ? '✅ ¡Correcto! ' : '💡 La respuesta correcta era: <strong>'+correcta+'</strong><br>')
+          + (p.explicacion || '');
+        opCont.appendChild(expDiv);
+        // Botón siguiente
+        const btnSig = document.createElement('button');
+        btnSig.textContent = idx+1 < preguntas.length ? 'Siguiente pregunta →' : '🏁 Ver resultado';
+        btnSig.style.cssText = 'margin-top:16px;width:100%;padding:14px;background:'+color+';color:white;'
+          +'border:none;border-radius:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer';
+        btnSig.onclick = () => { idx++; renderPreguntaActual(); window.scrollTo(0,0); };
+        opCont.appendChild(btnSig);
+      };
+      opCont.appendChild(btn);
+    });
+  }
+  renderPreguntaActual();
+}
+
+function mostrarResultadoComprension(puntaje, total, nivel) {
+  const pct = Math.round((puntaje/total)*100);
+  const emoji = pct>=80?'🏆':pct>=60?'👍':'💪';
+  const msg   = pct>=80?'¡Excelente comprensión!':pct>=60?'¡Buen trabajo!':'¡Sigue practicando!';
+  const color = pct>=80?'#37B24D':pct>=60?'#1971C2':'#E65100';
+  // Guardar estrella
+  const key = 'cl_n'+nivel+'_count';
+  localStorage.setItem(key, String(parseInt(localStorage.getItem(key)||'0')+1));
+  document.getElementById('lect-contenido').innerHTML =
+    '<div style="max-width:500px;margin:0 auto;padding:40px 20px;text-align:center">'
+    +'<div style="font-size:4rem;margin-bottom:16px">'+emoji+'</div>'
+    +'<h2 style="font-family:\'Fredoka One\',cursive;font-size:1.8rem;color:'+color+';margin-bottom:8px">'+msg+'</h2>'
+    +'<div style="font-size:3rem;font-weight:900;color:'+color+';margin:16px 0">'+puntaje+'/'+total+'</div>'
+    +'<div style="font-size:1rem;color:#666;margin-bottom:28px">'+pct+'% de respuestas correctas</div>'
+    +'<div style="display:flex;flex-direction:column;gap:12px">'
+    +'<button onclick="iniciarComprension('+nivel+')" style="padding:14px;background:'+color+';color:white;border:none;border-radius:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer">🔄 Nuevo texto</button>'
+    +'<button onclick="mostrar(\'screen-comprension\');renderComprensionMenu()" style="padding:14px;background:#F0F0F0;color:#333;border:none;border-radius:14px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer">← Volver a niveles</button>'
+    +'</div></div>';
 }
 
 // ── VOLVER ───────────────────────────────────────────────────────────
