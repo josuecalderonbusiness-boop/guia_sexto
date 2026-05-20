@@ -2489,7 +2489,7 @@ function abrirPanelHito(n) {
 
     const btn = document.createElement('button');
     btn.className = 'hito-panel-mat' + (comp ? ' done' : '');
-    btn.innerHTML = `<span>${mat.emoji} ${mat.nombre}</span><span>${comp ? '✓' : '→'}</span>`;
+    btn.innerHTML = `<span>${mat.emoji} ${mat.nombre}</span><span>${comp ? '✓ Repetir' : '→'}</span>`;
     btn.onclick = () => { cerrar(); iniciarLeccionJero(key, n); };
     panel.appendChild(btn);
 
