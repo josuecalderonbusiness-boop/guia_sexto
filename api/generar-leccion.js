@@ -28,48 +28,77 @@ const CURRICULO = {
     'Repaso integral: pensamiento numérico, operaciones con reagrupación, geometría, medidas y estadística. Problemas de dos pasos nivel grado 2 transición a grado 3.',
   ],
   LCA: [
-    'Estructura de la oración: sujeto (quién realiza la acción) y predicado (lo que se dice del sujeto). Núcleo del sujeto (sustantivo) y núcleo del predicado (verbo). Identificar oraciones completas e incompletas. Separar sujeto y predicado en oraciones simples.',
-    'Conectores lógicos: aditivos (y, también, además), causales (porque, ya que), adversativos (pero, sin embargo), consecutivos (entonces, por eso). Usar conectores para unir oraciones y formar párrafos con coherencia.',
-    'Tipologías textuales: cuento y fábula (narrativo — tiene personajes, problema y solución), poesía (tiene rima y ritmo), receta e instrucción (texto instructivo — tiene pasos en orden). Identificar cada tipo por sus características visuales y estructurales.',
-    'El sustantivo: propios (nombres de personas, ciudades, apellidos — llevan mayúscula) y comunes (objetos, animales, cosas). Concordancia de género (masculino/femenino) y número (singular/plural). Detectar errores como "los gatas blancos".',
-    'El adjetivo calificativo: palabras que describen cualidades del sustantivo (grande, peludo, rápido). Concordancia adjetivo-sustantivo en género y número. Describir personajes y objetos con adjetivos precisos y variados.',
-    'El verbo: palabras que indican acción o estado. Tiempos verbales: pasado (ayer corrí), presente (hoy corro), futuro (mañana correré). Cambiar oraciones de un tiempo a otro. Identificar el verbo en una oración.',
-    'Artículos definidos (el, la, los, las) e indefinidos (un, una, unos, unas). Pronombres personales: Yo, Tú, Él, Ella, Nosotros, Ellos. Sustituir sustantivos por pronombres correctamente en oraciones.',
-    'Sinónimos: palabras con significado similar (feliz/contento, rápido/veloz). Antónimos: palabras de significado opuesto (alto/bajo, frío/caliente). Ampliar vocabulario y usar sinónimos y antónimos en oraciones propias.',
-    'Segmentación silábica: dividir palabras en sílabas (ca-mi-sa, ma-ri-po-sa). Contar sílabas de una palabra. Sílaba tónica: la que suena más fuerte. Base para reconocer palabras agudas, graves y esdrújulas.',
-    'Uso de mayúsculas: al iniciar oración, después de punto, en nombres propios. Signos de puntuación: punto seguido (separa ideas en un párrafo), punto aparte, punto final. Signos de interrogación ¿? y exclamación ¡! con su entonación.',
-    'Regla de la M antes de B y P: tambor, campo, sombra,impresora. Sílabas trabadas con l y r: bl, br, cl, cr, fl, fr, pl, pr, gl, gr, tr, dr. Escritura correcta de palabras con estas combinaciones.',
-    'Diferenciación ortográfica: b/v (barco/vaca), c/s/z (casa/silla/zapato), h muda (huevo, hijo), ge-gi vs je-ji (gente/jinete), ll vs y (llave/yoyo). Palabras cotidianas con cada caso.',
-    'Lenguaje iconográfico: interpretar imágenes, pictogramas y señales de tránsito sencillas. Leer una historia narrada en viñetas o cómics sin texto y explicar qué sucede. Relacionar imagen con mensaje.',
-    'Producción textual: ordenar oraciones desordenadas para formar un párrafo con sentido. Identificar la idea principal de un párrafo. Completar textos con las palabras correctas.',
-    'Repaso: sujeto y predicado, conectores y tipologías textuales. Preguntas mixtas aplicando los temas de las lecciones 1 a 3.',
-    'Repaso: sustantivos, adjetivos, verbos, artículos y pronombres. Preguntas mixtas de gramática aplicada a oraciones y textos cortos.',
-    'Repaso: sinónimos, antónimos, silabas y acentuación intuitiva. Preguntas mixtas de vocabulario y fonética.',
-    'Repaso: ortografía completa. Mayúsculas, puntuación, M antes de B y P, sílabas trabadas y diferenciación b/v/c/s/z/h. Detectar y corregir errores en textos.',
-    'Repaso: lenguaje iconográfico y producción textual. Leer imágenes, ordenar párrafos y completar textos.',
-    'Evaluación integral LCA: gramática, ortografía, producción textual y tipologías textuales. Preguntas mixtas nivel grado 2 transición a grado 3.',
+    // Lección 1 — La oración
+    'La oración: toda oración tiene dos partes: QUIÉN (la persona, animal o cosa que hace algo) y QUÉ HACE (la acción que realiza). Ejemplo: "El perro corre en el parque" — QUIÉN: el perro / QUÉ HACE: corre en el parque. Identificar si una oración está completa o incompleta. Completar oraciones a las que les falta una parte. Usar oraciones simples con animales, personas y objetos del hogar como contexto.',
+
+    // Lección 2 — Palabras que unen
+    'Palabras que unen oraciones: algunas palabras sirven para unir ideas. "Y" une cosas que van juntas (tengo un perro Y un gato). "Pero" muestra algo diferente (quiero jugar PERO debo estudiar). "Porque" explica el motivo (no fui PORQUE llovía). "Entonces" muestra lo que pasa después (llovió, ENTONCES abrí el paraguas). Elegir la palabra correcta para unir dos oraciones cortas. Contexto: situaciones del hogar, el colegio y los amigos.',
+
+    // Lección 3 — Tipos de texto
+    'Tipos de texto que leemos y escribimos: el CUENTO tiene personajes, un problema y una solución (Caperucita, el lobo, el bosque). La POESÍA tiene rima y ritmo, se escucha bonita al leer en voz alta. La RECETA tiene una lista de ingredientes y pasos en orden (primero... luego... finalmente...). Identificar qué tipo de texto es un fragmento corto según sus características visibles.',
+
+    // Lección 4 — Nombres de personas y cosas
+    'Los nombres en español: algunos nombres son de personas, mascotas o lugares específicos y siempre llevan letra MAYÚSCULA (María, Bogotá, Río Magdalena). Otros nombres son de cosas, animales o personas en general y llevan letra minúscula (mesa, perro, niña). Reconocer cuándo escribir con mayúscula. Identificar el género (masculino/femenino) y el número (uno o varios). Detectar errores como "los gata" en lugar de "las gatas".',
+
+    // Lección 5 — Palabras que describen
+    'Palabras que describen cómo son las cosas: algunas palabras nos dicen cómo es algo — grande, pequeño, suave, rápido, feliz, bonito, azul. Estas palabras siempre acompañan al nombre al que describen y deben coincidir: "el gato negro" / "la gata negra" / "los gatos negros". Completar descripciones de personajes y objetos. Elegir la palabra descriptiva correcta en una oración.',
+
+    // Lección 6 — Palabras de acción y tiempo
+    'Palabras de acción: los verbos dicen lo que alguien hace o siente (correr, comer, dormir, reír). Lo importante es el TIEMPO de la acción: ANTES (ayer corrí), AHORA (hoy corro), DESPUÉS (mañana correré). Cambiar una oración de "ahora" a "antes" o "después". Identificar cuándo ocurre la acción en una oración corta. Contexto: actividades cotidianas del niño.',
+
+    // Lección 7 — El, la, un, una y yo, tú, él
+    'Palabras pequeñas pero importantes: EL / LA / LOS / LAS van antes de los nombres que ya conocemos (el perro, la casa). UN / UNA / UNOS / UNAS van antes de nombres que mencionamos por primera vez (un perro, una casa). YO / TÚ / ÉL / ELLA / NOSOTROS / ELLOS reemplazan nombres para no repetirlos (María come → ELLA come). Elegir la palabra correcta para completar oraciones.',
+
+    // Lección 8 — Palabras parecidas y opuestas
+    'Palabras que significan casi lo mismo y palabras contrarias: FELIZ y CONTENTO significan casi lo mismo — son palabras parecidas. FRÍO y CALIENTE son contrarias — son opuestas. Aprender pares: rápido/veloz, grande/enorme, triste/alegre, alto/bajo, encender/apagar, entrar/salir. Elegir la palabra parecida o la opuesta correcta en una oración.',
+
+    // Lección 9 — Sílabas
+    'Separar las palabras en partes que se pronuncian de un golpe de voz: ca-sa, ma-ri-po-sa, e-le-fan-te. Contar cuántas partes tiene una palabra. Una parte suena más fuerte que las otras — esa es la parte especial (ma-RI-po-sa). Ordenar palabras de menor a mayor número de sílabas. Completar la separación correcta de una palabra.',
+
+    // Lección 10 — Mayúsculas y puntos
+    'Cuándo escribir con letra grande (mayúscula) y cuándo poner un punto: la mayúscula va al inicio de una oración y en nombres propios (Juan, Colombia). El punto va al final de cada idea completa. Los signos ¿? van cuando se pregunta algo — uno al inicio y otro al final. Los signos ¡! van cuando algo nos sorprende o emociona. Identificar errores y corregirlos en oraciones cortas.',
+
+    // Lección 11 — M antes de B y P, y sílabas difíciles
+    'Regla fácil: antes de B y antes de P siempre va M, nunca N. Ejemplos: tambor, sombra, campo, impresora, siempre. Sílabas difíciles con dos consonantes juntas: bla, bre, cla, flo, pra, gra, tra, dra — se pronuncian juntas. Palabras: blusa, brazo, clase, flor, prado, grito, tren, dragón. Completar palabras y elegir la escritura correcta.',
+
+    // Lección 12 — Letras que se confunden
+    'Letras que suenan parecido y se confunden al escribir: B y V suenan igual (barco/vaca), hay que aprender cuál va en cada palabra. H no suena pero sí se escribe (huevo, hijo, hablar). G y J a veces suenan igual (gente/jinete). LL e Y a veces suenan igual (llave/yoyo). Identificar la escritura correcta entre dos opciones para palabras cotidianas.',
+
+    // Lección 13 — Imágenes que hablan
+    'Las imágenes también nos dan información: las señales de tránsito (PARE, cruce de peatones, prohibido) nos dicen qué hacer sin usar palabras. Las historietas o cómics cuentan historias con dibujos y globos de diálogo. Interpretar qué está pasando en una secuencia de imágenes. Relacionar una imagen con su mensaje o con una oración.',
+
+    // Lección 14 — Armar y ordenar textos
+    'Ordenar ideas para que tengan sentido: las oraciones de un párrafo deben ir en un orden lógico — primero, luego, después, finalmente. Encontrar la idea más importante de un párrafo corto. Completar un texto con la palabra que falta. Ordenar oraciones desordenadas para formar una historia breve.',
+
+    // Lecciones 15-20 — Repasos
+    'Repaso: la oración completa, palabras que unen y tipos de texto. Preguntas mixtas con oraciones y fragmentos cortos de cuentos, poemas y recetas.',
+    'Repaso: nombres propios y comunes con mayúsculas, palabras descriptivas, verbos y tiempos. Preguntas mixtas aplicadas a oraciones y textos cortos.',
+    'Repaso: palabras parecidas, palabras opuestas y separación en sílabas. Preguntas mixtas de vocabulario y lectura en voz alta.',
+    'Repaso: mayúsculas, puntos, signos de pregunta y admiración. M antes de B y P. Sílabas difíciles. Letras confundidas. Detectar y corregir errores.',
+    'Repaso: imágenes y señales. Ordenar párrafos y completar textos con palabras correctas.',
+    'Evaluación final: todos los temas de Lengua Castellana. Oraciones, tipos de texto, gramática, ortografía y comprensión. Preguntas mixtas nivel grado 2.',
   ],
   ING: [
-    'INGLÉS — Saludos y despedidas. Vocabulario: Hello, Hi, Good morning, Good afternoon, Good evening, Goodbye, Bye, See you. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: traducción de saludo (¿Cómo se dice Buenos días?), completar la frase (Good ___, how are you?), elegir el saludo correcto según la hora del día, traducir despedidas.',
-    'INGLÉS — Presentarse. Frases clave: What is your name? My name is... How are you? I am fine / I am good / I am happy. Nice to meet you. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: completar diálogos (What is your ___? My ___ is Jero.), traducir frases de presentación, elegir la respuesta correcta a How are you?',
-    'INGLÉS — Útiles escolares. Vocabulario: pencil, pen, book, notebook, eraser, ruler, sharpener, backpack, desk, chair. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice lápiz en inglés?, completar I have a ___ (pencil/book/eraser), traducir listas de útiles.',
-    'INGLÉS — El salón de clase. Vocabulario: classroom, teacher, student, board, door, window, table. Comandos: Open your book, Close the door, Listen, Look, Sit down, Stand up. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: traducir comandos, completar The ___ writes on the board, identificar qué significa cada comando.',
-    'INGLÉS — Familia básica. Vocabulario: mother, father, brother, sister, baby, family. Frase clave: This is my mother / father / brother / sister. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice mamá en inglés?, completar This is my ___, traducir oraciones sobre la familia.',
-    'INGLÉS — Familia extendida. Vocabulario: grandmother, grandfather, uncle, aunt, cousin, parents, grandparents. Frases: She is my grandmother. He is my uncle. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: traducir miembros de la familia, completar He is my ___, ¿cómo se dice abuela?',
-    'INGLÉS — Describir la familia con adjetivos. Vocabulario: tall, short, big, small, old, young, funny, kind, happy. Frases: My mother is tall. My brother is funny. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: completar My father is ___ con adjetivo en inglés, traducir descripciones, elegir el opuesto (tall → ___)',
-    'INGLÉS — Verbo To Be con personas. Formas: I am, You are, He is, She is. Frases: She is my sister. He is my father. I am happy. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: completar con la forma correcta (My sister ___ tall), traducir oraciones, elegir I am / He is / She is, corregir errores (My mother are kind).',
-    'INGLÉS — Repaso: saludos, presentación, útiles, salón de clase y familia completa. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: traducción directa español→inglés, completar diálogos cortos, identificar el intruso en grupo de palabras, corregir errores.',
-    'INGLÉS — Colores. Vocabulario: red, blue, green, yellow, orange, purple, pink, black, white, brown. Frases: The apple is red. The sky is blue. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿De qué color es...? (en inglés), completar The banana is ___, traducir colores, elegir el color correcto.',
-    'INGLÉS — Números del 1 al 20. Vocabulario: one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice el número 7?, escribir en inglés el número indicado, completar la secuencia (one, two, ___, four).',
-    'INGLÉS — Animales. Vocabulario: dog, cat, bird, fish, rabbit, horse, cow, lion, elephant, monkey. Frases: It is a dog. The cat is small. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice perro?, completar It is a ___, traducir oraciones con animales.',
-    'INGLÉS — Comida y bebida. Vocabulario: apple, banana, orange, bread, milk, water, juice, egg, rice, chicken. Frases: I eat an apple. I drink milk. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice manzana?, completar I eat ___ / I drink ___, traducir oraciones de comida.',
-    'INGLÉS — Partes del cuerpo. Vocabulario: head, eyes, ears, nose, mouth, hands, arms, legs, feet, hair. Frases: I have two eyes. My nose is small. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice nariz?, completar I have two ___, traducir partes del cuerpo.',
-    'INGLÉS — Repaso integral: colores, números 1-20, animales, comida, partes del cuerpo y familia. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: traducción directa, completar oraciones, identificar el intruso, corregir errores, diálogos cortos.',
-    'INGLÉS — Verbos de acción. Vocabulario: run, jump, eat, sleep, play, read, write, draw, swim, walk. Frases: I play. She runs. He sleeps. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice correr?, completar I ___ every day, traducir oraciones con verbos.',
-    'INGLÉS — La casa. Vocabulario: house, bedroom, bathroom, kitchen, living room, garden, door, window. Frases: I sleep in the bedroom. We eat in the kitchen. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Cómo se dice cocina?, completar I sleep in the ___, traducir oraciones.',
-    'INGLÉS — Ropa y clima. Vocabulario: shirt, pants, shoes, jacket, hat, dress. Clima: sunny, rainy, cold, hot. Frase: It is cold. I wear a jacket. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: ¿Qué ropa usas cuando hace frío?, completar It is ___ I wear a ___, traducir prendas.',
-    'INGLÉS — Preguntas básicas. What is this? What color is it? How many? Is it a dog? Yes it is / No it is not. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Tipos de pregunta: completar preguntas, elegir la respuesta correcta, traducir preguntas y respuestas cortas.',
-    'INGLÉS — Evaluación integral A1.1: saludos, familia, colores, números, animales, comida, cuerpo, verbos, casa. INSTRUCCIONES EN ESPAÑOL, RESPUESTAS EN INGLÉS. Traducción, completar, corregir errores y diálogos cortos.',
+    'INGLÉS — Saludos y despedidas. Vocabulario: Hello, Hi, Good morning, Good afternoon, Good evening, Goodbye, Bye, See you. TODAS LAS PREGUNTAS EN ESPAÑOL, solo las palabras en inglés aparecen como opciones o dentro de la pregunta. Tipos: ¿Cómo se dice "Buenos días"? (opciones: Good morning / Good night / Goodbye / Hello), elegir el saludo correcto según la hora del día, completar: Good ___, how are you? (morning/evening/bye/hi).',
+    'INGLÉS — Presentarse. Frases clave: What is your name? My name is... How are you? I am fine / good / happy. Nice to meet you. PREGUNTAS EN ESPAÑOL. Tipos: ¿Qué significa "What is your name?"?, completar el diálogo con la palabra correcta en inglés, elegir la respuesta correcta a "How are you?"',
+    'INGLÉS — Útiles escolares. Vocabulario: pencil, pen, book, notebook, eraser, ruler, sharpener, backpack, desk, chair. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "lápiz"?, ¿Qué significa "eraser"?, completar: I have a ___ (opciones en inglés: pencil/pen/book/eraser).',
+    'INGLÉS — El salón de clase. Vocabulario: classroom, teacher, student, board, door, window, table. Comandos: Open your book, Close the door, Listen, Sit down, Stand up. PREGUNTAS EN ESPAÑOL. Tipos: ¿Qué significa "Sit down"?, ¿Cómo se dice "tablero"?, ¿Cuál comando significa "abre tu libro"?',
+    'INGLÉS — Familia básica. Vocabulario: mother, father, brother, sister, baby, family. Frase: This is my mother/father/brother/sister. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "hermano"?, ¿Qué significa "father"?, completar: This is my ___ (opciones: mother/father/sister/brother).',
+    'INGLÉS — Familia extendida. Vocabulario: grandmother, grandfather, uncle, aunt, cousin, parents, grandparents. Frases: She is my grandmother. He is my uncle. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "abuela"?, ¿Qué significa "uncle"?, completar: He is my ___.',
+    'INGLÉS — Describir con adjetivos. Vocabulario: tall, short, big, small, old, young, funny, kind, happy. Frases: My mother is tall. My brother is funny. PREGUNTAS EN ESPAÑOL. Tipos: ¿Qué significa "tall"?, ¿Cuál es el opuesto de "big"?, completar: My father is ___ (opciones: tall/short/old/young).',
+    'INGLÉS — Verbo To Be. Formas: I am, You are, He is, She is. Frases: She is my sister. I am happy. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cuál es correcto: "My mother is kind" o "My mother are kind"?, completar: My sister ___ tall (is/am/are/be), ¿Qué significa "I am happy"?',
+    'INGLÉS — Repaso: saludos, presentación, útiles, salón y familia. PREGUNTAS EN ESPAÑOL. Tipos: traducción español→inglés, completar diálogos cortos, encontrar la palabra que no pertenece al grupo, corregir el error.',
+    'INGLÉS — Colores. Vocabulario: red, blue, green, yellow, orange, purple, pink, black, white, brown. Frases: The apple is red. The sky is blue. PREGUNTAS EN ESPAÑOL. Tipos: ¿De qué color es el cielo en inglés?, completar: The banana is ___, ¿Cómo se dice "verde"?',
+    'INGLÉS — Números del 1 al 20. Vocabulario: one, two, three... twenty. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice el número 7 en inglés?, ¿Qué número es "fifteen"?, completar la secuencia: one, two, ___, four.',
+    'INGLÉS — Animales. Vocabulario: dog, cat, bird, fish, rabbit, horse, cow, lion, elephant, monkey. Frases: It is a dog. The cat is small. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "perro"?, ¿Qué significa "elephant"?, completar: It is a ___.',
+    'INGLÉS — Comida y bebida. Vocabulario: apple, banana, orange, bread, milk, water, juice, egg, rice, chicken. Frases: I eat an apple. I drink milk. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "manzana"?, ¿Qué significa "milk"?, completar: I drink ___.',
+    'INGLÉS — Partes del cuerpo. Vocabulario: head, eyes, ears, nose, mouth, hands, arms, legs, feet, hair. Frases: I have two eyes. My nose is small. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "nariz"?, ¿Qué significa "legs"?, completar: I have two ___.',
+    'INGLÉS — Repaso: colores, números, animales, comida, cuerpo y familia. PREGUNTAS EN ESPAÑOL. Tipos: traducción directa, completar oraciones, encontrar el intruso, corregir errores.',
+    'INGLÉS — Verbos de acción. Vocabulario: run, jump, eat, sleep, play, read, write, draw, swim, walk. Frases: I play. She runs. He sleeps. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "correr"?, ¿Qué significa "sleep"?, completar: I ___ every day.',
+    'INGLÉS — La casa. Vocabulario: house, bedroom, bathroom, kitchen, living room, garden, door, window. Frases: I sleep in the bedroom. We eat in the kitchen. PREGUNTAS EN ESPAÑOL. Tipos: ¿Cómo se dice "cocina"?, completar: I sleep in the ___.',
+    'INGLÉS — Ropa y clima. Vocabulario: shirt, pants, shoes, jacket, hat, dress. Clima: sunny, rainy, cold, hot. Frase: It is cold. I wear a jacket. PREGUNTAS EN ESPAÑOL. Tipos: ¿Qué ropa usas cuando hace frío? (opciones en inglés), completar: It is ___ today.',
+    'INGLÉS — Preguntas básicas. What is this? What color is it? How many? Is it a dog? Yes, it is / No, it is not. PREGUNTAS EN ESPAÑOL. Tipos: completar la pregunta, elegir la respuesta correcta, traducir preguntas y respuestas cortas.',
+    'INGLÉS — Evaluación integral A1: saludos, familia, colores, números, animales, comida, cuerpo, verbos, casa. PREGUNTAS EN ESPAÑOL. Traducción, completar, corregir errores y diálogos cortos.',
   ],
   NAT: [
     'Seres vivos e inertes: características de los seres vivos (nacen, crecen, se nutren, respiran, se reproducen y mueren). Diferencia con objetos inertes naturales (rocas, agua) y artificiales (juguetes, ropa).',
@@ -94,26 +123,26 @@ const CURRICULO = {
     'Repaso integral: seres vivos, cuerpo humano, materia y energía, tierra y universo. Preguntas de pensamiento científico: clasificar, comparar y explicar relaciones causa-efecto. Nivel grado 2 transición a grado 3.',
   ],
   SOC: [
-    'El tiempo histórico personal: pasado (ayer, antes), presente (hoy, ahora) y futuro (mañana, después). Secuenciar eventos de la vida propia. Cambios físicos desde bebé hasta hoy.',
-    'La familia: tipos de familia (nuclear, extensa, monoparental). Roles y responsabilidades de cada miembro. Lazos de parentesco: padres, abuelos, tíos, primos. Árbol genealógico básico.',
-    'Evolución de objetos y costumbres: cómo han cambiado el teléfono, el transporte, la vivienda y la comunicación a lo largo del tiempo. Comparar el antes y el ahora.',
-    'Símbolos patrios de Colombia: la bandera (significado de los colores amarillo, azul y rojo), el escudo y el himno nacional. Fechas conmemorativas básicas.',
-    'Orientación espacial: derecha, izquierda, adelante, atrás, arriba, abajo, dentro, fuera. Los cuatro puntos cardinales (Norte, Sur, Este, Oeste). El Sol sale por el Este y se oculta por el Oeste.',
-    'Lectura de planos sencillos: interpretar el diseño de una casa o salón. Convenciones y símbolos básicos en un mapa (cruz roja = hospital, libro = biblioteca). Noción general de qué es un mapa.',
-    'Paisaje rural vs paisaje urbano: campo (naturaleza, cultivos, animales de granja, casas alejadas) vs ciudad (edificios, tráfico, comercio, pavimento). Características y diferencias.',
-    'El barrio y la comunidad: lugares representativos (parque, hospital, colegio, tienda, iglesia, estación de policía). Normas de vecindad: respetar el descanso, no botar basura en zonas comunes.',
-    'Profesiones y oficios: médicos, bomberos, policías, profesores, agricultores, tenderos, recolectores de basura. Función social de cada profesión. Herramientas que usan.',
-    'Estructura de autoridad básica: máxima autoridad en la casa (padres), en el colegio (rector/director) y en la ciudad (alcalde). Por qué son necesarias las autoridades.',
-    'Los derechos de los niños: derecho a la vida, al nombre/identidad, a estudiar, a jugar y a la salud. La Convención de los Derechos del Niño básica.',
-    'Los deberes de los niños: respetar a los mayores, estudiar, cuidar sus cosas y el entorno. Relación entre derechos y deberes: para tener derechos hay que cumplir deberes.',
-    'Normas de convivencia: pedir la palabra, escuchar al otro, usar palabras amables (por favor, gracias, disculpa). Manual de convivencia en el colegio y espacios virtuales.',
-    'Resolución pacífica de conflictos: el diálogo como herramienta principal. Pasos para resolver un problema sin agresión: escuchar, hablar, llegar a un acuerdo.',
-    'Educación vial: el semáforo (rojo=pare, amarillo=precaución, verde=siga) para peatones y conductores. La cebra peatonal. Comportamiento seguro al transitar por la vía pública.',
-    'Cuidado del medio ambiente: ahorro del agua, apagar luces innecesarias, clasificación de residuos (reciclaje básico: papel, plástico, vidrio, orgánico). Por qué debemos cuidar el planeta.',
-    'Medios de transporte: terrestres (carro, bus, bicicleta, tren), acuáticos (barco, canoa) y aéreos (avión, helicóptero). Evolución histórica del transporte.',
-    'Medios de comunicación: teléfono, televisión, radio, periódico, internet. Cómo han cambiado en el tiempo. Uso responsable de las tecnologías.',
-    'La vivienda: tipos de casas (casa, apartamento, cabaña, choza). Partes del hogar y su función. Materiales de construcción: ladrillo, madera, cemento, paja.',
-    'Repaso integral: pensamiento histórico, espacial, organización social y formación ciudadana. Preguntas mixtas de análisis y aplicación. Nivel grado 2 transición a grado 3.',
+    'El tiempo en mi vida: el PASADO es lo que ya pasó (cuando era bebé, ayer), el PRESENTE es lo que pasa ahora (hoy, este momento) y el FUTURO es lo que va a pasar (mañana, cuando sea grande). Ordenar eventos de la vida propia: primero nací, luego aprendí a caminar, después entré al colegio.',
+    'Mi familia: en la familia hay personas que nos quieren y cuidan. Hay familias grandes y pequeñas. Los papás cuidan y protegen, los abuelos tienen más experiencia, los hermanos son compañeros de juego. Cada persona tiene un parentesco: papá, mamá, abuelos, tíos, primos.',
+    'Cómo han cambiado las cosas: el teléfono de antes era grande y con cable, hoy es pequeño y sin cable. Los carros de antes eran lentos, hoy son rápidos. La gente de antes usaba cartas, hoy usa mensajes. Comparar el antes y el ahora en objetos cotidianos.',
+    'Los símbolos de Colombia: la BANDERA tiene tres franjas — amarilla (riquezas del suelo), azul (ríos y mares) y roja (sangre de los héroes). El ESCUDO representa los recursos del país. El HIMNO es la canción oficial. Fechas importantes: 20 de julio (Independencia).',
+    'Dónde estoy y hacia dónde voy: derecha, izquierda, adelante, atrás, arriba, abajo. Los cuatro puntos cardinales: Norte (N), Sur (S), Este (E), Oeste (O). El Sol sale por el Este cada mañana y se oculta por el Oeste cada tarde.',
+    'Los planos y los mapas: un plano es un dibujo de un lugar visto desde arriba. Nos ayuda a saber dónde está cada cosa en una casa o un colegio. En los mapas, los símbolos representan lugares: una cruz roja = hospital, un libro = biblioteca. Los mapas tienen referencias para orientarse.',
+    'El campo y la ciudad: en el CAMPO hay naturaleza, cultivos, animales de granja, silencio y casas separadas. En la CIUDAD hay edificios altos, mucho tráfico, tiendas, ruido y personas viviendo muy cerca. Las personas del campo y la ciudad se necesitan mutuamente.',
+    'Mi barrio: en el barrio hay lugares importantes para todos — el parque para jugar, el hospital para cuidar la salud, el colegio para aprender, la tienda para comprar. En el barrio debemos respetarnos: no hacer ruido de noche, no botar basura en la calle.',
+    'Las profesiones: los médicos curan enfermedades, los bomberos apagan incendios, los profesores enseñan, los agricultores cultivan la comida, los policías cuidan el orden. Cada profesión es importante para que la comunidad funcione bien.',
+    'Las autoridades: en casa mandan los papás, en el colegio manda el rector, en la ciudad manda el alcalde, en el país manda el presidente. Las autoridades existen para que todos vivamos en orden y en paz.',
+    'Los derechos de los niños: todos los niños tienen derecho a tener un nombre, a vivir en familia, a estudiar, a jugar, a recibir atención médica y a ser tratados con respeto. Nadie puede quitarles estos derechos.',
+    'Los deberes de los niños: así como tenemos derechos, también tenemos deberes — estudiar, respetar a los demás, cuidar nuestras cosas y el colegio, ayudar en casa. Los derechos y los deberes van de la mano.',
+    'Vivir juntos en paz: para convivir bien decimos "por favor", "gracias" y "disculpa". Pedimos la palabra antes de hablar, escuchamos cuando otro habla y no hacemos lo que nos haría daño a nosotros o a los demás.',
+    'Resolver problemas sin pelear: cuando hay un conflicto, el diálogo es la mejor solución. Pasos: 1) calmarse, 2) escuchar al otro, 3) decir cómo me siento, 4) buscar una solución juntos. Nunca se resuelve un problema con golpes o gritos.',
+    'El semáforo y las normas de tránsito: ROJO = parar, AMARILLO = precaución, VERDE = seguir. La cebra peatonal es para que los peatones crucen seguros. En la calle debemos caminar por el andén y mirar a los dos lados antes de cruzar.',
+    'Cuidar el planeta: el agua es un recurso valioso — hay que cerrar la llave. Apagar la luz cuando no se usa ahorra energía. Reciclar significa separar la basura: papel, plástico, vidrio, orgánico. El planeta necesita nuestra ayuda.',
+    'Los medios de transporte: terrestres (carro, bus, bicicleta, moto, tren), acuáticos (barco, canoa, lancha) y aéreos (avión, helicóptero, globo). Antes solo había caballos y carretas; hoy tenemos muchos más medios para movernos.',
+    'Los medios de comunicación: el teléfono, la televisión, la radio, el periódico y el internet nos permiten comunicarnos y enterarnos de lo que pasa. Antes solo existían cartas y tambores. Debemos usar el internet con responsabilidad.',
+    'Dónde vivimos: hay casas, apartamentos, cabañas y otros tipos de vivienda. Cada parte del hogar tiene una función: la cocina para cocinar, el cuarto para dormir, el baño para el aseo. Las casas se construyen con ladrillo, madera, cemento o paja.',
+    'Repaso integral: tiempo histórico, orientación en el espacio, vida en comunidad y formación ciudadana. Preguntas mixtas de análisis y aplicación. Nivel grado 2 transición a grado 3.',
   ],
 };
 
@@ -125,10 +154,7 @@ const NOMBRES_MATERIA = {
   SOC: 'Ciencias Sociales',
 };
 
-// ── Materias que REQUIEREN un texto/situación base antes de las preguntas ──
-// Para estas materias, el prompt le pide a la IA que genere el texto primero
-// y que CADA pregunta incluya ese texto en el campo "contexto".
-// LCA ya no tiene lecciones de comprensión lectora — eso quedó en los Cuentos
+// ── Materias que requieren texto base (ninguna por ahora) ────────────
 const MATERIAS_CON_TEXTO_BASE = {};
 
 function necesitaTextoBase(mat, leccion) {
@@ -179,6 +205,72 @@ function callOpenAI(prompt) {
   });
 }
 
+// ── Verificador automático de respuestas ────────────────────────────
+// Segunda llamada a la IA que revisa cada pregunta y corrige la respuesta
+// si está mal marcada, antes de guardar en Sheets.
+async function verificarRespuestas(preguntas, mat, nombreMateria) {
+  const esIngles = mat === 'ING';
+
+  const bloques = preguntas.map((p, i) => {
+    return `PREGUNTA ${i + 1}:
+Enunciado: ${p.pregunta}
+A) ${p.opciones?.A}
+B) ${p.opciones?.B}
+C) ${p.opciones?.C}
+D) ${p.opciones?.D}
+Respuesta marcada: ${p.respuesta}`;
+  }).join('\n\n');
+
+  const instrIngles = esIngles
+    ? 'Las preguntas son de inglés básico para niño de 7 años colombiano. Las preguntas están en español y las opciones son palabras en inglés. Verifica que la traducción marcada sea realmente correcta.'
+    : '';
+
+  const prompt = `Eres un profesor experto en ${nombreMateria} para niños de 7 años de Colombia (grado 2).
+${instrIngles}
+
+Tu tarea es revisar cada pregunta y verificar si la respuesta marcada es CORRECTA o no.
+
+INSTRUCCIONES:
+- Si la respuesta marcada ES correcta → escribe "OK"
+- Si la respuesta marcada ES INCORRECTA → escribe la letra correcta (A, B, C o D)
+- Si ninguna opción es correcta → escribe "X"
+- Sé muy preciso. Comprueba cada respuesta como si fuera un examen real.
+
+${bloques}
+
+Responde ÚNICAMENTE con un JSON así (sin texto adicional, sin markdown):
+{"correcciones": ["OK", "B", "OK", "C", "OK", "OK", "A", "OK", "OK", "OK", "OK", "D", "OK", "OK", "OK"]}
+
+El array debe tener exactamente ${preguntas.length} elementos, uno por pregunta en orden.`;
+
+  try {
+    const raw = await callOpenAI(prompt);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    const correcciones = parsed.correcciones || [];
+
+    let corregidas = 0;
+    const preguntasCorregidas = preguntas.map((p, i) => {
+      const corr = (correcciones[i] || 'OK').toString().trim().toUpperCase();
+      if (corr === 'OK' || corr === 'X') return p; // X = problema grave, dejar como está
+      if (['A','B','C','D'].includes(corr) && corr !== p.respuesta) {
+        corregidas++;
+        console.log(`Pregunta ${i+1}: respuesta corregida de ${p.respuesta} → ${corr}`);
+        return { ...p, respuesta: corr };
+      }
+      return p;
+    });
+
+    console.log(`Verificación completada: ${corregidas} respuestas corregidas de ${preguntas.length}`);
+    return preguntasCorregidas;
+
+  } catch (e) {
+    // Si el verificador falla, devolver las preguntas originales sin bloquear
+    console.error('Error en verificación de respuestas (no bloqueante):', e.message);
+    return preguntas;
+  }
+}
+
 async function sheetExiste(sheets, nombre) {
   const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
   return meta.data.sheets.some(s => s.properties.title === nombre);
@@ -191,83 +283,111 @@ async function crearHoja(sheets, nombre) {
   });
 }
 
-// ── Construir el prompt según la materia y la lección ────────────────
-// Obtener temas de lecciones anteriores para el repaso (máx 3 temas)
+// ── Temas de lecciones anteriores para el bloque de repaso ──────────
 function temasRepaso(mat, leccionActual) {
   const curriculum = CURRICULO[mat] || [];
   const anteriores = curriculum.slice(0, leccionActual - 1);
   if (!anteriores.length) return [];
-  // Tomar hasta 3 lecciones anteriores de forma aleatoria
   const mezclados = anteriores.sort(() => Math.random() - 0.5);
   return mezclados.slice(0, Math.min(3, mezclados.length));
 }
 
+// ── Construir el prompt tipo Duolingo ────────────────────────────────
 function buildPrompt(grado, mat, leccion, tema) {
   const conTexto = necesitaTextoBase(mat, leccion);
   const config = MATERIAS_CON_TEXTO_BASE[mat];
   const instrExtra = conTexto && config ? config.instruccionesExtra(leccion) : '';
 
-  // Sistema Duolingo: repaso solo si hay lecciones anteriores
   const temasAnteriores = leccion > 1 ? temasRepaso(mat, leccion) : [];
   const hayRepaso = temasAnteriores.length > 0;
 
-  const bloqueRepaso = hayRepaso ? `
-BLOQUE DE REPASO (preguntas 11 a 15):
-Las últimas 5 preguntas deben repasar temas ya vistos en lecciones anteriores.
-Distribuye las 5 preguntas entre estos temas anteriores:
-${temasAnteriores.map((t, i) => `- Tema anterior ${i + 1}: ${t.substring(0, 120)}...`).join('\n')}
-Estas preguntas deben ser más cortas y directas que las del tema nuevo.` : '';
+  // ── Reglas especiales por materia ───────────────────────────────────
+  const reglasIngles = mat === 'ING' ? `
+REGLAS ESPECIALES PARA INGLÉS — OBLIGATORIAS:
+- El niño es principiante absoluto (Duolingo Etapa 2, Sección 1, Score 10)
+- TODAS las preguntas e instrucciones van escritas en ESPAÑOL
+- Las palabras o frases en inglés solo aparecen dentro de la pregunta como dato o como opciones de respuesta
+- NUNCA escribas una pregunta larga en inglés — máximo 5 palabras en inglés por pregunta
+- Formato correcto: "¿Qué significa la palabra 'dog'?" / "¿Cómo se dice 'perro' en inglés?"
+- Las 4 opciones son palabras sueltas en inglés (dog / cat / bird / fish)
+- La explicación va 100% en español, en lenguaje muy simple para niño de 7 años
+- VERIFICA que la opción marcada como correcta realmente sea la traducción correcta
+` : '';
 
-  const estructuraPreguntas = hayRepaso
-    ? `ESTRUCTURA OBLIGATORIA de las 15 preguntas:
-- Preguntas 1 a 5: TEMA NUEVO — reconocimiento básico y ejemplos directos
-- Preguntas 6 a 10: TEMA NUEVO — aplicación y razonamiento con situaciones reales
-- Preguntas 11 a 15: REPASO — temas de lecciones anteriores (más cortas y directas)
+  const reglasLCA = mat === 'LCA' ? `
+REGLAS ESPECIALES PARA LENGUA CASTELLANA — OBLIGATORIAS:
+- El niño tiene 7 años — NUNCA uses términos técnicos como "núcleo del sujeto", "predicado nominal", "conector adversativo" o "morfema"
+- En su lugar usa lenguaje cotidiano: "la parte que dice quién", "la palabra que une", "la palabra de acción"
+- Las preguntas deben usar oraciones sobre animales, juguetes, comida, el colegio o la familia
+- Si el tema involucra una regla, EXPLÍCALA en la pregunta antes de preguntar (no asumas que ya la sabe)
+- Las preguntas tipo "completar" son mejores que las teóricas para este nivel
+` : '';
+
+  // ── Estructura progresiva tipo Duolingo ─────────────────────────────
+  const bloqueRepaso = hayRepaso ? `
+BLOQUE C — REPASO (preguntas 11 a 15):
+Repasa temas de lecciones anteriores. Más cortas y directas.
+Temas anteriores disponibles:
+${temasAnteriores.map((t, i) => `- ${t.substring(0, 100)}...`).join('\n')}` : '';
+
+  const estructura = hayRepaso
+    ? `ESTRUCTURA OBLIGATORIA — 15 preguntas en 3 bloques progresivos:
+
+BLOQUE A — APRENDE (preguntas 1 a 5): ⭐ MÁS FÁCILES
+El niño NO ha visto este tema antes. Cada pregunta debe ENSEÑAR mientras pregunta.
+- Incluir un ejemplo o mini-explicación dentro del enunciado de la pregunta
+- Respuestas directas y obvias si se leyó bien el enunciado
+- Contexto: situaciones de la vida diaria del niño (casa, colegio, animales, familia)
+- Ejemplo de estructura: "En español, las palabras de acción se llaman verbos. ¿Cuál de estas es una palabra de acción?" 
+
+BLOQUE B — PRACTICA (preguntas 6 a 10): ⭐⭐ DIFICULTAD MEDIA
+El niño ya vio el concepto en el Bloque A. Ahora lo aplica.
+- Sin explicación en el enunciado — confía en lo aprendido antes
+- Situaciones reales o pequeñas historias de 1-2 oraciones
+- Un distractor muy creíble (error típico de niños de 7 años)
 ${bloqueRepaso}`
-    : `ESTRUCTURA de las 15 preguntas:
-- Preguntas 1 a 5: reconocimiento básico y ejemplos directos
-- Preguntas 6 a 10: aplicación directa con contexto real
-- Preguntas 11 a 15: razonamiento y situaciones más elaboradas`;
+    : `ESTRUCTURA OBLIGATORIA — 15 preguntas en 3 bloques progresivos:
+
+BLOQUE A — APRENDE (preguntas 1 a 5): ⭐ MÁS FÁCILES
+Enseña el concepto mientras pregunta. Incluir mini-explicación o ejemplo en el enunciado.
+
+BLOQUE B — PRACTICA (preguntas 6 a 10): ⭐⭐ DIFICULTAD MEDIA
+Aplica el concepto en situaciones reales. Sin explicación en el enunciado.
+
+BLOQUE C — RAZONA (preguntas 11 a 15): ⭐⭐⭐ MÁS DIFÍCILES
+Situaciones más elaboradas. El niño debe pensar más. Un solo distractor muy creíble.`;
 
   const campoContexto = conTexto
-    ? `\n      "contexto": "TEXTO COMPLETO del cuento aquí (el MISMO en todas las preguntas del bloque nuevo)",`
+    ? `\n      "contexto": "TEXTO COMPLETO aquí (el MISMO en todas las preguntas del bloque nuevo)",`
     : '';
 
   const instrContexto = conTexto ? `
 ⚠️ REGLA CRÍTICA: Esta lección usa COMPRENSIÓN LECTORA.
 1. Inventa UN SOLO texto de 120-180 palabras para niños de 7-8 años
-2. Pon ese texto completo en el campo "contexto" de las preguntas 1 a 10 (tema nuevo)
+2. Pon ese texto completo en el campo "contexto" de las preguntas 1 a 10
 3. Las preguntas 11-15 de repaso NO llevan contexto
 4. El texto debe tener personajes con nombre, lugar y acciones claras
 ${instrExtra}` : '';
 
-  const reglasIngles = mat === 'ING' ? `
-REGLAS ESPECIALES PARA INGLÉS — CUMPLIMIENTO OBLIGATORIO:
-- El niño está en nivel PRINCIPIANTE (equivalente a Duolingo Etapa 2, Sección 1)
-- TODAS las preguntas, instrucciones y opciones van en ESPAÑOL
-- Solo las palabras/frases EN INGLÉS que el niño debe reconocer o traducir van en inglés
-- NUNCA escribas preguntas largas en inglés. Ejemplo correcto: "¿Cómo se dice 'perro' en inglés?"
-- Opciones correctas e incorrectas son palabras sueltas en inglés (dog / cat / bird / fish)
-- Las explicaciones van 100% en español, simples para un niño de 7 años
-- Máximo 6 palabras en inglés por pregunta
-- Formato de pregunta ideal: "¿Qué significa [palabra en inglés]?" o "¿Cómo se dice [palabra en español] en inglés?"
-` : '';
+  return `Eres un profesor experto creando preguntas de examen estilo DUOLINGO para un niño de 7 años (grado ${grado}, Colombia).
 
-  return `Eres un profesor experto creando preguntas de examen para un niño de 7 años (grado ${grado} Colombia).
-
-TEMA NUEVO DE ESTA LECCIÓN: ${tema}
+TEMA DE ESTA LECCIÓN: ${tema}
 MATERIA: ${NOMBRES_MATERIA[mat] || mat}
 ${instrContexto}
 ${reglasIngles}
-${estructuraPreguntas}
+${reglasLCA}
 
-REGLAS OBLIGATORIAS para todas las preguntas:
-1. Lenguaje claro y simple para niño de 7-8 años
+${estructura}
+
+REGLAS OBLIGATORIAS PARA TODAS LAS PREGUNTAS:
+1. Lenguaje MUY simple — como le hablarías a un niño de 7 años en el recreo
 2. 4 opciones (A, B, C, D), UNA sola correcta
-3. Sin LaTeX ni símbolos especiales. Usar texto plano: 3/4, raiz(16), 2x3
-4. Distractores CREÍBLES: errores típicos que cometen los niños
-5. Respuestas distribuidas: A×4, B×4, C×4, D×3 sin patrón visible
-6. Devuelve ÚNICAMENTE JSON válido, sin texto adicional ni bloques markdown
+3. Sin LaTeX ni símbolos raros. Usar texto plano: 3/4, raiz(16), 2x3
+4. Distractores CREÍBLES pero claramente incorrectos para quien leyó bien
+5. Distribución de respuestas correctas: A×4, B×4, C×4, D×3 — SIN PATRÓN visible (no pongas todas las respuestas en A o en B)
+6. ⚠️ VERIFICACIÓN OBLIGATORIA: antes de escribir cada pregunta, confirma que la opción marcada como "respuesta" ES REALMENTE LA CORRECTA. Comprueba mentalmente: si un niño elige esa opción, ¿está bien?
+7. La explicación debe decirle al niño POR QUÉ esa respuesta es correcta, en 1-2 oraciones simples
+8. Devuelve ÚNICAMENTE JSON válido, sin texto adicional ni bloques markdown
 
 Formato JSON exacto:
 {
@@ -276,7 +396,7 @@ Formato JSON exacto:
       "pregunta": "texto de la pregunta",${campoContexto}
       "opciones": { "A": "opción a", "B": "opción b", "C": "opción c", "D": "opción d" },
       "respuesta": "B",
-      "explicacion": "explicación breve en 2 oraciones para el niño de 7 años"
+      "explicacion": "explicación simple en 1-2 oraciones para el niño de 7 años"
     }
   ]
 }`;
@@ -321,11 +441,10 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Construir prompt según materia y lección
+    // Construir prompt y llamar a OpenAI
     const prompt = buildPrompt(grado, mat, lNum, tema);
-
-    // Llamar a OpenAI
     const raw = await callOpenAI(prompt);
+
     let parsed;
     try {
       const clean = raw.replace(/```json|```/g, '').trim();
@@ -334,28 +453,21 @@ module.exports = async (req, res) => {
       return res.status(500).json({ ok: false, error: 'OpenAI devolvió JSON inválido', raw });
     }
 
-    const preguntas = parsed.preguntas || [];
+    let preguntas = parsed.preguntas || [];
     if (preguntas.length < 10) {
       return res.status(500).json({ ok: false, error: `Solo ${preguntas.length} preguntas generadas`, raw });
     }
 
-    // ── Para lecciones con texto base: anteponer el contexto al enunciado ──
-    // El campo "contexto" se inyecta al inicio de la pregunta con un separador visual
-    // que el frontend mostrará como bloque destacado.
-    // Formato: "📖 TEXTO:\n{contexto}\n\n❓ PREGUNTA:\n{pregunta}"
-    // Si el frontend ya soporta el campo "contexto" puedes manejarlo allá,
-    // pero embebido en la pregunta es compatible con el Sheet tal como está.
+    // ── Segunda pasada: verificar y corregir respuestas incorrectas ──
+    preguntas = await verificarRespuestas(preguntas, mat, NOMBRES_MATERIA[mat] || mat);
+
     const conTexto = necesitaTextoBase(mat, lNum);
 
     const rows = preguntas.map(p => {
       let enunciado = p.pregunta || '';
-
       if (conTexto && p.contexto) {
-        // Embeber el texto del cuento en el enunciado para que el Sheet lo almacene
-        // El frontend detecta el separador "📖" y lo muestra en un bloque especial
         enunciado = `📖 ${p.contexto}\n\n❓ ${p.pregunta}`;
       }
-
       return [
         enunciado,
         p.opciones?.A || '',
@@ -363,9 +475,9 @@ module.exports = async (req, res) => {
         p.opciones?.C || '',
         p.opciones?.D || '',
         (p.respuesta || 'A').toUpperCase(),
-        '',              // G: imagen
-        '',              // H: video
-        p.explicacion || '',  // I: explicación popup
+        '',                    // G: imagen
+        '',                    // H: video
+        p.explicacion || '',   // I: explicación popup
       ];
     });
 
