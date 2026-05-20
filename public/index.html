@@ -554,7 +554,10 @@
     <div class="examen-top">
       <button class="btn-volver" onclick="volverInicio()">← Volver</button>
       <span class="examen-materia-badge" id="examen-badge">📚</span>
-      <span style="font-weight:800;font-size:0.95rem" id="examen-dia-label">Día 1</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-weight:800;font-size:0.95rem" id="examen-dia-label">Día 1</span>
+        <button onclick="reiniciarExamenActual()" style="background:#FFF3E0;border:2px solid #FFB300;color:#E65100;border-radius:10px;padding:4px 10px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer" title="Reiniciar desde pregunta 1">🔄 Reiniciar</button>
+      </div>
     </div>
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
@@ -2487,9 +2490,7 @@ function abrirPanelHito(n) {
     const btn = document.createElement('button');
     btn.className = 'hito-panel-mat' + (comp ? ' done' : '');
     btn.innerHTML = `<span>${mat.emoji} ${mat.nombre}</span><span>${comp ? '✓' : '→'}</span>`;
-    if (!comp) {
-      btn.onclick = () => { cerrar(); iniciarLeccionJero(key, n); };
-    }
+    btn.onclick = () => { cerrar(); iniciarLeccionJero(key, n); };
     panel.appendChild(btn);
 
     if (comp && numErr > 0) {
@@ -2718,6 +2719,18 @@ async function terminarExamen_JERO_PATCH() {
     if (pct >= 80) sonidoEstrella();
     else sonidoCorrecto();
   }
+}
+
+// ── REINICIAR EXAMEN ──────────────────────────────────────────────────
+function reiniciarExamenActual() {
+  if (!examenActual || !examenActual.preguntas || !examenActual.preguntas.length) return;
+  if (!confirm('¿Reiniciar desde la pregunta 1? Perderás tu avance actual.')) return;
+  examenActual.idx = 0;
+  examenActual.puntaje = 0;
+  examenActual.respuestas = [];
+  examenActual.intentos = 0;
+  renderPregunta();
+  window.scrollTo(0,0);
 }
 
 // ── COMPRENSIÓN DE LECTURA ─────────────────────────────────────────────
