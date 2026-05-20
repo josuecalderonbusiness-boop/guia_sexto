@@ -1,0 +1,2721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brainy</title>
+<meta name="description" content="Hecho con amor por papá y mamá, para que aprender sea tu aventura favorita. 🧠✨"/>
+<meta name="version" content="errores-multidispositivo-v3"/>
+<link rel="icon" type="image/png" href="/favicon.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --mat: #FF6B6B; --mat-l: #FFE8E8;
+    --bio: #51CF66; --bio-l: #E8FFE8;
+    --qui: #845EF7; --qui-l: #F0EBFF;
+    --soc: #FF922B; --soc-l: #FFF0E0;
+    --len: #339AF0; --len-l: #E8F4FF;
+    --bg: #F8F9FF;
+    --card: #FFFFFF;
+    --text: #1A1A2E;
+    --radius: 20px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+    padding: 20px 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255,107,107,0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 50%, rgba(81,207,102,0.15) 0%, transparent 60%);
+  }
+  .header h1 { font-family: 'Fredoka One', cursive; font-size: 2rem; color: white; position: relative; letter-spacing: 1px; }
+  .header p { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 4px; position: relative; }
+  .nombre-badge {
+    display: inline-block; background: rgba(255,255,255,0.15); color: white;
+    padding: 6px 18px; border-radius: 50px; font-weight: 700; font-size: 0.95rem;
+    margin-top: 10px; position: relative; cursor: pointer; border: 2px solid rgba(255,255,255,0.25);
+  }
+  .btn-logout {
+    display: inline-block; background: rgba(255,100,100,0.25); color: white;
+    padding: 5px 14px; border-radius: 50px; font-weight: 700; font-size: 0.82rem;
+    margin-top: 8px; margin-left: 8px; cursor: pointer; border: 2px solid rgba(255,100,100,0.4);
+    vertical-align: middle; transition: background 0.2s; position: relative; z-index: 10;
+  }
+  .btn-logout:hover { background: rgba(255,80,80,0.45); }
+
+  #screen-login {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 80vh; padding: 32px 20px;
+  }
+  .login-card {
+    background: white; border-radius: 28px; padding: 40px 36px;
+    max-width: 400px; width: 100%; box-shadow: var(--shadow); text-align: center;
+  }
+  .login-emoji { font-size: 4rem; margin-bottom: 16px; }
+  .login-card h2 { font-family: 'Fredoka One', cursive; font-size: 1.6rem; margin-bottom: 8px; color: var(--text); }
+  .login-card p { color: #666; margin-bottom: 28px; font-size: 0.95rem; }
+  .input-name {
+    width: 100%; padding: 16px 20px; border: 3px solid #E0E0E0; border-radius: 16px;
+    font-size: 1.1rem; font-family: 'Nunito', sans-serif; font-weight: 700;
+    outline: none; transition: border-color 0.2s; text-align: center;
+  }
+  .input-name:focus { border-color: #339AF0; }
+  .btn-entrar {
+    width: 100%; margin-top: 16px; padding: 16px;
+    background: linear-gradient(135deg, #339AF0, #228BE6); color: white; border: none;
+    border-radius: 16px; font-size: 1.1rem; font-family: 'Nunito', sans-serif;
+    font-weight: 800; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(51,154,240,0.4);
+  }
+  .btn-entrar:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(51,154,240,0.5); }
+
+  #screen-inicio { display: none; padding: 24px 20px; max-width: 800px; margin: 0 auto; }
+
+  .dias-title { font-family: 'Fredoka One', cursive; font-size: 1.4rem; margin-bottom: 20px; text-align: center; color: var(--text); }
+
+  .dia-card {
+    background: white; border-radius: var(--radius); padding: 20px;
+    margin-bottom: 16px; box-shadow: var(--shadow); border: 3px solid transparent; transition: all 0.2s;
+  }
+  .dia-card.desbloqueado { border-color: #E0E0E0; }
+  .dia-card.bloqueado { opacity: 0.5; filter: grayscale(0.5); }
+  .dia-card.activo { border-color: #51CF66; box-shadow: 0 8px 32px rgba(81,207,102,0.2); }
+
+  .dia-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .dia-num {
+    font-family: 'Fredoka One', cursive; font-size: 1.8rem;
+    background: linear-gradient(135deg, #1A1A2E, #0F3460); color: white;
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .dia-info h3 { font-weight: 800; font-size: 1.1rem; }
+  .dia-info p { color: #888; font-size: 0.85rem; }
+
+  .materias-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  @media(max-width: 500px) { .materias-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .materia-btn {
+    padding: 10px 6px; border-radius: 14px; border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.78rem;
+    text-align: center; transition: all 0.2s; position: relative;
+  }
+  .materia-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .materia-btn:disabled { cursor: not-allowed; }
+  .materia-btn .mat-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+  .materia-btn.completado::after { content: '✅'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
+
+  .mat-btn { background: var(--mat-l); color: var(--mat); }
+  .bio-btn { background: var(--bio-l); color: var(--bio); }
+  .qui-btn { background: var(--qui-l); color: var(--qui); }
+  .soc-btn { background: var(--soc-l); color: var(--soc); }
+  .len-btn { background: var(--len-l); color: var(--len); }
+
+  #screen-examen { display: none; padding: 0; }
+
+  .examen-header {
+    padding: 20px 24px 16px; background: white;
+    border-bottom: 3px solid #F0F0F0; position: sticky; top: 0; z-index: 10;
+  }
+  .examen-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .btn-volver {
+    background: #F0F0F0; border: none; border-radius: 12px; padding: 8px 16px;
+    font-family: 'Nunito', sans-serif; font-weight: 700; cursor: pointer; font-size: 0.9rem; transition: background 0.2s;
+  }
+  .btn-volver:hover { background: #E0E0E0; }
+  .examen-materia-badge { padding: 6px 16px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; }
+
+  .progress-bar-wrap { background: #F0F0F0; border-radius: 50px; height: 10px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 50px; transition: width 0.4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: #888; margin-top: 6px; font-weight: 600; }
+
+  .pregunta-container { padding: 24px 20px; max-width: 720px; margin: 0 auto; }
+  .pregunta-num { font-size: 0.85rem; font-weight: 700; color: #888; margin-bottom: 8px; }
+  .pregunta-text { font-size: 1.1rem; font-weight: 700; line-height: 1.5; margin-bottom: 24px; color: var(--text); }
+
+  .opciones-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .opcion-btn {
+    background: white; border: 3px solid #E8E8E8; border-radius: 16px; padding: 16px 20px;
+    text-align: left; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 1rem;
+    font-weight: 600; display: flex; align-items: flex-start; gap: 14px; transition: all 0.2s; line-height: 1.4;
+  }
+  .opcion-btn:hover:not(:disabled) { border-color: #339AF0; background: #F0F8FF; transform: translateX(4px); }
+  .opcion-letra {
+    width: 32px; height: 32px; border-radius: 10px; background: #F0F0F0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.9rem; flex-shrink: 0; transition: all 0.2s;
+  }
+  .opcion-btn.correcta { border-color: #51CF66; background: #E8FFE8; animation: pulse-green 0.4s ease; }
+  .opcion-btn.correcta .opcion-letra { background: #51CF66; color: white; }
+  .opcion-btn.incorrecta { border-color: #FF6B6B; background: #FFE8E8; animation: shake 0.4s ease; }
+  .opcion-btn.incorrecta .opcion-letra { background: #FF6B6B; color: white; }
+  .opcion-btn.correcta-revelar { border-color: #51CF66; background: #E8FFE8; }
+  .opcion-btn.correcta-revelar .opcion-letra { background: #51CF66; color: white; }
+  .opcion-btn:disabled { cursor: not-allowed; }
+
+  .feedback-msg {
+    margin-top: 16px; padding: 12px 18px; border-radius: 14px;
+    font-weight: 700; font-size: 1rem; text-align: center; opacity: 0; transition: opacity 0.3s;
+  }
+  .feedback-msg.show { opacity: 1; }
+  .feedback-msg.ok { background: #E8FFE8; color: #2B8A3E; }
+  .feedback-msg.fail { background: #FFE8E8; color: #C92A2A; }
+  .feedback-msg.intento { background: #FFF3CD; color: #856404; }
+
+  .btn-siguiente {
+    width: 100%; margin-top: 20px; padding: 18px; border: none; border-radius: 16px;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem;
+    cursor: pointer; transition: all 0.2s; display: none;
+  }
+  .btn-siguiente.show { display: block; }
+  .btn-siguiente:hover { transform: translateY(-2px); }
+
+  #screen-resultado { display: none; padding: 32px 20px; max-width: 600px; margin: 0 auto; text-align: center; }
+  .resultado-emoji { font-size: 5rem; margin-bottom: 16px; }
+  .resultado-titulo { font-family: 'Fredoka One', cursive; font-size: 2rem; margin-bottom: 8px; }
+  .resultado-sub { color: #666; margin-bottom: 28px; font-size: 1rem; }
+
+  .puntaje-circle {
+    width: 160px; height: 160px; border-radius: 50%; margin: 0 auto 28px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Fredoka One', cursive; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .puntaje-num { font-size: 3rem; line-height: 1; color: white; }
+  .puntaje-de { font-size: 1rem; color: rgba(255,255,255,0.8); }
+
+  .detalle-respuestas { background: white; border-radius: var(--radius); padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow); text-align: left; }
+  .detalle-respuestas h3 { font-weight: 800; margin-bottom: 14px; font-size: 1rem; }
+  .respuesta-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #F0F0F0; font-size: 0.85rem; line-height: 1.4; }
+  .respuesta-item:last-child { border-bottom: none; }
+  .respuesta-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .btns-resultado { display: flex; flex-direction: column; gap: 12px; }
+  .btn-otra-materia { padding: 16px; border-radius: 16px; border: 3px solid #E0E0E0; background: white; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+  .btn-otra-materia:hover { border-color: #339AF0; background: #F0F8FF; }
+  .btn-inicio-final { padding: 16px; border-radius: 16px; border: none; background: linear-gradient(135deg, #1A1A2E, #0F3460); color: white; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+  .btn-inicio-final:hover { transform: translateY(-2px); }
+
+  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; color: #888; font-weight: 600; }
+  .spinner { width: 48px; height: 48px; border: 5px solid #E0E0E0; border-top-color: #339AF0; border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+  @keyframes pulse-green { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.4s ease both; }
+
+  .error-msg { background: #FFE8E8; color: #C92A2A; border-radius: 14px; padding: 16px 20px; margin: 20px; font-weight: 700; text-align: center; }
+
+  /* ── JERO GRADO 2 ──────────────────────────────────────────────── */
+  #screen-jero { display:none; padding:20px 16px; max-width:600px; margin:0 auto; }
+  .jero-saludo {
+    text-align:center; margin-bottom:24px;
+  }
+  .jero-saludo .mascota { font-size:4rem; animation: bounce 1.5s ease-in-out infinite; display:block; margin-bottom:8px; }
+  .jero-saludo h2 { font-family:'Fredoka One',cursive; font-size:1.8rem; color:#1A1A2E; }
+  .jero-saludo p { color:#666; font-size:1rem; margin-top:4px; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  .jero-materias { display:flex; flex-direction:column; gap:14px; }
+
+  .jero-materia-card {
+    border-radius:24px; padding:20px 22px;
+    display:flex; align-items:center; gap:16px;
+    cursor:pointer; transition:transform 0.2s, box-shadow 0.2s;
+    position:relative; overflow:hidden; border:none;
+    width:100%; text-align:left;
+  }
+  .jero-materia-card:hover:not(:disabled) { transform:translateY(-4px) scale(1.02); }
+  .jero-materia-card:disabled { opacity:0.45; cursor:not-allowed; filter:grayscale(0.4); }
+  .jero-materia-card::before {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:120px; height:120px; border-radius:50%;
+    background:rgba(255,255,255,0.15);
+  }
+
+  .jero-mat-icon { font-size:2.8rem; flex-shrink:0; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+  .jero-mat-info { flex:1; }
+  .jero-mat-nombre { font-family:'Fredoka One',cursive; font-size:1.3rem; color:white; display:block; }
+  .jero-mat-estado { font-size:0.85rem; color:rgba(255,255,255,0.85); font-weight:700; margin-top:2px; display:block; }
+
+  .jero-mat-progreso {
+    display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0;
+  }
+  .jero-estrellas { font-size:1.2rem; letter-spacing:2px; }
+  .jero-leccion-badge {
+    background:rgba(255,255,255,0.25); color:white;
+    padding:3px 10px; border-radius:50px; font-size:0.78rem; font-weight:800;
+  }
+
+  .jero-lock { font-size:2rem; flex-shrink:0; }
+
+  /* Partículas de confetti al completar */
+  @keyframes particle-fly {
+    0%   { transform:translate(0,0) rotate(0deg); opacity:1; }
+    100% { transform:translate(var(--tx),var(--ty)) rotate(720deg); opacity:0; }
+  }
+  .particle {
+    position:fixed; width:10px; height:10px; border-radius:2px;
+    pointer-events:none; z-index:9999;
+    animation:particle-fly 0.9s ease-out forwards;
+  }
+
+  /* ── JERO HITOS PATH ────────────────────────────────────────── */
+  .jero-hitos-wrap { display:flex; flex-direction:column; gap:14px; padding:14px 0 80px; }
+  .jero-hito-row   { display:flex; gap:18px; align-items:center; padding:0 12px; }
+
+  .jero-hito-nodo {
+    width:68px; height:68px; border-radius:50%;
+    display:flex; flex-direction:column; align-items:center;
+    justify-content:center; position:relative; flex-shrink:0;
+    font-family:'Fredoka One',cursive; user-select:none;
+  }
+  .jero-hito-nodo.completado {
+    background:linear-gradient(135deg,#51CF66,#37B24D);
+    box-shadow:0 4px 14px rgba(81,207,102,0.45);
+  }
+  .jero-hito-nodo.activo {
+    background:linear-gradient(135deg,#FF6B6B,#FA5252);
+    box-shadow:0 4px 18px rgba(255,107,107,0.55);
+    cursor:pointer;
+    animation:hito-pulse 1.6s ease-in-out infinite;
+  }
+  .jero-hito-nodo.activo:active { transform:scale(0.92); animation:none; }
+  .jero-hito-nodo.bloqueado     { background:#D8D8D8; box-shadow:none; cursor:default; }
+  .jero-hito-nodo.reto          { border:3px solid rgba(255,255,255,0.5); }
+  .jero-hito-nodo.reto.completado {
+    background:linear-gradient(135deg,#FFD700,#FFA500);
+    box-shadow:0 4px 20px rgba(255,215,0,0.5);
+  }
+  .hito-icon { font-size:1.7rem; line-height:1; color:white; font-weight:900; }
+  .jero-hito-nodo.bloqueado .hito-icon { opacity:0.55; font-size:1.25rem; }
+
+  .hito-burbuja {
+    position:absolute; bottom:calc(100% + 10px); left:50%;
+    transform:translateX(-50%); white-space:nowrap;
+    background:#1A1A2E; color:white;
+    padding:5px 13px; border-radius:20px;
+    font-family:Nunito,sans-serif; font-size:0.7rem; font-weight:800;
+    pointer-events:none; z-index:10;
+    box-shadow:0 2px 10px rgba(0,0,0,0.25);
+  }
+  .hito-burbuja::after {
+    content:''; position:absolute; top:100%; left:50%;
+    transform:translateX(-50%);
+    border:6px solid transparent; border-top-color:#1A1A2E;
+  }
+  @keyframes hito-pulse {
+    0%,100% { transform:scale(1);    box-shadow:0 4px 18px rgba(255,107,107,0.55); }
+    50%     { transform:scale(1.13); box-shadow:0 6px 26px rgba(255,107,107,0.75); }
+  }
+
+  .jero-panel-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.45);
+    z-index:499; animation:fadeIn 0.2s ease;
+  }
+  .jero-hito-panel {
+    position:fixed; bottom:0; left:0; right:0; z-index:500;
+    background:white; border-radius:24px 24px 0 0;
+    padding:20px 16px 40px; box-shadow:0 -8px 32px rgba(0,0,0,0.18);
+    animation:slideUp 0.25s ease both;
+    max-height:72vh; overflow-y:auto;
+  }
+  @keyframes slideUp {
+    from { transform:translateY(100%); opacity:0; }
+    to   { transform:translateY(0);    opacity:1; }
+  }
+  .hito-panel-header {
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;
+  }
+  .hito-panel-titulo {
+    font-family:'Fredoka One',cursive; font-size:1.15rem; color:#1A1A2E;
+  }
+  .hito-panel-close {
+    background:none; border:none; font-size:1.2rem; cursor:pointer;
+    color:#888; padding:4px 8px; border-radius:8px; line-height:1;
+  }
+  .hito-panel-mat {
+    width:100%; padding:14px 16px; border-radius:14px;
+    border:2px solid #E8E8E8; background:white;
+    font-family:Nunito,sans-serif; font-weight:800; font-size:0.95rem;
+    cursor:pointer; display:flex; justify-content:space-between;
+    align-items:center; margin-bottom:8px; transition:all 0.15s;
+    color:#1A1A2E; text-align:left;
+  }
+  .hito-panel-mat:hover:not(.done) { border-color:#339AF0; background:#F0F8FF; transform:translateX(4px); }
+  .hito-panel-mat.done { background:#F0FFF4; border-color:#51CF66; color:#2F9E44; cursor:default; }
+  .hito-panel-ref {
+    width:100%; padding:10px 16px; border-radius:12px; margin-bottom:8px;
+    border:2px solid #845EF7; background:linear-gradient(135deg,#F0EBFF,#E8F4FF);
+    font-family:Nunito,sans-serif; font-weight:800; font-size:0.82rem;
+    cursor:pointer; color:#6741D9; text-align:left;
+  }
+
+  /* MIS RESULTADOS */
+  #screen-misresultados { display: none; padding: 24px 20px; max-width: 800px; margin: 0 auto; }
+  .res-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .res-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .res-card-titulo { font-size: 1.1rem; font-weight: 800; }
+  .res-promedio { padding: 4px 12px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; }
+  .res-barras { display: flex; gap: 8px; align-items: flex-end; height: 80px; margin-bottom: 8px; }
+  .res-barra-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .res-barra-pct { font-size: 0.7rem; font-weight: 700; }
+  .res-barra { width: 100%; border-radius: 6px 6px 0 0; min-height: 4px; }
+  .res-barra-dia { font-size: 0.65rem; color: #888; font-weight: 600; }
+
+  /* ADMIN */
+  #screen-admin { display:none; min-height:100vh; background:#0F172A; }
+  .admin-sidebar { background:#1E293B; width:220px; min-height:100vh; padding:20px 14px; position:fixed; top:0; left:0; z-index:100; display:flex; flex-direction:column; gap:6px; }
+  .admin-logo { font-family:'Fredoka One',cursive; color:white; font-size:1.2rem; margin-bottom:14px; text-align:center; }
+  .admin-logo span { display:block; font-family:'Nunito',sans-serif; font-size:0.72rem; color:#64748B; font-weight:600; margin-top:2px; }
+  .admin-nav-btn { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.88rem; text-align:left; transition:all 0.2s; width:100%; background:transparent; color:#94A3B8; }
+  .admin-nav-btn:hover { background:rgba(255,255,255,0.07); color:white; }
+  .admin-nav-btn.activo { background:rgba(99,102,241,0.25); color:#818CF8; }
+  .admin-main { margin-left:220px; padding:28px; min-height:100vh; background:#0F172A; color:white; }
+  .admin-title { font-family:'Fredoka One',cursive; font-size:1.5rem; margin-bottom:4px; color:white; }
+  .admin-sub { color:#64748B; font-size:0.85rem; margin-bottom:22px; }
+  .admin-section { display:none; }
+  .admin-section.activa { display:block; }
+  .admin-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  .stat-card { background:#1E293B; border-radius:14px; padding:18px; border:1px solid #334155; }
+  .stat-card .stat-num { font-family:'Fredoka One',cursive; font-size:1.9rem; }
+  .stat-card .stat-lbl { color:#64748B; font-size:0.78rem; font-weight:600; margin-top:4px; }
+  .admin-table-wrap { background:#1E293B; border-radius:14px; overflow:hidden; border:1px solid #334155; }
+  .admin-table { width:100%; border-collapse:collapse; }
+  .admin-table th { background:#1E293B; padding:11px 14px; text-align:left; font-size:0.78rem; color:#64748B; font-weight:700; text-transform:uppercase; }
+  .admin-table td { padding:11px 14px; border-bottom:1px solid #1a2744; font-size:0.88rem; }
+  .admin-table tr:hover td { background:rgba(255,255,255,0.03); }
+  .bpct { padding:3px 10px; border-radius:50px; font-weight:800; font-size:0.76rem; }
+  .bv { background:rgba(81,207,102,0.18); color:#51CF66; }
+  .bn { background:rgba(255,146,43,0.18); color:#FF922B; }
+  .br { background:rgba(255,107,107,0.18); color:#FF6B6B; }
+  .bg { background:rgba(148,163,184,0.12); color:#64748B; }
+  .perfil-header { display:flex; align-items:center; gap:14px; margin-bottom:22px; background:#1E293B; border-radius:14px; padding:18px; border:1px solid #334155; }
+  .perfil-avatar { width:52px; height:52px; border-radius:12px; background:linear-gradient(135deg,#6366F1,#8B5CF6); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+  .falencias-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
+  .falencia-card { background:#1E293B; border-radius:14px; padding:18px; border:1px solid #334155; }
+  .falencia-card h4 { font-size:0.8rem; color:#94A3B8; font-weight:700; margin-bottom:10px; text-transform:uppercase; }
+  .falencia-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:0.82rem; }
+  .fbar-bg { flex:1; background:#0F172A; border-radius:50px; height:7px; overflow:hidden; }
+  .fbar-fill { height:100%; border-radius:50px; }
+  .fbar-lbl { font-weight:800; color:white; min-width:34px; text-align:right; font-size:0.78rem; }
+  .input-admin { background:#0F172A; border:1px solid #334155; color:white; border-radius:10px; padding:10px 13px; font-family:'Nunito',sans-serif; font-size:0.88rem; outline:none; transition:border-color 0.2s; }
+  .input-admin:focus { border-color:#6366F1; }
+  .btn-ap { background:linear-gradient(135deg,#6366F1,#8B5CF6); color:white; border:none; border-radius:10px; padding:10px 18px; font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem; cursor:pointer; }
+  .btn-ap:hover { opacity:0.88; }
+  .btn-ad { background:rgba(239,68,68,0.14); color:#F87171; border:1px solid rgba(239,68,68,0.28); border-radius:8px; padding:5px 12px; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.8rem; cursor:pointer; }
+  .btn-ad:hover { background:rgba(239,68,68,0.28); }
+  .btn-ar { background:rgba(251,191,36,0.14); color:#FBBF24; border:1px solid rgba(251,191,36,0.28); border-radius:8px; padding:5px 12px; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.8rem; cursor:pointer; }
+  .btn-ar:hover { background:rgba(251,191,36,0.28); }
+  .usuario-row { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #0F172A; gap:8px; flex-wrap:wrap; }
+  .usuario-row:last-child { border-bottom:none; }
+  @media(max-width:700px) { .admin-sidebar{display:none;} .admin-main{margin-left:0;padding:16px;} .admin-stats{grid-template-columns:repeat(2,1fr);} }
+
+  /* REFUERZO */
+  #screen-refuerzo { display:none; padding:0; }
+  .refuerzo-header {
+    padding:20px 24px 16px; background:white;
+    border-bottom:3px solid #F0F0F0; position:sticky; top:0; z-index:10;
+  }
+  .refuerzo-badge { padding:6px 16px; border-radius:50px; font-weight:800; font-size:0.9rem; background:linear-gradient(135deg,#845EF7,#6741D9); color:white; }
+  .refuerzo-container { padding:24px 20px; max-width:720px; margin:0 auto; }
+  .explicacion-card {
+    background:linear-gradient(135deg,#F0EBFF,#E8F4FF);
+    border:3px solid #845EF7; border-radius:20px; padding:20px 24px;
+    margin-bottom:24px; position:relative;
+  }
+  .explicacion-card::before { content:'🤖 Claude explica:'; font-size:0.78rem; font-weight:800; color:#845EF7; display:block; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px; }
+  .explicacion-texto { font-size:1rem; font-weight:600; line-height:1.6; color:#1A1A2E; }
+  .explicacion-cargando { display:flex; align-items:center; gap:10px; color:#845EF7; font-weight:700; }
+  .spinner-pequeño { width:20px; height:20px; border:3px solid #E0D0FF; border-top-color:#845EF7; border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0; }
+  .tu-resp-mal { background:#FFE8E8; border:2px solid #FF6B6B; border-radius:12px; padding:10px 16px; margin-bottom:12px; font-size:0.88rem; font-weight:700; color:#C92A2A; }
+  .refuerzo-resultado {
+    display:none; padding:32px 20px; max-width:600px; margin:0 auto; text-align:center;
+  }
+  .comparacion-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
+  .comp-card { border-radius:16px; padding:20px; text-align:center; }
+  .comp-card .comp-num { font-family:'Fredoka One',cursive; font-size:2.5rem; }
+  .comp-card .comp-label { font-size:0.85rem; font-weight:700; margin-top:4px; }
+  .comp-antes { background:#FFE8E8; color:#C92A2A; }
+  .comp-despues { background:#E8FFE8; color:#2B8A3E; }
+  .mejora-badge { font-family:'Fredoka One',cursive; font-size:1.3rem; padding:12px 28px; border-radius:50px; display:inline-block; margin:12px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;justify-content:center;gap:0px;margin-bottom:4px">
+    <img src="/imagenes/logos/brainy_mascota.png" style="height:130px;margin-right:-10px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3));position:relative;z-index:2"/>
+    <img src="/imagenes/logos/brainy.png" style="height:75px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))"/>
+  </div>
+  <p style="margin-top:4px">¡Aprende un poco cada día!</p>
+  <div id="header-nombre-wrap" style="display:none">
+    <div class="nombre-badge" id="header-nombre" onclick="cambiarNombre()">
+      👤 <span id="header-nombre-text"></span> ✏️
+    </div>
+    <span id="header-grado-badge" style="display:inline-block;background:rgba(255,255,255,0.2);color:white;padding:5px 12px;border-radius:50px;font-weight:800;font-size:0.85rem;margin-left:6px;vertical-align:middle"></span>
+    <button class="btn-logout" onclick="cerrarSesion()">🚪 Salir</button>
+  </div>
+</div>
+
+<div id="screen-login">
+  <div class="login-card fade-in">
+    <img src="/favicon.png" style="height:80px;margin-bottom:8px"/>
+    <h2>¡Hola! ¿Cuál es tu código?</h2>
+    <p>Escribe tu código</p>
+    <input class="input-name" type="text" id="input-nombre"
+           placeholder="Ej: TOMAS2026" maxlength="20"
+           style="text-transform:uppercase"
+           onkeydown="if(event.key==='Enter') entrar()"/>
+    <div id="login-error" style="color:#C92A2A;font-weight:700;font-size:0.9rem;margin-top:8px;display:none"></div>
+    <button class="btn-entrar" onclick="entrar()">¡Entrar! 🚀</button>
+  </div>
+</div>
+
+<div id="screen-grado" style="display:none;min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px">
+  <p style="font-family:'Fredoka One',cursive;font-size:1.6rem;margin-bottom:8px;text-align:center">¿En qué grado estás?</p>
+  <p style="color:#888;margin-bottom:32px;text-align:center">Elige tu grado para ver tus exámenes</p>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+    <button onclick="elegirGrado(2)" id="btn-grado-2" style="width:100px;height:110px;border-radius:20px;border:3px solid #51CF66;background:#E8FFE8;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>2°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#37B24D">Disponible</span></button>
+    <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>3°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
+    <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>4°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
+    <button disabled style="width:100px;height:110px;border-radius:20px;border:3px solid #E0E0E0;background:#F5F5F5;font-family:'Fredoka One',cursive;font-size:2rem;cursor:not-allowed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0.5"><span>5°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#aaa">Próximamente</span></button>
+    <button onclick="elegirGrado(6)" id="btn-grado-6" style="width:100px;height:110px;border-radius:20px;border:3px solid #339AF0;background:#E8F4FF;font-family:'Fredoka One',cursive;font-size:2rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='none'"><span>6°</span><span style="font-family:Nunito,sans-serif;font-size:0.75rem;font-weight:800;color:#1971C2">Disponible</span></button>
+  </div>
+</div>
+
+<div id="screen-inicio">
+  <p class="dias-title">📅 Elige tu examen de hoy</p>
+  <div style="text-align:center;margin-bottom:20px">
+    <button onclick="verMisResultados()" style="background:linear-gradient(135deg,#1A1A2E,#0F3460);color:white;border:none;border-radius:16px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2)">📊 Mis Resultados</button>
+  </div>
+  <div id="dias-container"></div>
+</div>
+
+<div id="screen-jero">
+  <div class="jero-saludo">
+    <span class="mascota">🧠</span>
+    <h2 id="jero-titulo">¡Hola, Jero!</h2>
+    <p>Elige qué quieres aprender hoy 🌟</p>
+  </div>
+  <div class="jero-materias" id="jero-materias-container"></div>
+  <div style="text-align:center;margin-top:20px;display:flex;flex-direction:column;gap:12px;align-items:center">
+    <button onclick="verBiblioteca()" style="background:linear-gradient(135deg,#845EF7,#6741D9);color:white;border:none;border-radius:16px;padding:14px 36px;font-family:Nunito,sans-serif;font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 16px rgba(132,94,247,0.4);width:100%;max-width:320px">📚 Mis Cuentos</button>
+    <button onclick="verMisResultados()" style="background:linear-gradient(135deg,#1A1A2E,#0F3460);color:white;border:none;border-radius:16px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2);width:100%;max-width:320px">📊 Mis Resultados</button>
+  </div>
+</div>
+
+<div id="screen-examen">
+  <div class="examen-header">
+    <div class="examen-top">
+      <button class="btn-volver" onclick="volverInicio()">← Volver</button>
+      <span class="examen-materia-badge" id="examen-badge">📚</span>
+      <span style="font-weight:800;font-size:0.95rem" id="examen-dia-label">Día 1</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-label">
+      <span id="progress-text">Pregunta 1 de 25</span>
+      <span id="progress-pct">0%</span>
+    </div>
+  </div>
+  <div class="pregunta-container" id="pregunta-container">
+    <div class="loading"><div class="spinner"></div><span>Cargando preguntas...</span></div>
+  </div>
+</div>
+
+<div id="screen-misresultados">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+    <button class="btn-volver" onclick="volverInicio()">← Volver</button>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:1.6rem">📊 Mis Resultados</h2>
+  </div>
+  <div id="resultados-container">
+    <div class="loading"><div class="spinner"></div><span>Cargando resultados...</span></div>
+  </div>
+</div>
+
+<div id="screen-resultado">
+  <div class="resultado-emoji" id="res-emoji">🏆</div>
+  <div class="resultado-titulo" id="res-titulo">¡Excelente!</div>
+  <div class="resultado-sub" id="res-sub"></div>
+  <div class="puntaje-circle" id="res-circle">
+    <div class="puntaje-num" id="res-num">0</div>
+    <div class="puntaje-de" id="res-de">de 25</div>
+  </div>
+  <div class="detalle-respuestas">
+    <h3>📋 Resumen de respuestas</h3>
+    <div id="res-detalle"></div>
+  </div>
+  <div class="btns-resultado">
+    <button class="btn-otra-materia" id="btn-corrige" onclick="iniciarRefuerzoDesdeResultado()" style="display:none;border-color:#845EF7;color:#845EF7">🔁 Corrige tus errores con IA</button>
+    <button class="btn-otra-materia" onclick="volverInicio()">📚 Hacer otra materia</button>
+    <button class="btn-inicio-final" onclick="volverInicio()">🏠 Ir al inicio</button>
+  </div>
+</div>
+
+<div id="screen-cuentos" style="display:none;padding:20px 16px;max-width:600px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+    <button class="btn-volver" onclick="volverInicio()">← Volver</button>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:1.6rem">📚 Biblioteca</h2>
+  </div>
+  <div id="cuentos-lista"></div>
+</div>
+
+<div id="screen-lector" style="display:none">
+  <div style="position:sticky;top:0;z-index:10;padding:16px 20px;display:flex;align-items:center;justify-content:space-between" id="lector-header">
+    <button class="btn-volver" id="lector-btn-volver">← Volver</button>
+    <span style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:white" id="lector-titulo"></span>
+    <span style="font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.7)" id="lector-cap"></span>
+  </div>
+  <div id="lector-contenido" style="max-width:680px;margin:0 auto;padding:20px 20px 40px"></div>
+</div>
+
+<div id="screen-refuerzo">
+  <div class="refuerzo-header">
+    <div class="examen-top">
+      <button class="btn-volver" onclick="salirRefuerzo()">← Volver</button>
+      <span class="refuerzo-badge" id="refuerzo-badge">🔁 Refuerzo</span>
+      <span style="font-weight:800;font-size:0.95rem" id="refuerzo-dia-label"></span>
+    </div>
+    <div class="progress-bar-wrap" style="margin-top:12px">
+      <div class="progress-bar-fill" id="refuerzo-progress-fill" style="width:0%;background:linear-gradient(135deg,#845EF7,#6741D9)"></div>
+    </div>
+    <div class="progress-label">
+      <span id="refuerzo-progress-text">Pregunta 1 de ?</span>
+      <span id="refuerzo-progress-pct">0%</span>
+    </div>
+  </div>
+  <div class="refuerzo-container" id="refuerzo-container"></div>
+  <div class="refuerzo-resultado" id="refuerzo-resultado">
+    <div style="font-size:4rem;margin-bottom:12px" id="rref-emoji">🌟</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:1.8rem;margin-bottom:8px" id="rref-titulo">¡Mejoraste!</div>
+    <div style="color:#666;margin-bottom:24px" id="rref-sub"></div>
+    <div class="comparacion-grid">
+      <div class="comp-card comp-antes">
+        <div class="comp-num" id="rref-antes">0%</div>
+        <div class="comp-label">Primera vez</div>
+      </div>
+      <div class="comp-card comp-despues">
+        <div class="comp-num" id="rref-despues">0%</div>
+        <div class="comp-label">Tras el refuerzo</div>
+      </div>
+    </div>
+    <div class="mejora-badge" id="rref-mejora-badge"></div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">
+      <button class="btn-inicio-final" onclick="salirRefuerzo()">🏠 Volver al inicio</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-admin">
+  <div class="admin-sidebar">
+    <div class="admin-logo">🎓 Admin<span>Monterrosales Homeschool</span></div>
+    <button class="admin-nav-btn activo" onclick="adminNav('dashboard')" id="nav-dashboard"><span>📊</span> Dashboard</button>
+    <button class="admin-nav-btn" onclick="adminNav('alumnos')" id="nav-alumnos"><span>👥</span> Alumnos</button>
+    <button class="admin-nav-btn" onclick="adminNav('falencias')" id="nav-falencias"><span>⚠️</span> Falencias grupo</button>
+    <button class="admin-nav-btn" onclick="adminNav('usuarios')" id="nav-usuarios"><span>🔑</span> Usuarios</button>
+    <div style="flex:1"></div>
+    <button class="admin-nav-btn" onclick="cerrarSesion()" style="color:#F87171"><span>🚪</span> Salir</button>
+  </div>
+  <div class="admin-main">
+
+    <div class="admin-section activa" id="admin-dashboard">
+      <h2 class="admin-title">📊 Dashboard general</h2>
+      <p class="admin-sub" id="admin-fecha">Cargando...</p>
+      <div class="admin-stats">
+        <div class="stat-card"><div class="stat-num" style="color:#818CF8" id="stat-alumnos">–</div><div class="stat-lbl">Alumnos activos</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#34D399" id="stat-examenes">–</div><div class="stat-lbl">Exámenes completados</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#FBBF24" id="stat-promedio">–%</div><div class="stat-lbl">Promedio general</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#F87171" id="stat-riesgo">–</div><div class="stat-lbl">En riesgo (&lt;60%)</div></div>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Alumno</th><th>MAT</th><th>BIO</th><th>QUI</th><th>SOC</th><th>LEN</th><th>Promedio</th><th></th></tr></thead>
+          <tbody id="dashboard-tabla"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-section" id="admin-alumnos">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <button class="btn-volver" onclick="adminNav('dashboard')" style="background:#1E293B;color:white">← Volver</button>
+        <div><h2 class="admin-title" style="margin-bottom:0" id="perfil-titulo">Perfil</h2><p class="admin-sub" style="margin-bottom:0" id="perfil-codigo-txt"></p></div>
+      </div>
+      <div id="perfil-contenido"></div>
+    </div>
+
+    <div class="admin-section" id="admin-falencias">
+      <h2 class="admin-title">⚠️ Falencias del grupo</h2>
+      <p class="admin-sub">Temas con más errores en toda la clase</p>
+      <div class="falencias-grid" id="falencias-contenido"><div class="loading"><div class="spinner"></div><span style="color:#64748B">Analizando...</span></div></div>
+    </div>
+
+    <div class="admin-section" id="admin-usuarios">
+      <h2 class="admin-title">🔑 Gestión de usuarios</h2>
+      <p class="admin-sub">Agregar o eliminar códigos de acceso</p>
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <input class="input-admin" id="nuevo-codigo" placeholder="Código (ej: PEDRO2026)" maxlength="20" style="text-transform:uppercase;width:190px"/>
+        <input class="input-admin" id="nuevo-nombre" placeholder="Nombre del alumno" maxlength="40" style="width:210px"/>
+        <button class="btn-ap" onclick="agregarUsuario()">➕ Agregar</button>
+      </div>
+      <div class="admin-table-wrap"><div id="usuarios-lista"><div class="loading"><div class="spinner"></div><span style="color:#64748B">Cargando...</span></div></div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const MATERIAS = {
+  MAT: { nombre: 'Matemáticas', emoji: '🔢', clase: 'mat-btn', color: '#FF6B6B', gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)' },
+  BIO: { nombre: 'Biología',    emoji: '🌿', clase: 'bio-btn', color: '#51CF66', gradiente: 'linear-gradient(135deg,#51CF66,#37B24D)' },
+  QUI: { nombre: 'Química',     emoji: '⚗️', clase: 'qui-btn', color: '#845EF7', gradiente: 'linear-gradient(135deg,#845EF7,#7048E8)' },
+  SOC: { nombre: 'Cs. Sociales',emoji: '🌍', clase: 'soc-btn', color: '#FF922B', gradiente: 'linear-gradient(135deg,#FF922B,#F76707)' },
+  LEN: { nombre: 'Lenguaje',    emoji: '📖', clase: 'len-btn', color: '#339AF0', gradiente: 'linear-gradient(135deg,#339AF0,#1971C2)' },
+};
+const TOTAL_DIAS = 6;
+
+let estado = { nombre: '', diaActual: 1, completados: {} };
+let examenActual = { dia: 1, materia: '', preguntas: [], idx: 0, respuestas: [], puntaje: 0, intentos: 0 };
+
+function cargarEstado() {
+  try { const s = localStorage.getItem('examen_estado'); if (s) estado = { ...estado, ...JSON.parse(s) }; } catch(e) {}
+}
+function guardarEstadoLocal() { localStorage.setItem('examen_estado', JSON.stringify(estado)); }
+
+function diaDisponible(dia) { return dia <= estado.diaActual; }
+function diaCompleto(dia) { return Object.keys(MATERIAS).every(m => estado.completados[`${dia}_${m}`]); }
+function materiaCompletada(dia, mat) { return !!estado.completados[`${dia}_${mat}`]; }
+function intentarDesbloquearSiguienteDia() {
+  if (diaCompleto(estado.diaActual) && estado.diaActual < TOTAL_DIAS) {
+    estado.diaActual++;
+    guardarEstadoLocal();
+  }
+}
+
+function mostrar(id) {
+  ['screen-login','screen-grado','screen-inicio','screen-jero','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo','screen-cuentos','screen-lector'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  document.getElementById(id).style.display = id === 'screen-login' ? 'flex' : 'block';
+}
+
+async function entrar() {
+  const codigo = document.getElementById('input-nombre').value.trim().toUpperCase();
+  if (!codigo) { document.getElementById('input-nombre').style.borderColor = '#FF6B6B'; return; }
+  const btn = document.querySelector('.btn-entrar');
+  btn.textContent = 'Verificando...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ codigo })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      document.getElementById('login-error').textContent = data.error;
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('input-nombre').style.borderColor = '#FF6B6B';
+      btn.textContent = '¡Entrar! 🚀';
+      btn.disabled = false;
+      return;
+    }
+    estado.nombre = data.nombre;
+    estado.codigo = data.codigo;
+    estado.esAdmin = data.esAdmin || false;
+    estado.grado = null;
+    estado.gradoAsignado = data.grado || null;
+    guardarEstadoLocal();
+    mostrarHeaderNombre();
+    if (estado.esAdmin) {
+      mostrar('screen-admin');
+      adminInit();
+    } else if (estado.grado) {
+      await elegirGrado(estado.grado);
+    } else {
+      mostrar('screen-grado');
+    }
+  } catch(e) {
+    document.getElementById('login-error').textContent = 'Error de conexión. Intenta de nuevo.';
+    document.getElementById('login-error').style.display = 'block';
+    btn.textContent = '¡Entrar! 🚀';
+    btn.disabled = false;
+  }
+}
+
+async function elegirGrado(grado) {
+  if (estado.gradoAsignado && grado !== estado.gradoAsignado) {
+    alert(`Tu grado es ${estado.gradoAsignado}°. Habla con tu profe para cambiar de grado.`);
+    return;
+  }
+  estado.grado = grado;
+  guardarEstadoLocal();
+  mostrarHeaderNombre();
+  await sincronizarCompletadosDesdeSheets();
+  if (grado === 2) {
+    mostrar('screen-jero');
+    renderJero();
+  } else {
+    mostrar('screen-inicio');
+    renderInicio();
+  }
+}
+
+function mostrarHeaderNombre() {
+  document.getElementById('header-nombre-wrap').style.display = 'inline-block';
+  document.getElementById('header-nombre-text').textContent = estado.nombre;
+  const gradoBadge = document.getElementById('header-grado-badge');
+  if (gradoBadge) gradoBadge.textContent = estado.grado ? `${estado.grado}°` : '';
+}
+
+function cerrarSesion() {
+  localStorage.removeItem('examen_estado');
+  estado = { nombre: '', diaActual: 1, completados: {} };
+  document.getElementById('header-nombre-wrap').style.display = 'none';
+  document.getElementById('input-nombre').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  mostrar('screen-login');
+}
+
+async function sincronizarCompletadosDesdeSheets() {
+  if (!estado.nombre) return;
+  try {
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+    if (!data.ok || !data.resultados) return;
+
+    const NOMBRES_G6  = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+    const NOMBRES_G2  = { MAT:'Matemáticas', LCA:'Lengua Castellana', ING:'Inglés', NAT:'Ciencias Naturales', SOC:'Ciencias Sociales' };
+
+    // ── Grado 6: reconstruir completados por día ──────────────────
+    if (estado.grado !== 2) {
+      data.resultados.forEach(r => {
+        const matKey = Object.keys(NOMBRES_G6).find(k => NOMBRES_G6[k] === r.materia);
+        const diaNum = r.dia ? r.dia.replace('Día ','').replace('Dia ','').trim() : null;
+        if (matKey && diaNum && !isNaN(parseInt(diaNum))) {
+          estado.completados[`${diaNum}_${matKey}`] = true;
+        }
+      });
+      for (let d = 1; d <= 6; d++) {
+        const todasCompletas = Object.keys(NOMBRES_G6).every(m => estado.completados[`${d}_${m}`]);
+        if (todasCompletas && estado.diaActual <= d) estado.diaActual = d + 1;
+      }
+      guardarEstadoLocal();
+      sincronizarBotonesRefuerzoDesdeSheets().catch(() => {});
+      return;
+    }
+
+    // ── Grado 2: reconstruir jeroProgreso desde Resultados ───────
+    if (!estado.jeroProgreso) estado.jeroProgreso = {};
+    data.resultados.forEach(r => {
+      const matchLec = String(r.dia).match(/G2[ _]L(?:ecci[oó]n\s*)?(\d+)/i);
+      if (!matchLec) return;
+      const lecNum = parseInt(matchLec[1]);
+      const matKey = Object.keys(MATERIAS_JERO).find(k => MATERIAS_JERO[k].nombre === r.materia)
+        || {'Ciencias Naturales':'NAT','Ciencias Sociales':'SOC','Cs. Sociales':'SOC',
+            'Ciencias Nat.':'NAT','Cs. Nat.':'NAT','Lengua Castellana':'LCA'}[r.materia];
+      if (!matKey || !lecNum) return;
+      if (!estado.jeroProgreso[matKey]) estado.jeroProgreso[matKey] = { completadas: [] };
+      if (!estado.jeroProgreso[matKey].completadas.includes(lecNum)) {
+        estado.jeroProgreso[matKey].completadas.push(lecNum);
+      }
+    });
+    guardarEstadoLocal();
+  } catch(e) { console.warn('No se pudo sincronizar completados', e); }
+}
+
+// Sincroniza qué materias tienen errores, usando Resultados como fuente de verdad
+async function sincronizarBotonesRefuerzoDesdeSheets() {
+  if (!estado.nombre) return;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(
+      '/api/resultados?nombre=' + encodeURIComponent(estado.nombre),
+      { signal: controller.signal }
+    );
+    clearTimeout(timer);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.ok || !data.resultados) return;
+
+    const NOMBRES = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+    let cambios = 0;
+
+    data.resultados.forEach(r => {
+      const matKey = Object.keys(NOMBRES).find(k => NOMBRES[k] === r.materia);
+      const diaNum = r.dia ? r.dia.replace('Día ','').replace('Dia ','').trim() : null;
+      if (!matKey || !diaNum || isNaN(parseInt(diaNum))) return;
+      if (r.dia.includes('Refuerzo')) return; // ignorar sesiones de refuerzo
+
+      let respuestas = [];
+      try { respuestas = typeof r.respuestas === 'string' ? JSON.parse(r.respuestas) : r.respuestas; } catch(e) {}
+      const numErrores = respuestas.filter(rr => !rr.ok).length;
+
+      // Guardar conteo en caché para que renderInicio muestre el botón
+      const cacheKey = `errores_cache_${diaNum}_${matKey}`;
+      const anterior = localStorage.getItem(cacheKey);
+      if (numErrores > 0 && anterior !== String(numErrores)) {
+        localStorage.setItem(cacheKey, String(numErrores));
+        cambios++;
+      } else if (numErrores === 0) {
+        localStorage.removeItem(cacheKey);
+      }
+    });
+
+    if (cambios > 0) renderInicio();
+  } catch(e) {
+    // Silencioso
+  }
+}
+
+function cambiarNombre() {
+  const nuevo = prompt('¿Cuál es tu nuevo nombre?', estado.nombre);
+  if (!nuevo || nuevo.trim() === estado.nombre) return;
+  fetch('/api/login', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ codigo: estado.codigo, nuevoNombre: nuevo.trim() })
+  }).catch(()=>{});
+  estado.nombre = nuevo.trim();
+  guardarEstadoLocal();
+  document.getElementById('header-nombre-text').textContent = estado.nombre;
+}
+
+// Detecta qué dia/materia tienen errores guardados en localStorage O en caché de resultados
+function tieneErroresGuardados(dia, mat) {
+  const key = `errores_${dia}_${mat}`;
+  const local = JSON.parse(localStorage.getItem(key) || '[]');
+  if (local.filter(e => e?.pregunta?.opciones?.A !== undefined).length > 0) return local.length;
+  // Buscar en caché de resultados (guardado por sincronizarBotonesRefuerzoDesdeSheets)
+  const cacheKey = `errores_cache_${dia}_${mat}`;
+  return parseInt(localStorage.getItem(cacheKey) || '0');
+}
+
+function tieneErroresGuardadosJero(leccion, mat) {
+  const key = `errores_G2_L${leccion}_${mat}`;
+  const local = JSON.parse(localStorage.getItem(key) || '[]');
+  if (local.filter(e => e?.pregunta?.opciones?.A !== undefined).length > 0) return local.length;
+  const cacheKey = `errores_cache_G2_L${leccion}_${mat}`;
+  return parseInt(localStorage.getItem(cacheKey) || '0');
+}
+
+async function iniciarRefuerzoJero(leccion, materia) {
+  const mat = MATERIAS_JERO[materia];
+  const key = `errores_G2_L${leccion}_${materia}`;
+  const erroresRaw = JSON.parse(localStorage.getItem(key) || '[]');
+  const erroresLocal = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
+  if (erroresLocal.length > 0) {
+    arrancarRefuerzoJero(leccion, materia, erroresLocal);
+    return;
+  }
+  const btnId = `btn-refuerzo-G2-${leccion}-${materia}`;
+  const btnEl = document.getElementById(btnId);
+  const textoOriginal = btnEl ? btnEl.innerHTML : '';
+  try {
+    if (btnEl) { btnEl.innerHTML = '⏳ Cargando...'; btnEl.disabled = true; btnEl.style.opacity = '0.7'; }
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+    if (!data.ok || !data.resultados) throw new Error('Sin resultados');
+    const resultado = data.resultados.find(r => r.dia === `G2_L${leccion}` && r.materia === mat.nombre);
+    if (!resultado) { alert('No se encontraron errores. ¡Puede que hayas aprobado todo!'); return; }
+    let respuestas = [];
+    try { respuestas = typeof resultado.respuestas === 'string' ? JSON.parse(resultado.respuestas) : resultado.respuestas; } catch(e) {}
+    const erroresBasicos = respuestas.filter(r => !r.ok);
+    if (!erroresBasicos.length) { alert('No se encontraron errores. ¡Puede que hayas aprobado todo!'); return; }
+    const resP = await fetch(`/api/preguntas?grado=2&materia=${materia}&leccion=${leccion}`);
+    const dataP = await resP.json();
+    if (!dataP.ok || !dataP.preguntas) throw new Error('Sin preguntas');
+    const erroresCompletos = erroresBasicos.map(err => {
+      const pregObj = dataP.preguntas.find(p => p.pregunta && err.pregunta && p.pregunta.trim().substring(0,40) === err.pregunta.trim().substring(0,40));
+      if (!pregObj || !pregObj.opciones) return null;
+      return { pregunta: pregObj, elegida: err.elegida, correcta: err.correcta };
+    }).filter(Boolean);
+    if (erroresCompletos.length > 0) {
+      localStorage.setItem(key, JSON.stringify(erroresCompletos));
+      arrancarRefuerzoJero(leccion, materia, erroresCompletos);
+    } else { alert('No se pudieron cargar los errores. Intenta de nuevo.'); }
+  } catch(err) {
+    alert('Error de conexión. Revisa el internet e intenta de nuevo.');
+  } finally {
+    if (btnEl) { btnEl.innerHTML = textoOriginal; btnEl.disabled = false; btnEl.style.opacity = '1'; }
+  }
+}
+
+function arrancarRefuerzoJero(leccion, materia, errores) {
+  const mat = MATERIAS_JERO[materia];
+  refuerzoActual = {
+    dia: `G2_L${leccion}`, materia, errores, idx: 0, puntaje: 0, pctOriginal: null, respuestas: [],
+    esJero: true, leccionJero: leccion, matJero: mat
+  };
+  document.getElementById('refuerzo-badge').textContent = `🔁 Refuerzo ${mat.emoji} ${mat.nombre}`;
+  document.getElementById('refuerzo-dia-label').textContent = `⭐ Lección ${leccion}`;
+  document.getElementById('refuerzo-resultado').style.display = 'none';
+  document.getElementById('refuerzo-container').style.display = 'block';
+  mostrar('screen-refuerzo');
+  window.scrollTo(0,0);
+  renderPreguntaRefuerzo();
+}
+
+async function renderInicio() {
+  intentarDesbloquearSiguienteDia();
+  const cont = document.getElementById('dias-container');
+  cont.innerHTML = '';
+  if (estado.codigo) {
+    try {
+      const rp = await fetch('/api/progreso?codigo='+encodeURIComponent(estado.codigo));
+      const dp = await rp.json();
+      if (dp.ok && dp.progreso) {
+        const p = dp.progreso;
+        const mat = MATERIAS[p.materia];
+        const pct = Math.round((p.puntaje / p.total) * 100);
+        const banner = document.createElement('div');
+        banner.style.cssText = 'background:white;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,0.1);border:3px solid #51CF66;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap';
+        banner.innerHTML = `<div><p style="font-weight:800;font-size:1rem">⏸️ Examen en progreso</p><p style="color:#888;font-size:0.85rem">${mat.emoji} ${mat.nombre} · Día ${p.dia} · Pregunta ${p.idx+2} de ${p.total} · ${pct}% completado</p></div><div style="display:flex;gap:8px"><button onclick="continuarExamen(${JSON.stringify(p).replace(/"/g,'&quot;')})" style="background:linear-gradient(135deg,#51CF66,#37B24D);color:white;border:none;border-radius:12px;padding:10px 20px;font-family:Nunito,sans-serif;font-weight:800;cursor:pointer">▶️ Continuar</button><button onclick="this.closest('div').parentElement.remove()" style="background:#F0F0F0;border:none;border-radius:12px;padding:10px 16px;font-family:Nunito,sans-serif;font-weight:700;cursor:pointer">✕</button></div>`;
+        cont.appendChild(banner);
+      }
+    } catch(e) {}
+  }
+  for (let dia = 1; dia <= TOTAL_DIAS; dia++) {
+    const disponible = diaDisponible(dia);
+    const completo = diaCompleto(dia);
+    const esActivo = dia === estado.diaActual && disponible && !completo;
+    const card = document.createElement('div');
+    card.className = `dia-card fade-in ${disponible ? (esActivo ? 'activo' : 'desbloqueado') : 'bloqueado'}`;
+    card.style.animationDelay = `${(dia-1)*0.06}s`;
+    let materiasHtml = '';
+    for (const [key, mat] of Object.entries(MATERIAS)) {
+      const done = materiaCompletada(dia, key);
+      materiasHtml += `
+        <button class="materia-btn ${mat.clase} ${done ? 'completado' : ''}"
+                onclick="iniciarExamen(${dia},'${key}')"
+                ${!disponible ? 'disabled' : ''}>
+          <span class="mat-icon">${mat.emoji}</span>
+          ${mat.nombre.split(' ')[0]}
+        </button>`;
+    }
+    // Botones de refuerzo por materia si tiene errores guardados
+    let refuerzoHtml = '';
+    for (const [key, mat] of Object.entries(MATERIAS)) {
+      const numErr = tieneErroresGuardados(dia, key);
+      if (numErr > 0 && materiaCompletada(dia, key)) {
+        refuerzoHtml += `<button id="btn-refuerzo-${dia}-${key}" onclick="iniciarRefuerzoDesdeMenu(${dia},'${key}')"
+          style="margin-top:8px;width:100%;padding:8px 14px;background:linear-gradient(135deg,#F0EBFF,#E8F4FF);border:2px solid #845EF7;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.82rem;cursor:pointer;color:#6741D9;text-align:left">
+          🔁 Refuerzo ${mat.emoji} ${mat.nombre.split(' ')[0]} · ${numErr} error${numErr>1?'es':''}
+        </button>`;
+      }
+    }
+    const lockIcon = !disponible ? '🔒 ' : (completo ? '✅ ' : '');
+    card.innerHTML = `
+      <div class="dia-header">
+        <div class="dia-num">${dia}</div>
+        <div class="dia-info">
+          <h3>${lockIcon}Día ${dia}</h3>
+          <p>${disponible ? (completo ? '¡Completado!' : 'En progreso...') : 'Completa el día anterior primero'}</p>
+        </div>
+      </div>
+      <div class="materias-grid">${materiasHtml}</div>
+      ${refuerzoHtml}
+    `;
+    cont.appendChild(card);
+  }
+}
+
+async function iniciarExamen(dia, materia) {
+  examenActual = { dia, materia, preguntas: [], idx: 0, respuestas: [], puntaje: 0, intentos: 0 };
+  const mat = MATERIAS[materia];
+  document.getElementById('examen-badge').textContent = `${mat.emoji} ${mat.nombre}`;
+  document.getElementById('examen-badge').style.background = mat.gradiente;
+  document.getElementById('examen-badge').style.color = 'white';
+  document.getElementById('examen-badge').style.borderRadius = '50px';
+  document.getElementById('examen-badge').style.padding = '6px 16px';
+  document.getElementById('examen-dia-label').textContent = `📅 Día ${dia}`;
+  document.getElementById('progress-fill').style.background = mat.gradiente;
+  mostrar('screen-examen');
+  document.getElementById('pregunta-container').innerHTML =
+    '<div class="loading"><div class="spinner"></div><span>Cargando preguntas...</span></div>';
+  try {
+    const res = await fetch(`/api/preguntas?dia=${dia}&materia=${materia}`);
+    const data = await res.json();
+    if (!data.ok || !data.preguntas.length) {
+      document.getElementById('pregunta-container').innerHTML =
+        `<div class="error-msg">⚠️ No hay preguntas cargadas para este examen.<br><small>Pídele al profe que las agregue en el Google Sheet.</small></div>`;
+      return;
+    }
+    examenActual.preguntas = data.preguntas;
+    renderPregunta();
+  } catch(e) {
+    document.getElementById('pregunta-container').innerHTML =
+      `<div class="error-msg">⚠️ Error de conexión. Revisa el internet e intenta de nuevo.</div>`;
+  }
+}
+
+function renderPregunta() {
+  const { preguntas, idx } = examenActual;
+  const q = preguntas[idx];
+  const total = preguntas.length;
+  const pct = Math.round((idx / total) * 100);
+  examenActual.intentos = 0;
+
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `Pregunta ${idx+1} de ${total}`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+
+  const letras = ['A','B','C','D'];
+  let opcionesHtml = letras.map(l => `
+    <button class="opcion-btn" onclick="responder('${l}')" id="op-${l}">
+      <span class="opcion-letra">${l}</span>
+      <span>${q.opciones[l]}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('pregunta-container').innerHTML = `
+    <div class="fade-in">
+      <p class="pregunta-num">📝 Pregunta ${idx+1} de ${total}</p>
+      ${q.imagen ? `<img src="${q.imagen}" style="width:100%;max-width:480px;border-radius:14px;margin-bottom:16px;display:block;border:3px solid #E8E8E8;" onerror="this.style.display='none'"/>` : ''}
+       ${q.video && q.video.startsWith('http') ? `<a href="${q.video}" target="_blank" style="display:inline-block;margin-bottom:16px;padding:10px 20px;background:#FF0000;color:white;border-radius:12px;text-decoration:none;font-weight:800;font-size:0.95rem;">📺 Ver video explicativo antes de responder</a>` : ''}
+      <p class="pregunta-text">${q.pregunta.startsWith('📖') ? (() => { const p = q.pregunta.split('\n\n❓ '); return `<div style="background:linear-gradient(135deg,#FFF9E6,#FFF3CC);border:3px solid #F6C90E;border-radius:18px;padding:18px 20px;margin-bottom:16px"><div style="font-size:0.75rem;font-weight:800;color:#C8960C;margin-bottom:10px">📖 LEE CON ATENCIÓN:</div><div style="font-size:0.97rem;font-weight:600;line-height:1.8;white-space:pre-wrap">${p[0].replace(/^📖\s*/,'')}</div></div><p class="pregunta-text">${p[1]}</p>`; })() : q.pregunta}</p>
+      <div class="opciones-list">${opcionesHtml}</div>
+      <div class="feedback-msg" id="feedback-msg"></div>
+    </div>
+  `;
+}
+
+function responder(letra) {
+  const q = examenActual.preguntas[examenActual.idx];
+  const correcta = q.respuesta.toUpperCase();
+  const elegida = letra.toUpperCase();
+  const feedback = document.getElementById('feedback-msg');
+  const btnEl = document.getElementById(`op-${elegida}`);
+
+  // Deshabilitar todos los botones
+  ['A','B','C','D'].forEach(l => {
+    const b = document.getElementById(`op-${l}`);
+    if (b) b.disabled = true;
+  });
+
+  if (elegida === correcta) {
+    btnEl.classList.add('correcta');
+    feedback.textContent = '🎉 ¡Correcto! ¡Muy bien!';
+    feedback.className = 'feedback-msg show ok';
+    examenActual.puntaje++;
+    examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: true });
+    let ya = false; setTimeout(() => { if(!ya){ya=true;siguiente();} }, 1500);
+  } else {
+    btnEl.classList.add('incorrecta');
+    const btnCorrecta = document.getElementById(`op-${correcta}`);
+    if (btnCorrecta) btnCorrecta.classList.add('correcta-revelar');
+    feedback.textContent = `❌ Era la opción ${correcta}. ¡Sigue adelante!`;
+    feedback.className = 'feedback-msg show fail';
+    examenActual.respuestas.push({ pregunta: q.pregunta, elegida, correcta, ok: false });
+    let sigLlamado = false;
+    function sigUnaVez() { if (!sigLlamado) { sigLlamado = true; siguiente(); } }
+    let autoTimer = setTimeout(() => sigUnaVez(), 6000);
+    const btnExplicar = document.createElement('button');
+    btnExplicar.textContent = '🤖 ¿Por qué era esa?';
+    btnExplicar.style.cssText = 'margin-top:10px;padding:10px 20px;background:linear-gradient(135deg,#845EF7,#6741D9);color:white;border:none;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:0.9rem;cursor:pointer;display:block;width:100%';
+    btnExplicar.onclick = async () => {
+      clearTimeout(autoTimer);
+      btnExplicar.textContent = '⏳ Cargando explicación...';
+      btnExplicar.disabled = true;
+      try {
+        const res = await fetch('/api/explicar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pregunta: q.pregunta, opciones: q.opciones, elegida, correcta })
+        });
+        const data = await res.json();
+        const explicacionDiv = document.createElement('div');
+        explicacionDiv.style.cssText = 'margin-top:10px;padding:14px 18px;background:linear-gradient(135deg,#F0EBFF,#E8F4FF);border:2px solid #845EF7;border-radius:14px;font-size:0.95rem;font-weight:600;line-height:1.5;color:#1A1A2E';
+        explicacionDiv.textContent = data.ok ? data.explicacion : 'No se pudo cargar la explicación.';
+        const btnContinuar = document.createElement('button');
+        btnContinuar.textContent = 'Continuar →';
+        btnContinuar.style.cssText = 'margin-top:10px;padding:12px 20px;background:linear-gradient(135deg,#51CF66,#37B24D);color:white;border:none;border-radius:12px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer;display:block;width:100%';
+        btnContinuar.onclick = () => sigUnaVez();
+        const wrap = document.createElement('div');
+        wrap.appendChild(explicacionDiv);
+        wrap.appendChild(btnContinuar);
+        btnExplicar.replaceWith(wrap);
+      } catch(e) {
+        btnExplicar.textContent = '🤖 ¿Por qué era esa?';
+        btnExplicar.disabled = false;
+        autoTimer = setTimeout(() => sigUnaVez(), 4000);
+      }
+    };
+    document.getElementById('feedback-msg').after(btnExplicar);
+  }
+
+  fetch('/api/progreso',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo:estado.codigo,dia:examenActual.dia,materia:examenActual.materia,idx:examenActual.idx,puntaje:examenActual.puntaje,total:examenActual.preguntas.length,respuestas:examenActual.respuestas})}).catch(()=>{});
+}
+
+function siguiente() {
+  examenActual.idx++;
+  if (examenActual.idx < examenActual.preguntas.length) {
+    renderPregunta();
+  } else if (examenActual.idx === examenActual.preguntas.length) {
+    terminarExamen();
+  }
+  // si idx > length, ignorar — ya se llamó terminarExamen
+}
+
+async function terminarExamen() {
+  await terminarExamen_JERO_PATCH();
+  const { dia, materia, puntaje, preguntas, respuestas } = examenActual;
+  const total = preguntas.length;
+  const pct = Math.round((puntaje / total) * 100);
+  const mat = (!examenActual.esJero && MATERIAS[materia]) ? MATERIAS[materia] : (MATERIAS_JERO?.[materia] ? { nombre: MATERIAS_JERO[materia].nombre, gradiente: MATERIAS_JERO[materia].bg, color: '#FF6B6B', emoji: MATERIAS_JERO[materia].emoji } : { nombre: materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' });
+  // Limpiar pantalla inmediatamente para no quedarse en el spinner
+  const pc = document.getElementById('pregunta-container');
+  if (pc) pc.innerHTML = '<div class="loading"><div class="spinner"></div><span>Guardando resultado...</span></div>';
+
+  fetch('/api/progreso?codigo='+encodeURIComponent(estado.codigo),{method:'DELETE'}).catch(()=>{});
+  estado.completados[`${dia}_${materia}`] = true;
+  // Guardar errores para refuerzo
+  const erroresParaRefuerzo = respuestas.filter(r => !r.ok).map(r => {
+    const pregObj = examenActual.preguntas.find(p => p.pregunta === r.pregunta);
+    if (!pregObj || !pregObj.opciones) return null;
+    return { pregunta: { pregunta: pregObj.pregunta, opciones: pregObj.opciones, respuesta: pregObj.respuesta, imagen: pregObj.imagen||'', video: pregObj.video||'' }, elegida: r.elegida, correcta: r.correcta };
+  }).filter(Boolean);
+  // Guardar errores localmente (fallback)
+  localStorage.setItem(`errores_${dia}_${materia}`, JSON.stringify(erroresParaRefuerzo));
+  // Guardar errores en Sheets para acceso multi-dispositivo
+  if (estado.codigo && erroresParaRefuerzo.length > 0) {
+    fetch('/api/errores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        codigo: estado.codigo,
+        dia,
+        materia,
+        errores: erroresParaRefuerzo
+      })
+    }).catch(() => {});
+  } else if (estado.codigo && erroresParaRefuerzo.length === 0) {
+    // Sin errores: borrar entrada previa en Sheets si existe
+    fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${materia}`, {
+      method: 'DELETE'
+    }).catch(() => {});
+  }
+  intentarDesbloquearSiguienteDia();
+  guardarEstadoLocal();
+
+  // Guardar en Sheets — solo para grado 6, Jero ya guardó arriba
+  if (!examenActual.esJero) try {
+    const ctrl = new AbortController();
+    const tOut = setTimeout(() => ctrl.abort(), 8000);
+    await fetch('/api/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: estado.nombre, dia, materia: mat.nombre,
+        puntaje, total, respuestas, fecha: new Date().toLocaleString('es-CO')
+      }),
+      signal: ctrl.signal
+    });
+    clearTimeout(tOut);
+  } catch(e) { console.warn('No se pudo guardar en Sheets', e); }
+
+  let emoji, titulo, sub;
+  if (pct === 100)    { emoji = '🏆'; titulo = '¡PERFECTO!';       sub = '¡Sacaste 100%! ¡Eres increíble!'; }
+  else if (pct >= 80) { emoji = '🌟'; titulo = '¡Excelente!';      sub = `¡${pct}%! ¡Muy buen trabajo!`; }
+  else if (pct >= 60) { emoji = '👍'; titulo = '¡Buen trabajo!';   sub = `¡${pct}%! Sigue practicando.`; }
+  else                { emoji = '💪'; titulo = '¡Sigue adelante!'; sub = `${pct}%. ¡Tú puedes mejorar!`; }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-titulo').textContent = `${titulo} ${estado.nombre}`;
+  document.getElementById('res-sub').textContent = sub;
+  document.getElementById('res-num').textContent = puntaje;
+  document.getElementById('res-de').textContent = `de ${total}`;
+  document.getElementById('res-circle').style.background = mat.gradiente;
+  document.getElementById('res-circle').style.boxShadow = `0 8px 32px ${mat.color}55`;
+
+  const detalle = document.getElementById('res-detalle');
+  detalle.innerHTML = respuestas.map((r, i) => `
+    <div class="respuesta-item">
+      <span class="respuesta-icon">${r.ok ? '✅' : '❌'}</span>
+      <span><strong>${i+1}.</strong> ${r.pregunta.substring(0,60)}${r.pregunta.length>60?'...':''}
+        ${!r.ok ? `<br><small style="color:#C92A2A">Tu resp: ${r.elegida} · Correcta: ${r.correcta}</small>` : ''}
+      </span>
+    </div>
+  `).join('');
+
+  mostrar('screen-resultado');
+  window.scrollTo(0,0);
+  lanzarConfetti(pct);
+  // Mostrar botón refuerzo si hubo errores
+  const errores = respuestas.filter(r => !r.ok);
+  const btnCorrige = document.getElementById('btn-corrige');
+  if (errores.length > 0) btnCorrige.style.display = 'block';
+  else btnCorrige.style.display = 'none';
+}
+
+function lanzarConfetti(pct) {
+  if (pct < 60) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({length: pct >= 80 ? 150 : 80}, () => ({
+    x: Math.random() * canvas.width, y: -20,
+    r: Math.random() * 8 + 4,
+    color: ['#FF6B6B','#51CF66','#339AF0','#FF922B','#845EF7','#FFD700'][Math.floor(Math.random()*6)],
+    vx: (Math.random()-0.5)*4, vy: Math.random()*3+2,
+    angle: Math.random()*360, va: (Math.random()-0.5)*5
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle*Math.PI/180);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.angle += p.va; p.vy += 0.05;
+    });
+    frame++;
+    if (frame < 180) requestAnimationFrame(draw);
+    else canvas.remove();
+  }
+  draw();
+}
+
+async function continuarExamen(p) {
+  const mat = MATERIAS[p.materia];
+  const res = await fetch(`/api/preguntas?dia=${p.dia}&materia=${p.materia}`);
+  const data = await res.json();
+  const idxSiguiente = p.idx + 1;
+  examenActual = { dia: p.dia, materia: p.materia, preguntas: data.preguntas, idx: idxSiguiente, puntaje: p.puntaje, respuestas: p.respuestas, intentos: 0 };
+  document.getElementById('examen-badge').textContent = `${mat.emoji} ${mat.nombre}`;
+  document.getElementById('examen-badge').style.background = mat.gradiente;
+  document.getElementById('examen-badge').style.color = 'white';
+  document.getElementById('examen-badge').style.borderRadius = '50px';
+  document.getElementById('examen-badge').style.padding = '6px 16px';
+  document.getElementById('examen-dia-label').textContent = `📅 Día ${p.dia}`;
+  document.getElementById('progress-fill').style.background = mat.gradiente;
+  mostrar('screen-examen');
+  if (idxSiguiente >= data.preguntas.length) {
+    terminarExamen();
+  } else {
+    renderPregunta();
+  }
+}
+
+// ── MIS RESULTADOS ───────────────────────────────────────────────────
+async function verMisResultados() {
+  mostrar('screen-misresultados');
+  window.scrollTo(0,0);
+  const cont = document.getElementById('resultados-container');
+  cont.innerHTML = '<div class="loading"><div class="spinner"></div><span>Cargando...</span></div>';
+
+  try {
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+
+    if (!data.ok || !data.resultados.length) {
+      cont.innerHTML = `<div style="text-align:center;padding:40px;color:#888">
+        <div style="font-size:3rem">📭</div>
+        <p style="margin-top:12px;font-weight:700;font-size:1.1rem">Aún no tienes resultados.<br>¡Completa tu primer examen!</p>
+      </div>`;
+      return;
+    }
+
+    const COLORES = { MAT:'#FF6B6B', BIO:'#51CF66', QUI:'#845EF7', SOC:'#FF922B', LEN:'#339AF0' };
+    const NOMBRES = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+    const EMOJIS  = { MAT:'🔢', BIO:'🌿', QUI:'⚗️', SOC:'🌍', LEN:'📖' };
+
+    // Agrupar por materia
+    const porMateria = {};
+    data.resultados.forEach(r => {
+      const matKey = Object.keys(NOMBRES).find(k => NOMBRES[k] === r.materia) || r.materia;
+      if (!porMateria[matKey]) porMateria[matKey] = [];
+      porMateria[matKey].push(r);
+    });
+
+    let html = '';
+    for (const [mat, resultados] of Object.entries(porMateria)) {
+      const color   = COLORES[mat] || '#888';
+      const nombre  = NOMBRES[mat] || mat;
+      const emoji   = EMOJIS[mat]  || '📚';
+      const totalPct = resultados.reduce((a, r) => a + parseInt(r.porcentaje), 0);
+      const promedio = Math.round(totalPct / resultados.length);
+      const promColor = promedio >= 80 ? '#51CF66' : promedio >= 60 ? '#FF922B' : '#FF6B6B';
+
+      html += `<div class="res-card fade-in" style="border-left:6px solid ${color}">
+        <div class="res-card-header">
+          <h3 class="res-card-titulo">${emoji} ${nombre}</h3>
+          <span class="res-promedio" style="background:${color}22;color:${color}">Promedio: ${promedio}%</span>
+        </div>
+        <div class="res-barras">`;
+
+      resultados.forEach(r => {
+        const pct = parseInt(r.porcentaje);
+        const h = Math.max(4, Math.round((pct / 100) * 80));
+        const bg = pct >= 80 ? '#51CF66' : pct >= 60 ? '#FF922B' : '#FF6B6B';
+        const exKey = JSON.stringify({nombre: estado.nombre, dia: r.dia, materia: r.materia, respuestas: r.respuestas, puntaje: r.puntaje, total: r.total}).replace(/"/g,'&quot;');
+        html += `<div class="res-barra-wrap" onclick="verExamenAdmin(${exKey})" style="cursor:pointer" title="Ver detalle">
+          <span class="res-barra-pct" style="color:${bg}">${pct}%</span>
+          <div class="res-barra" style="height:${h}px;background:${bg};border-radius:6px 6px 0 0;transition:opacity 0.2s" onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'"></div>
+          <span class="res-barra-dia">${r.dia}</span>
+        </div>`;
+      });
+
+      html += `</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <span style="font-size:0.8rem;color:#888">${resultados.length} examen${resultados.length>1?'es':''} completado${resultados.length>1?'s':''}</span>
+          <span style="font-weight:800;color:${promColor};font-size:0.95rem">${promedio>=80?'💪 ¡Fuerte!':promedio>=60?'👍 Bien':'⚠️ Necesita práctica'}</span>
+        </div>
+      </div>`;
+    }
+
+    cont.innerHTML = html;
+  } catch(e) {
+    cont.innerHTML = '<div class="error-msg">⚠️ Error cargando resultados. Revisa la conexión.</div>';
+  }
+}
+
+// ── REFUERZO ─────────────────────────────────────────────────────────
+
+// Reconstruye errores cruzando Resultados con las preguntas del Sheet
+async function cargarErroresDesdeResultados(dia, materia) {
+  const mat = MATERIAS[materia];
+  const diaLabel = `Día ${dia}`;
+
+  // 1. Obtener resultados del alumno
+  const resR = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+  const dataR = await resR.json();
+  if (!dataR.ok || !dataR.resultados) return [];
+
+  // Buscar el resultado de este dia+materia (el más reciente si hay varios)
+  const resultadosFiltrados = dataR.resultados.filter(r =>
+    r.materia === mat.nombre &&
+    (r.dia === diaLabel || r.dia === `Dia ${dia}` || r.dia === String(dia))
+  );
+  if (!resultadosFiltrados.length) return [];
+
+  // Tomar el más reciente
+  const resultado = resultadosFiltrados[resultadosFiltrados.length - 1];
+  let respuestas = [];
+  try {
+    respuestas = typeof resultado.respuestas === 'string'
+      ? JSON.parse(resultado.respuestas)
+      : resultado.respuestas;
+  } catch(e) { return []; }
+
+  const erroresBasicos = respuestas.filter(r => !r.ok);
+  if (!erroresBasicos.length) return [];
+
+  // 2. Obtener preguntas del Sheet para cruzar opciones
+  const resP = await fetch(`/api/preguntas?dia=${dia}&materia=${materia}`);
+  const dataP = await resP.json();
+  if (!dataP.ok || !dataP.preguntas) return [];
+
+  // 3. Cruzar: para cada error, buscar la pregunta completa con opciones
+  const erroresCompletos = [];
+  for (const err of erroresBasicos) {
+    const pregObj = dataP.preguntas.find(p =>
+      p.pregunta && err.pregunta &&
+      p.pregunta.trim().substring(0, 40) === err.pregunta.trim().substring(0, 40)
+    );
+    if (pregObj && pregObj.opciones && pregObj.opciones.A) {
+      erroresCompletos.push({
+        pregunta: pregObj,
+        elegida: err.elegida,
+        correcta: err.correcta
+      });
+    }
+  }
+  return erroresCompletos;
+}
+let refuerzoActual = { dia:1, materia:'', errores:[], idx:0, puntaje:0, pctOriginal:0 };
+
+function iniciarRefuerzoDesdeResultado() {
+  const { dia, materia, respuestas, preguntas, puntaje } = examenActual;
+  const errores = respuestas.filter(r => !r.ok).map(r => ({
+    pregunta: preguntas.find(p => p.pregunta === r.pregunta),
+    elegida: r.elegida,
+    correcta: r.correcta
+  })).filter(e => e.pregunta);
+  const pct = Math.round((puntaje / preguntas.length) * 100);
+  arrancarRefuerzo(dia, materia, errores, pct);
+}
+
+async function iniciarRefuerzoDesdeMenu(dia, materia) {
+  const key = `errores_${dia}_${materia}`;
+
+  // 1. localStorage (más rápido, sin red)
+  const erroresRaw = JSON.parse(localStorage.getItem(key) || '[]');
+  const erroresLocal = erroresRaw.filter(e => e?.pregunta?.opciones?.A !== undefined);
+  if (erroresLocal.length > 0) {
+    arrancarRefuerzo(dia, materia, erroresLocal, null);
+    return;
+  }
+
+  // 2. Reconstruir desde Resultados + preguntas del Sheet
+  const btnId = `btn-refuerzo-${dia}-${materia}`;
+  const btnEl = document.getElementById(btnId);
+  const textoOriginal = btnEl ? btnEl.innerHTML : '';
+
+  try {
+    if (btnEl) {
+      btnEl.innerHTML = '⏳ Cargando refuerzo...';
+      btnEl.disabled = true;
+      btnEl.style.opacity = '0.7';
+    }
+
+    const errores = await cargarErroresDesdeResultados(dia, materia);
+
+    if (errores.length > 0) {
+      // Cachear para la próxima vez
+      localStorage.setItem(key, JSON.stringify(errores));
+      arrancarRefuerzo(dia, materia, errores, null);
+      return;
+    }
+
+    alert('No se encontraron errores para este refuerzo. ¡Puede que hayas aprobado todo!');
+
+  } catch(err) {
+    alert('Error de conexión. Revisa el internet e intenta de nuevo.');
+  } finally {
+    if (btnEl) {
+      btnEl.innerHTML = textoOriginal;
+      btnEl.disabled = false;
+      btnEl.style.opacity = '1';
+    }
+  }
+}
+
+function arrancarRefuerzo(dia, materia, errores, pctOriginal) {
+  const mat = MATERIAS[materia] || MATERIAS_JERO[materia];
+  refuerzoActual = { dia, materia, errores, idx: 0, puntaje: 0, pctOriginal, respuestas: [] };
+  document.getElementById('refuerzo-badge').textContent = `🔁 Refuerzo ${mat.emoji} ${mat.nombre}`;
+  document.getElementById('refuerzo-dia-label').textContent = `📅 Día ${dia}`;
+  document.getElementById('refuerzo-resultado').style.display = 'none';
+  document.getElementById('refuerzo-container').style.display = 'block';
+  mostrar('screen-refuerzo');
+  window.scrollTo(0,0);
+  renderPreguntaRefuerzo();
+}
+
+async function renderPreguntaRefuerzo() {
+  const { errores, idx } = refuerzoActual;
+  const total = errores.length;
+  const e = errores[idx];
+  const q = e.pregunta;
+  const pct = Math.round((idx / total) * 100);
+
+  document.getElementById('refuerzo-progress-fill').style.width = pct + '%';
+  document.getElementById('refuerzo-progress-text').textContent = `Pregunta ${idx+1} de ${total}`;
+  document.getElementById('refuerzo-progress-pct').textContent = pct + '%';
+
+  // Mostrar pregunta con spinner de explicación
+  const letras = ['A','B','C','D'];
+  if (!q || !q.opciones) { document.getElementById('refuerzo-container').innerHTML = '<div style="padding:24px;text-align:center;color:#C92A2A;font-weight:700">⚠️ Datos incompletos. Haz el examen de nuevo para regenerar el refuerzo.</div>'; return; }
+const opcionesHtml = letras.map(l => `
+    <button class="opcion-btn" onclick="responderRefuerzo('${l}')" id="rop-${l}">
+      <span class="opcion-letra">${l}</span>
+      <span>${q.opciones[l]}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('refuerzo-container').innerHTML = `
+    <div class="fade-in">
+      <p class="pregunta-num">🔁 Refuerzo ${idx+1} de ${total}</p>
+      <div class="tu-resp-mal">❌ Antes respondiste: Opción ${e.elegida} — "${q.opciones[e.elegida]}"</div>
+      <div class="explicacion-card" id="explicacion-card">
+        <div class="explicacion-cargando" id="explicacion-cargando">
+          <div class="spinner-pequeño"></div>
+          <span>Claude está preparando una explicación para ti...</span>
+        </div>
+        <div class="explicacion-texto" id="explicacion-texto" style="display:none"></div>
+      </div>
+      ${q.imagen ? `<img src="${q.imagen}" style="width:100%;max-width:480px;border-radius:14px;margin-bottom:16px;display:block;border:3px solid #E8E8E8;" onerror="this.style.display='none'"/>` : ''}
+      <p class="pregunta-text">${q.pregunta}</p>
+      <div class="opciones-list" id="refuerzo-opciones" style="opacity:0.4;pointer-events:none">${opcionesHtml}</div>
+      <div class="feedback-msg" id="refuerzo-feedback"></div>
+    </div>
+  `;
+
+  // Llamar a Claude API para explicación
+  await generarExplicacionIA(q, e.elegida, e.correcta);
+
+  // Habilitar opciones tras explicación
+  document.getElementById('refuerzo-opciones').style.opacity = '1';
+  document.getElementById('refuerzo-opciones').style.pointerEvents = 'auto';
+}
+
+async function generarExplicacionIA(q, elegida, correcta) {
+  const prompt = `Eres un profesor amable que explica a un niño de 11-12 años (grado 6) por qué se equivocó en una pregunta de examen.
+
+Pregunta: "${q.pregunta}"
+El niño respondió: Opción ${elegida} — "${q.opciones[elegida]}"
+La respuesta correcta era: Opción ${correcta} — "${q.opciones[correcta]}"
+
+Explícale en máximo 3 oraciones cortas y simples:
+1. Por qué su respuesta estaba mal
+2. Por qué la respuesta correcta es la correcta
+3. Un tip fácil para recordarlo
+
+Usa lenguaje sencillo, amigable, sin tecnicismos innecesarios. NO uses LaTeX ni símbolos especiales. Empieza directo con la explicación, sin saludos.`;
+
+  try {
+    const res = await fetch('/api/explicar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pregunta: q.pregunta,
+        opciones: q.opciones,
+        elegida,
+        correcta
+      })
+    });
+    const data = await res.json();
+    const texto = data.ok ? data.explicacion : 'No se pudo cargar la explicación.';
+    document.getElementById('explicacion-cargando').style.display = 'none';
+    const textoEl = document.getElementById('explicacion-texto');
+    textoEl.style.display = 'block';
+    textoEl.textContent = texto;
+  } catch(err) {
+    document.getElementById('explicacion-cargando').style.display = 'none';
+    const textoEl = document.getElementById('explicacion-texto');
+    textoEl.style.display = 'block';
+    textoEl.textContent = 'Lee bien la pregunta e intenta responderla de nuevo. ¡Tú puedes!';
+  }
+}
+
+function responderRefuerzo(letra) {
+  const e = refuerzoActual.errores[refuerzoActual.idx];
+  const correcta = e.correcta.toUpperCase();
+  const elegida = letra.toUpperCase();
+  const feedback = document.getElementById('refuerzo-feedback');
+
+  ['A','B','C','D'].forEach(l => {
+    const b = document.getElementById(`rop-${l}`);
+    if (b) b.disabled = true;
+  });
+
+  if (elegida === correcta) {
+    document.getElementById(`rop-${elegida}`).classList.add('correcta');
+    feedback.textContent = '🎉 ¡Esta vez lo lograste! ¡Muy bien!';
+    feedback.className = 'feedback-msg show ok';
+    refuerzoActual.puntaje++;
+  } else {
+    document.getElementById(`rop-${elegida}`).classList.add('incorrecta');
+    const bc = document.getElementById(`rop-${correcta}`);
+    if (bc) bc.classList.add('correcta-revelar');
+    feedback.textContent = `❌ La correcta sigue siendo ${correcta}. ¡Repasa la explicación!`;
+    feedback.className = 'feedback-msg show fail';
+  }
+
+  refuerzoActual.respuestas.push({ ok: elegida === correcta });
+  setTimeout(() => siguienteRefuerzo(), 2000);
+}
+
+async function siguienteRefuerzo() {
+  refuerzoActual.idx++;
+  if (refuerzoActual.idx < refuerzoActual.errores.length) {
+    renderPreguntaRefuerzo();
+  } else {
+    terminarRefuerzo();
+  }
+}
+
+async function terminarRefuerzo() {
+  const { dia, materia, puntaje, errores, pctOriginal, respuestas } = refuerzoActual;
+  const total = errores.length;
+  const pctNuevo = Math.round((puntaje / total) * 100);
+  const mat = refuerzoActual.esJero ? MATERIAS_JERO[materia] : MATERIAS[materia];
+
+  // Guardar en Sheets
+  try {
+    await fetch('/api/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: estado.nombre,
+        dia: `${dia} (Refuerzo)`,
+        materia: mat.nombre,
+        puntaje,
+        total,
+        respuestas,
+        fecha: new Date().toLocaleString('es-CO')
+      })
+    });
+  } catch(e) {}
+
+  // Si mejoró todos, limpiar errores guardados
+  if (puntaje === total) {
+    localStorage.removeItem(`errores_${dia}_${materia}`);
+    // Borrar en Sheets también
+    if (estado.codigo) {
+      fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=${dia}&materia=${encodeURIComponent(materia)}`, {
+        method: 'DELETE'
+      }).catch(() => {});
+    }
+  }
+
+  // Mostrar resultado
+  document.getElementById('refuerzo-container').style.display = 'none';
+  const resDiv = document.getElementById('refuerzo-resultado');
+  resDiv.style.display = 'block';
+
+  const mejora = pctOriginal !== null ? pctNuevo - pctOriginal : null;
+  let emoji, titulo, sub;
+  if (pctNuevo === 100) { emoji = '🏆'; titulo = '¡Perfecto en el refuerzo!'; sub = '¡Corregiste todos tus errores!'; }
+  else if (pctNuevo >= 60) { emoji = '📈'; titulo = '¡Mejoraste!'; sub = `Corregiste ${puntaje} de ${total} errores. ¡Sigue así!`; }
+  else { emoji = '💪'; titulo = '¡Sigue practicando!'; sub = `Corregiste ${puntaje} de ${total}. ¡Repasa los temas y vuelve a intentarlo!`; }
+
+  document.getElementById('rref-emoji').textContent = emoji;
+  document.getElementById('rref-titulo').textContent = titulo;
+  document.getElementById('rref-sub').textContent = sub;
+
+  if (pctOriginal !== null) {
+    document.getElementById('rref-antes').textContent = pctOriginal + '%';
+    document.getElementById('rref-despues').textContent = pctNuevo + '%';
+    const badge = document.getElementById('rref-mejora-badge');
+    if (mejora > 0) {
+      badge.textContent = `📈 +${mejora}% de mejora`;
+      badge.style.background = '#E8FFE8'; badge.style.color = '#2B8A3E';
+    } else if (mejora === 0) {
+      badge.textContent = '➡️ Mismo puntaje — ¡practica más!';
+      badge.style.background = '#FFF3CD'; badge.style.color = '#856404';
+    } else {
+      badge.textContent = '💡 El refuerzo te ayuda a entender mejor';
+      badge.style.background = '#F0EBFF'; badge.style.color = '#6741D9';
+    }
+  } else {
+    document.querySelector('.comparacion-grid').style.display = 'none';
+  }
+
+  window.scrollTo(0,0);
+}
+
+// ── BIBLIOTECA DE CUENTOS ─────────────────────────────────────────────
+let cuentoActual = { serie: '', capitulo: 0, color: '#0F0F2E' };
+
+async function verBiblioteca() {
+  mostrar('screen-cuentos');
+  window.scrollTo(0, 0);
+  const lista = document.getElementById('cuentos-lista');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div><span>Cargando biblioteca...</span></div>';
+  try {
+    const res = await fetch('/api/cuentos');
+    const data = await res.json();
+    if (!data.ok || !data.series.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:40px;color:#888"><div style="font-size:3rem">📭</div><p style="margin-top:12px;font-weight:700">Aún no hay cuentos disponibles.</p></div>';
+      return;
+    }
+    lista.innerHTML = data.series.map(serie => `
+      <div style="background:${serie.color};border-radius:24px;padding:20px;margin-bottom:20px;box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+        ${serie.portada ? `<img src="${serie.portada}" style="width:100%;border-radius:16px;margin-bottom:16px;display:block;max-height:200px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,0.4)" onerror="this.style.display='none'"/>` : ''}
+        <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:white;margin-bottom:4px">📖 ${serie.nombre}</h3>
+        <p style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-bottom:16px">${serie.capitulos.length} capítulo${serie.capitulos.length > 1 ? 's' : ''}</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${serie.capitulos.map(cap => `
+            <button onclick="abrirCapitulo('${serie.nombre.replace(/'/g,"\\'")}', ${cap.numero})"
+              style="background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.25);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;width:100%;text-align:left"
+              onmouseover="this.style.background='rgba(255,255,255,0.25)'"
+              onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+              <span style="font-family:'Fredoka One',cursive;font-size:1.5rem;color:rgba(255,255,255,0.5);flex-shrink:0">${cap.numero}</span>
+              <div>
+                <div style="font-family:'Fredoka One',cursive;font-size:1rem;color:white">${cap.titulo}</div>
+                <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-top:2px">Capítulo ${cap.numero}</div>
+              </div>
+              <span style="margin-left:auto;color:rgba(255,255,255,0.5);font-size:1.2rem">▶</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    lista.innerHTML = '<div class="error-msg">⚠️ Error cargando la biblioteca. Revisa la conexión.</div>';
+  }
+}
+
+async function abrirCapitulo(serie, capitulo) {
+  mostrar('screen-lector');
+  window.scrollTo(0, 0);
+  const contenido = document.getElementById('lector-contenido');
+  contenido.innerHTML = '<div class="loading"><div class="spinner"></div><span>Abriendo capítulo...</span></div>';
+
+  try {
+    const res = await fetch(`/api/cuentos?serie=${encodeURIComponent(serie)}&capitulo=${capitulo}`);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+
+    const cap = data.capitulo;
+    cuentoActual = { serie, capitulo, color: cap.color };
+    puntajeCuento = 0;
+
+    // Header
+    const header = document.getElementById('lector-header');
+    header.style.background = 'rgba(15,15,46,0.92)';
+    header.style.backdropFilter = 'blur(12px)';
+    header.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+    document.getElementById('lector-titulo').textContent = cap.serie;
+    document.getElementById('lector-cap').textContent = `Capítulo ${cap.numero}`;
+    document.getElementById('lector-btn-volver').onclick = () => {
+      mostrar('screen-cuentos');
+      window.scrollTo(0, 0);
+    };
+
+    // Fondo del lector
+    const screenLector = document.getElementById('screen-lector');
+    screenLector.style.background = cap.color || '#0F0F2E';
+    screenLector.style.minHeight = '100vh';
+    screenLector.style.position = 'relative';
+    screenLector.style.overflow = 'hidden';
+
+    // Emojis flotantes en el fondo
+    const EMOJIS_CUENTO = ['🔑','🌀','🚪','✨','🌙','🔮','📖','⚡','🗝️','💫','🌌','🔭'];
+    let particlesHtml = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden">';
+    EMOJIS_CUENTO.forEach((e, i) => {
+      const left = Math.random() * 95;
+      const dur = 12 + Math.random() * 18;
+      const delay = Math.random() * 15;
+      const size = 1 + Math.random() * 1.2;
+      particlesHtml += `<div style="position:absolute;left:${left}%;font-size:${size}rem;opacity:0.07;animation:flotar-emoji ${dur}s ${delay}s linear infinite;user-select:none">${e}</div>`;
+    });
+    particlesHtml += '</div>';
+
+    // CSS animación flotante
+    if (!document.getElementById('cuento-style')) {
+      const style = document.createElement('style');
+      style.id = 'cuento-style';
+      style.textContent = `
+        @keyframes flotar-emoji {
+          0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+          10%  { opacity: 0.07; }
+          90%  { opacity: 0.07; }
+          100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes glow-titulo {
+          0%,100% { text-shadow: 0 0 20px rgba(132,94,247,0.5), 0 0 40px rgba(132,94,247,0.2); }
+          50%      { text-shadow: 0 0 40px rgba(132,94,247,0.9), 0 0 80px rgba(132,94,247,0.4); }
+        }
+        .titulo-glow { animation: glow-titulo 3s ease-in-out infinite; }
+        .pagina-cuento { display:none; animation: slide-pag 0.4s ease both; }
+        .pagina-cuento.activa { display:block; }
+        @keyframes slide-pag {
+          from { opacity:0; transform:translateX(40px); }
+          to   { opacity:1; transform:translateX(0); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Construir páginas (1 bloque por página)
+    let paginasHtml = '';
+    cap.bloques.forEach((bloque, i) => {
+      paginasHtml += `<div class="pagina-cuento ${i === 0 ? 'activa' : ''}" id="pag-cuento-${i}">`;
+      if (bloque.imagen && bloque.imagen.startsWith('http')) {
+        paginasHtml += `<img src="${bloque.imagen}" style="width:100%;border-radius:16px;margin-bottom:20px;display:block;box-shadow:0 8px 24px rgba(0,0,0,0.5)" onerror="this.style.display='none'"/>`;
+      }
+      paginasHtml += `<p style="font-size:1.05rem;line-height:1.85;color:rgba(255,255,255,0.9);font-weight:600;text-indent:1.5em;margin-bottom:0">${bloque.texto}</p>`;
+      paginasHtml += '</div>';
+    });
+
+    // Indicadores de página
+    let indicadoresHtml = cap.bloques.map((_, i) =>
+      `<div id="punto-${i}" onclick="irPaginaCuento(${i})" style="width:${i===0?'22px':'8px'};height:8px;border-radius:${i===0?'4px':'50%'};background:${i===0?'#845EF7':'rgba(255,255,255,0.2)'};cursor:pointer;transition:all 0.3s;${i===0?'box-shadow:0 0 8px rgba(132,94,247,0.7)':''}"></div>`
+    ).join('');
+
+    const totalPags = cap.bloques.length;
+    const html = `
+      ${particlesHtml}
+      <div style="position:relative;z-index:1;max-width:660px;margin:0 auto;padding:32px 20px 60px">
+        <div style="text-align:center;margin-bottom:28px">
+          <div style="font-size:0.72rem;font-weight:800;color:rgba(255,255,255,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px">Capítulo ${cap.numero}</div>
+          <h2 class="titulo-glow" style="font-family:'Fredoka One',cursive;font-size:1.9rem;color:white;line-height:1.15">${cap.titulo}</h2>
+          <div style="width:60px;height:3px;background:linear-gradient(90deg,transparent,rgba(132,94,247,0.6),transparent);border-radius:2px;margin:14px auto 0"></div>
+        </div>
+
+        <div id="paginas-cuento">${paginasHtml}</div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-top:28px">
+          <button id="btn-ant-cuento" onclick="cambiarPaginaCuento(-1)" disabled
+            style="flex:1;padding:12px;background:rgba(132,94,247,0.2);border:1px solid rgba(132,94,247,0.35);border-radius:14px;color:white;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;opacity:0.3">
+            ← Anterior
+          </button>
+          <div style="display:flex;gap:6px;align-items:center;justify-content:center;flex:1" id="indicadores-cuento">
+            ${indicadoresHtml}
+          </div>
+          <button id="btn-sig-cuento" onclick="cambiarPaginaCuento(1)"
+            style="flex:1;padding:12px;background:rgba(132,94,247,0.2);border:1px solid rgba(132,94,247,0.35);border-radius:14px;color:white;font-family:Nunito,sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s">
+            Siguiente →
+          </button>
+        </div>
+
+        ${cap.preguntas && cap.preguntas.length > 0 ? `
+        <div id="seccion-preguntas-cuento" style="display:none;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.1)">
+          <h3 style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:white;text-align:center;margin-bottom:6px">¿Entendiste el capítulo? 🧠</h3>
+          <p style="color:rgba(255,255,255,0.5);text-align:center;font-size:0.85rem;margin-bottom:24px">Responde sobre lo que leíste</p>
+          <div id="preguntas-cuento"></div>
+        </div>` : ''}
+      </div>
+    `;
+
+    contenido.innerHTML = html;
+
+    // Estado de navegación
+    window._cuentoPagActual = 0;
+    window._cuentoTotalPags = totalPags;
+    window._cuentoPreguntas = cap.preguntas || [];
+    actualizarNavCuento();
+
+    if (cap.preguntas && cap.preguntas.length > 0) {
+      renderPreguntasCuento(cap.preguntas, 0, cap.color);
+    }
+
+  } catch(e) {
+    contenido.innerHTML = `<div class="error-msg">⚠️ Error cargando el capítulo. Intenta de nuevo.</div>`;
+  }
+}
+
+function irPaginaCuento(idx) {
+  const total = window._cuentoTotalPags || 0;
+  document.querySelector('.pagina-cuento.activa')?.classList.remove('activa');
+  const nueva = document.getElementById(`pag-cuento-${idx}`);
+  if (nueva) { nueva.classList.add('activa'); nueva.style.animation='none'; nueva.offsetHeight; nueva.style.animation=''; }
+  window._cuentoPagActual = idx;
+  actualizarNavCuento();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cambiarPaginaCuento(dir) {
+  const nuevo = (window._cuentoPagActual || 0) + dir;
+  const total = window._cuentoTotalPags || 0;
+  if (nuevo < 0) return;
+  if (nuevo >= total) {
+    // Mostrar preguntas
+    const sec = document.getElementById('seccion-preguntas-cuento');
+    if (sec) { sec.style.display = 'block'; sec.scrollIntoView({ behavior: 'smooth' }); }
+    return;
+  }
+  irPaginaCuento(nuevo);
+}
+
+function actualizarNavCuento() {
+  const idx = window._cuentoPagActual || 0;
+  const total = window._cuentoTotalPags || 0;
+  const btnAnt = document.getElementById('btn-ant-cuento');
+  const btnSig = document.getElementById('btn-sig-cuento');
+  if (btnAnt) { btnAnt.disabled = idx === 0; btnAnt.style.opacity = idx === 0 ? '0.3' : '1'; }
+  if (btnSig) btnSig.textContent = idx === total - 1 ? '¡Responder! 🧠' : 'Siguiente →';
+  // Actualizar puntos
+  for (let i = 0; i < total; i++) {
+    const p = document.getElementById(`punto-${i}`);
+    if (!p) continue;
+    p.style.width = i === idx ? '22px' : '8px';
+    p.style.borderRadius = i === idx ? '4px' : '50%';
+    p.style.background = i === idx ? '#845EF7' : 'rgba(255,255,255,0.2)';
+    p.style.boxShadow = i === idx ? '0 0 8px rgba(132,94,247,0.7)' : 'none';
+  }
+}
+
+let preguntasCuentoActual = [];
+let idxPreguntaCuento = 0;
+let puntajeCuento = 0;
+
+function renderPreguntasCuento(preguntas, idx, color) {
+  preguntasCuentoActual = preguntas;
+  idxPreguntaCuento = idx;
+  const cont = document.getElementById('preguntas-cuento');
+  if (!cont) return;
+
+  if (idx >= preguntas.length) {
+    // Resultado final
+    const pct = Math.round((puntajeCuento / preguntas.length) * 100);
+    const emoji = pct === 100 ? '🏆' : pct >= 60 ? '⭐' : '💪';
+    cont.innerHTML = `
+      <div style="text-align:center;padding:24px;background:rgba(255,255,255,0.1);border-radius:20px">
+        <div style="font-size:3rem;margin-bottom:12px">${emoji}</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.6rem;color:white;margin-bottom:8px">
+          ${pct === 100 ? '¡Perfecto!' : pct >= 60 ? '¡Bien hecho!' : '¡Sigue leyendo!'}
+        </div>
+        <div style="font-size:1rem;color:rgba(255,255,255,0.8);margin-bottom:20px">
+          Respondiste ${puntajeCuento} de ${preguntas.length} correctamente
+        </div>
+        <button onclick="verBiblioteca()" style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);color:white;border-radius:14px;padding:12px 28px;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer">
+          📚 Volver a la biblioteca
+        </button>
+      </div>
+    `;
+    lanzarConfetti(pct);
+    return;
+  }
+
+  const q = preguntas[idx];
+  const letras = ['A','B','C','D'];
+  cont.innerHTML = `
+    <div class="fade-in">
+      <div style="font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;text-align:center">
+        Pregunta ${idx + 1} de ${preguntas.length}
+      </div>
+      <div style="background:rgba(255,255,255,0.1);border-radius:16px;padding:18px;margin-bottom:16px">
+        <p style="font-size:1rem;font-weight:700;color:white;line-height:1.5">${q.pregunta}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${letras.map(l => `
+          <button class="opcion-cuento" onclick="responderCuento('${l}')" id="cop-${l}"
+            style="background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%;text-align:left;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+            onmouseout="if(!this.disabled)this.style.background='rgba(255,255,255,0.1)'">
+            <span style="background:rgba(255,255,255,0.2);color:white;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex-shrink:0">${l}</span>
+            <span style="color:white;font-weight:600;font-size:0.95rem">${q.opciones[l]}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div id="feedback-cuento" style="margin-top:16px"></div>
+    </div>
+  `;
+}
+
+function responderCuento(letra) {
+  const q = preguntasCuentoActual[idxPreguntaCuento];
+  const correcta = q.respuesta.toUpperCase();
+  const elegida = letra.toUpperCase();
+  const feedback = document.getElementById('feedback-cuento');
+
+  // Deshabilitar botones
+  ['A','B','C','D'].forEach(l => {
+    const b = document.getElementById(`cop-${l}`);
+    if (b) {
+      b.disabled = true;
+      b.onmouseover = null;
+      b.onmouseout = null;
+    }
+  });
+
+  const btnElegido = document.getElementById(`cop-${elegida}`);
+  const btnCorrecto = document.getElementById(`cop-${correcta}`);
+
+  if (elegida === correcta) {
+    btnElegido.style.background = 'rgba(81,207,102,0.3)';
+    btnElegido.style.borderColor = '#51CF66';
+    puntajeCuento++;
+  } else {
+    btnElegido.style.background = 'rgba(255,107,107,0.3)';
+    btnElegido.style.borderColor = '#FF6B6B';
+    if (btnCorrecto) {
+      btnCorrecto.style.background = 'rgba(81,207,102,0.3)';
+      btnCorrecto.style.borderColor = '#51CF66';
+    }
+  }
+
+  // Mostrar explicación
+  feedback.innerHTML = `
+    <div style="padding:14px 18px;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:14px;margin-bottom:12px">
+      <div style="font-size:0.8rem;font-weight:800;color:rgba(255,255,255,0.6);margin-bottom:6px">${elegida === correcta ? '✅ ¡Correcto!' : '❌ Incorrecto'}</div>
+      <p style="color:rgba(255,255,255,0.9);font-size:0.9rem;font-weight:600;line-height:1.5">💡 ${q.explicacion}</p>
+    </div>
+    <button onclick="siguientePreguntaCuento()" style="width:100%;padding:14px;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.3);border-radius:14px;color:white;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;cursor:pointer">
+      ${idxPreguntaCuento + 1 < preguntasCuentoActual.length ? 'Siguiente pregunta →' : 'Ver resultado 🏆'}
+    </button>
+  `;
+}
+
+function siguientePreguntaCuento() {
+  idxPreguntaCuento++;
+  renderPreguntasCuento(preguntasCuentoActual, idxPreguntaCuento, cuentoActual.color);
+  document.getElementById('preguntas-cuento')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function salirRefuerzo() {
+  mostrar('screen-inicio');
+  renderInicio();
+  window.scrollTo(0,0);
+}
+
+// ── ADMIN ────────────────────────────────────────────────────────────
+let adminData = { todos: [], resultados: [] };
+
+function adminNav(sec) {
+  ['dashboard','alumnos','falencias','usuarios'].forEach(s => {
+    document.getElementById('admin-'+s).classList.remove('activa');
+    const b = document.getElementById('nav-'+s); if(b) b.classList.remove('activo');
+  });
+  document.getElementById('admin-'+sec).classList.add('activa');
+  const b = document.getElementById('nav-'+sec); if(b) b.classList.add('activo');
+  if (sec === 'falencias' && adminData.resultados.length) renderFalencias();
+  if (sec === 'usuarios') cargarUsuarios();
+}
+
+async function adminInit() {
+  document.getElementById('admin-fecha').textContent = 'Cargando datos... ' + new Date().toLocaleString('es-CO');
+  try {
+    const [ru, rr] = await Promise.all([
+      fetch('/api/resultados?todos=1'),
+      fetch('/api/resultados?todos=1')
+    ]);
+    const dr = await rr.json();
+    if (!dr.ok) return;
+    const resultados = dr.resultados || [];
+    adminData.resultados = resultados;
+
+    // Agrupar por alumno
+    const porAlumno = {};
+    resultados.forEach(r => {
+      const n = r.nombre || 'Sin nombre';
+      if (!porAlumno[n]) porAlumno[n] = [];
+      porAlumno[n].push(r);
+    });
+    adminData.todos = Object.entries(porAlumno).map(([nombre, exams]) => ({ nombre, exams }));
+
+    // Stats globales
+    const totalAlumnos = adminData.todos.length;
+    const totalExamenes = resultados.length;
+    const pcts = resultados.map(r => parseInt(r.porcentaje)||0);
+    const promGlobal = pcts.length ? Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length) : 0;
+    const enRiesgo = adminData.todos.filter(a => {
+      const ps = a.exams.map(e=>parseInt(e.porcentaje)||0);
+      return ps.length && (ps.reduce((x,y)=>x+y,0)/ps.length) < 60;
+    }).length;
+
+    document.getElementById('stat-alumnos').textContent = totalAlumnos;
+    document.getElementById('stat-examenes').textContent = totalExamenes;
+    document.getElementById('stat-promedio').textContent = promGlobal + '%';
+    document.getElementById('stat-riesgo').textContent = enRiesgo;
+    document.getElementById('admin-fecha').textContent = 'Actualizado: ' + new Date().toLocaleString('es-CO');
+
+    renderDashboardTabla();
+  } catch(e) {
+    document.getElementById('admin-fecha').textContent = '⚠️ Error cargando datos';
+  }
+}
+
+function pctBadge(pct) {
+  if (pct === null || pct === undefined || isNaN(pct)) return '<span class="bpct bg">–</span>';
+  if (pct >= 80) return `<span class="bpct bv">${pct}%</span>`;
+  if (pct >= 60) return `<span class="bpct bn">${pct}%</span>`;
+  return `<span class="bpct br">${pct}%</span>`;
+}
+
+function promedioAlumno(exams) {
+  if (!exams.length) return null;
+  const ps = exams.map(e => parseInt(e.porcentaje)||0);
+  return Math.round(ps.reduce((a,b)=>a+b,0)/ps.length);
+}
+
+function pctMateria(exams, matNombre) {
+  const f = exams.filter(e => e.materia === matNombre);
+  if (!f.length) return null;
+  return Math.round(f.map(e=>parseInt(e.porcentaje)||0).reduce((a,b)=>a+b,0)/f.length);
+}
+
+const MAT_NOMBRES = { MAT:'Matemáticas', BIO:'Biología', QUI:'Química', SOC:'Cs. Sociales', LEN:'Lenguaje' };
+
+function renderDashboardTabla() {
+  const tbody = document.getElementById('dashboard-tabla');
+  if (!adminData.todos.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#64748B;padding:30px">Sin datos aún</td></tr>';
+    return;
+  }
+  tbody.innerHTML = adminData.todos.map(a => {
+    const prom = promedioAlumno(a.exams);
+    const mats = Object.values(MAT_NOMBRES).map(m => pctBadge(pctMateria(a.exams, m))).join('');
+    return `<tr>
+      <td style="font-weight:700;color:white">${a.nombre}</td>
+      ${Object.values(MAT_NOMBRES).map(m => `<td>${pctBadge(pctMateria(a.exams,m))}</td>`).join('')}
+      <td>${pctBadge(prom)}</td>
+      <td><button class="btn-ar" onclick="verPerfil('${a.nombre.replace(/'/g,"\\'")}')">Ver perfil</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function verPerfil(nombre) {
+  adminNav('alumnos');
+  const alumno = adminData.todos.find(a => a.nombre === nombre);
+  if (!alumno) return;
+  document.getElementById('perfil-titulo').textContent = alumno.nombre;
+  document.getElementById('perfil-codigo-txt').textContent = alumno.exams.length + ' exámenes completados';
+
+  const prom = promedioAlumno(alumno.exams);
+  document.getElementById('perfil-contenido').innerHTML = `
+    <div class="perfil-header">
+      <div class="perfil-avatar">👤</div>
+      <div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.3rem">${alumno.nombre}</div>
+        <div style="color:#64748B;font-size:0.85rem">${alumno.exams.length} exámenes · Promedio general: ${prom !== null ? prom+'%' : '–'}</div>
+      </div>
+      <div style="margin-left:auto">${pctBadge(prom)}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+      ${Object.entries(MAT_NOMBRES).map(([key, matNombre]) => {
+        const examsMat = alumno.exams.filter(e => e.materia === matNombre);
+        if (!examsMat.length) return `<div class="falencia-card"><h4>${matNombre}</h4><p style="color:#64748B;font-size:0.85rem">Sin exámenes aún</p></div>`;
+        const bars = examsMat.map(e => {
+          const p = parseInt(e.porcentaje)||0;
+          const bg = p>=80?'#51CF66':p>=60?'#FF922B':'#FF6B6B';
+          const h = Math.max(4,Math.round((p/100)*60));
+          return `<div style="text-align:center;flex:1">
+            <div style="font-size:0.72rem;font-weight:700;color:${bg};margin-bottom:4px">${p}%</div>
+            <div style="height:${h}px;background:${bg};border-radius:4px 4px 0 0"></div>
+            <div style="font-size:0.65rem;color:#64748B;margin-top:4px">${e.dia}</div>
+          </div>`;
+        }).join('');
+        const respFalladas = examsMat.flatMap(e => {
+          try { const rs = typeof e.respuestas==='string'?JSON.parse(e.respuestas):e.respuestas; return (rs||[]).filter(r=>!r.ok).map(r=>r.pregunta); } catch(x){return[];}
+        });
+        return `<div class="falencia-card">
+          <h4 style="color:white;font-family:'Fredoka One',cursive;font-size:1rem;margin-bottom:12px">${MATERIAS[key]?.emoji||''} ${matNombre}</h4>
+          <div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:10px">${bars}</div>
+          <div style="margin-top:8px;border-top:1px solid #334155;padding-top:8px;display:flex;flex-direction:column;gap:6px">
+            ${examsMat.map(e => {
+              const p = parseInt(e.porcentaje)||0;
+              const bg = p>=80?'#51CF66':p>=60?'#FF922B':'#FF6B6B';
+              const exKey = JSON.stringify({nombre: alumno.nombre, dia: e.dia, materia: e.materia, respuestas: e.respuestas, puntaje: e.puntaje, total: e.total}).replace(/"/g,'&quot;');
+              return `<button onclick="verExamenAdmin(${exKey})"
+                style="width:100%;padding:8px 12px;background:#0F172A;border:1px solid #334155;border-radius:10px;color:white;font-family:Nunito,sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center">
+                <span>📋 ${e.dia}</span>
+                <span style="color:${bg};font-weight:800">${p}%</span>
+              </button>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="margin-top:20px">
+      <button class="btn-ad" onclick="resetearProgreso('${alumno.nombre.replace(/'/g,"\\'")}')">🔄 Resetear progreso de ${alumno.nombre}</button>
+    </div>
+  `;
+}
+
+function verExamenAdmin(exam) {
+  // Parsear respuestas
+  let respuestas = [];
+  try { respuestas = typeof exam.respuestas === 'string' ? JSON.parse(exam.respuestas) : (exam.respuestas || []); } catch(e) {}
+
+  const pct = Math.round(((exam.puntaje||0) / (exam.total||1)) * 100);
+  const emoji = pct===100?'🏆':pct>=80?'🌟':pct>=60?'👍':'💪';
+
+  const detalleHtml = respuestas.map((r, i) => `
+    <div style="display:flex;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:8px;background:${r.ok?'rgba(81,207,102,0.08)':'rgba(255,107,107,0.08)'};border:1px solid ${r.ok?'rgba(81,207,102,0.2)':'rgba(255,107,107,0.2)'}">
+      <span style="font-size:1rem;flex-shrink:0">${r.ok?'✅':'❌'}</span>
+      <div style="flex:1;min-width:0">
+        <p style="font-size:0.82rem;color:white;font-weight:700;margin-bottom:${r.ok?0:4}px;word-wrap:break-word">${i+1}. ${r.pregunta||''}</p>
+        ${!r.ok ? `<p style="font-size:0.75rem;color:#F87171;margin:0">Respondió: <b>${r.elegida}</b> · Correcta: <b>${r.correcta}</b></p>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  // Crear modal
+  const modal = document.createElement('div');
+  modal.id = 'modal-examen-admin';
+  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;overflow-y:auto;padding:20px;box-sizing:border-box';
+  modal.innerHTML = `
+    <div style="max-width:680px;margin:0 auto;background:#1E293B;border-radius:20px;padding:24px;border:1px solid #334155">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <h3 style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:white;margin-bottom:4px">${emoji} ${exam.nombre} — ${exam.dia}</h3>
+          <p style="color:#64748B;font-size:0.85rem">${exam.materia} · ${exam.puntaje||0} de ${exam.total||0} correctas · ${pct}%</p>
+        </div>
+        <button onclick="document.getElementById('modal-examen-admin').remove()"
+          style="background:#334155;border:none;border-radius:10px;padding:8px 16px;color:white;font-family:Nunito,sans-serif;font-weight:800;cursor:pointer;font-size:0.9rem">✕ Cerrar</button>
+      </div>
+      <div style="background:#0F172A;border-radius:14px;padding:16px;margin-bottom:16px;display:flex;gap:20px;justify-content:center;text-align:center">
+        <div><div style="font-family:'Fredoka One',cursive;font-size:2rem;color:${pct>=80?'#51CF66':pct>=60?'#FF922B':'#FF6B6B'}">${pct}%</div><div style="color:#64748B;font-size:0.75rem">Porcentaje</div></div>
+        <div><div style="font-family:'Fredoka One',cursive;font-size:2rem;color:#51CF66">${exam.puntaje||0}</div><div style="color:#64748B;font-size:0.75rem">Correctas</div></div>
+        <div><div style="font-family:'Fredoka One',cursive;font-size:2rem;color:#F87171">${(exam.total||0)-(exam.puntaje||0)}</div><div style="color:#64748B;font-size:0.75rem">Errores</div></div>
+      </div>
+      <div>${detalleHtml || '<p style="color:#64748B;text-align:center;padding:20px">Sin detalle de respuestas disponible</p>'}</div>
+    </div>
+  `;
+  // Cerrar al click fuera
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+function renderFalencias() {
+  const cont = document.getElementById('falencias-contenido');
+  const resultados = adminData.resultados;
+  if (!resultados.length) { cont.innerHTML = '<p style="color:#64748B">Sin datos suficientes.</p>'; return; }
+
+  const porMateria = {};
+  resultados.forEach(r => {
+    const m = r.materia || 'General';
+    if (!porMateria[m]) porMateria[m] = { total: 0, falladas: {} };
+    try {
+      const rs = typeof r.respuestas==='string'?JSON.parse(r.respuestas):r.respuestas;
+      (rs||[]).forEach(resp => {
+        porMateria[m].total++;
+        if (!resp.ok) {
+          const tema = resp.pregunta ? resp.pregunta.substring(0,40) : 'Sin info';
+          porMateria[m].falladas[tema] = (porMateria[m].falladas[tema]||0) + 1;
+        }
+      });
+    } catch(e) {}
+  });
+
+  cont.innerHTML = Object.entries(porMateria).map(([mat, data]) => {
+    const top = Object.entries(data.falladas).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    if (!top.length) return '';
+    const items = top.map(([tema, n]) => {
+      const pct = Math.round((n / adminData.todos.length) * 100);
+      const bg = pct>=60?'#F87171':pct>=30?'#FBBF24':'#51CF66';
+      return `<div class="falencia-item">
+        <div style="font-size:0.8rem;color:#94A3B8;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tema}...</div>
+        <div class="fbar-bg"><div class="fbar-fill" style="width:${Math.min(pct,100)}%;background:${bg}"></div></div>
+        <div class="fbar-lbl" style="color:${bg}">${n}✗</div>
+      </div>`;
+    }).join('');
+    return `<div class="falencia-card"><h4>${mat}</h4>${items}</div>`;
+  }).join('') || '<p style="color:#64748B">Sin errores registrados aún.</p>';
+}
+
+async function cargarUsuarios() {
+  const lista = document.getElementById('usuarios-lista');
+  lista.innerHTML = '<div class="loading"><div class="spinner"></div><span style="color:#64748B">Cargando...</span></div>';
+  try {
+    const res = await fetch('/api/resultados?listaUsuarios=1');
+    const data = await res.json();
+    const usuarios = data.usuarios || [];
+    if (!usuarios.length) { lista.innerHTML = '<p style="color:#64748B;padding:16px">Sin usuarios registrados.</p>'; return; }
+    lista.innerHTML = usuarios.map(u => `
+      <div class="usuario-row">
+        <div>
+          <div style="font-weight:700;color:white">${u.nombre}</div>
+          <div style="font-size:0.8rem;color:#64748B;font-family:monospace">${u.codigo}</div>
+        </div>
+        <button class="btn-ad" onclick="eliminarUsuario('${u.codigo}','${u.nombre.replace(/'/g,"\\'")}')">🗑️ Eliminar</button>
+      </div>
+    `).join('');
+  } catch(e) {
+    lista.innerHTML = '<p style="color:#F87171;padding:16px">⚠️ Error cargando usuarios. Verifica /api/resultados?listaUsuarios=1</p>';
+  }
+}
+
+async function agregarUsuario() {
+  const codigo = document.getElementById('nuevo-codigo').value.trim().toUpperCase();
+  const nombre = document.getElementById('nuevo-nombre').value.trim();
+  if (!codigo || !nombre) { alert('Completa código y nombre'); return; }
+  try {
+    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({adminAgregar:{codigo,nombre}}) });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('nuevo-codigo').value = '';
+      document.getElementById('nuevo-nombre').value = '';
+      cargarUsuarios();
+    } else { alert(data.error || 'Error al agregar'); }
+  } catch(e) { alert('Error de conexión'); }
+}
+
+async function eliminarUsuario(codigo, nombre) {
+  if (!confirm(`¿Eliminar a ${nombre} (${codigo})?`)) return;
+  try {
+    const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({adminEliminar:{codigo}}) });
+    const data = await res.json();
+    if (data.ok) cargarUsuarios();
+    else alert(data.error || 'Error al eliminar');
+  } catch(e) { alert('Error de conexión'); }
+}
+
+async function resetearProgreso(nombre) {
+  if (!confirm(`¿Resetear TODO el progreso de ${nombre}? Esto borrará sus resultados del Sheet.`)) return;
+  alert('Para resetear progreso, borra manualmente las filas de ' + nombre + ' en la hoja Resultados del Google Sheet.');
+}
+
+
+// ══════════════════════════════════════════════════════════════════
+// ── JERO — GRADO 2 ───────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+
+const MATERIAS_JERO = {
+  MAT: { nombre:'Matemáticas',      emoji:'🔢', bg:'linear-gradient(135deg,#FF6B6B,#FA5252)', shadow:'rgba(255,107,107,0.4)' },
+  LCA: { nombre:'Lengua Castellana',emoji:'📖', bg:'linear-gradient(135deg,#339AF0,#1971C2)', shadow:'rgba(51,154,240,0.4)'  },
+  ING: { nombre:'Inglés',           emoji:'🌎', bg:'linear-gradient(135deg,#51CF66,#37B24D)', shadow:'rgba(81,207,102,0.4)'  },
+  NAT: { nombre:'Naturales',        emoji:'🌿', bg:'linear-gradient(135deg,#845EF7,#6741D9)', shadow:'rgba(132,94,247,0.4)'  },
+  SOC: { nombre:'Sociales',         emoji:'🏘️', bg:'linear-gradient(135deg,#FF922B,#F76707)', shadow:'rgba(255,146,43,0.4)'  },
+};
+
+const TOTAL_LECCIONES_JERO = 112;
+
+// Web Audio API — sonidos simples sin archivos externos
+function playTono(freq, dur, type='sine') {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.18, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    o.start(); o.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+function sonidoClick()     { playTono(520, 0.12); }
+function sonidoCorrecto()  { playTono(660, 0.12); setTimeout(()=>playTono(880,0.18),120); }
+function sonidoError()     { playTono(220, 0.3, 'sawtooth'); }
+function sonidoEstrella()  { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTono(f,0.18),i*100)); }
+
+function lanzarParticulasJero(x, y) {
+  const colors = ['#FF6B6B','#51CF66','#339AF0','#FF922B','#845EF7','#FFD700'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = (Math.PI * 2 * i) / 18;
+    const dist = 80 + Math.random() * 80;
+    p.style.cssText = `left:${x}px;top:${y}px;background:${colors[i%colors.length]};--tx:${Math.cos(angle)*dist}px;--ty:${Math.sin(angle)*dist}px`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 950);
+  }
+}
+
+function getLeccionActualJero(mat) {
+  const estado_mat = estado.jeroProgreso?.[mat] || { leccionActual: 1, completadas: [] };
+  return estado_mat;
+}
+
+function jeroLeccionCompletada(mat, leccion) {
+  return estado.jeroProgreso?.[mat]?.completadas?.includes(leccion) || false;
+}
+
+function jeroLeccionDisponible(mat, leccion) {
+  if (leccion === 1) return true;
+  return jeroLeccionCompletada(mat, leccion - 1);
+}
+
+function getProximaLeccionJero(mat) {
+  for (let l = 1; l <= TOTAL_LECCIONES_JERO; l++) {
+    if (!jeroLeccionCompletada(mat, l)) return l;
+  }
+  return TOTAL_LECCIONES_JERO; // todas completas
+}
+
+function getEstrellasJero(mat) {
+  const completadas = estado.jeroProgreso?.[mat]?.completadas?.length || 0;
+  if (completadas === 0) return '☆☆☆';
+  if (completadas < 5)  return '⭐☆☆';
+  if (completadas < 15) return '⭐⭐☆';
+  return '⭐⭐⭐';
+}
+
+function jeroHitoCompleto(n) {
+  return Object.keys(MATERIAS_JERO).every(m =>
+    (estado.jeroProgreso?.[m]?.completadas || []).includes(n)
+  );
+}
+
+function jeroHitoActual() {
+  for (let n = 1; n <= TOTAL_LECCIONES_JERO; n++) {
+    if (!jeroHitoCompleto(n)) return n;
+  }
+  return TOTAL_LECCIONES_JERO;
+}
+
+function abrirPanelHito(n) {
+  document.getElementById('jero-hito-panel')?.remove();
+  document.getElementById('jero-panel-overlay')?.remove();
+  const esReto = [28,56,84,112].includes(n);
+  const etapa  = Math.ceil(n / 28);
+
+  const overlay = document.createElement('div');
+  overlay.id = 'jero-panel-overlay';
+  overlay.className = 'jero-panel-overlay';
+  const cerrar = () => {
+    document.getElementById('jero-hito-panel')?.remove();
+    document.getElementById('jero-panel-overlay')?.remove();
+  };
+  overlay.onclick = cerrar;
+
+  const panel = document.createElement('div');
+  panel.id = 'jero-hito-panel';
+  panel.className = 'jero-hito-panel';
+
+  const header = document.createElement('div');
+  header.className = 'hito-panel-header';
+  const titulo = document.createElement('span');
+  titulo.className = 'hito-panel-titulo';
+  titulo.textContent = esReto ? `⭐ Reto — Etapa ${etapa}` : `Hito ${n} de ${TOTAL_LECCIONES_JERO}`;
+  const btnClose = document.createElement('button');
+  btnClose.className = 'hito-panel-close';
+  btnClose.textContent = '✕';
+  btnClose.onclick = cerrar;
+  header.appendChild(titulo);
+  header.appendChild(btnClose);
+  panel.appendChild(header);
+
+  Object.entries(MATERIAS_JERO).forEach(([key, mat]) => {
+    const comp   = (estado.jeroProgreso?.[key]?.completadas || []).includes(n);
+    const numErr = comp ? tieneErroresGuardadosJero(n, key) : 0;
+
+    const btn = document.createElement('button');
+    btn.className = 'hito-panel-mat' + (comp ? ' done' : '');
+    btn.innerHTML = `<span>${mat.emoji} ${mat.nombre}</span><span>${comp ? '✓' : '→'}</span>`;
+    if (!comp) {
+      btn.onclick = () => { cerrar(); iniciarLeccionJero(key, n); };
+    }
+    panel.appendChild(btn);
+
+    if (comp && numErr > 0) {
+      const ref = document.createElement('button');
+      ref.className = 'hito-panel-ref';
+      ref.textContent = '🔁 Refuerzo · ' + numErr + ' error' + (numErr > 1 ? 'es' : '');
+      ref.onclick = () => { cerrar(); iniciarRefuerzoJero(n, key); };
+      panel.appendChild(ref);
+    }
+  });
+
+  document.body.appendChild(overlay);
+  document.body.appendChild(panel);
+}
+
+async function sincronizarProgresoJeroDesdeSheets() {
+  if (!estado.nombre) return;
+  try {
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+    if (!data.ok || !data.resultados) return;
+    if (!estado.jeroProgreso) estado.jeroProgreso = {};
+    data.resultados.forEach(r => {
+      const matchLec = String(r.dia).match(/G2 Lecci[oó]n (\d+)/i);
+      if (!matchLec) return;
+      const lecNum = parseInt(matchLec[1]);
+      const matKey = Object.keys(MATERIAS_JERO).find(k => MATERIAS_JERO[k].nombre === r.materia)
+        || {'Ciencias Naturales':'NAT','Ciencias Sociales':'SOC','Cs. Sociales':'SOC',
+            'Ciencias Nat.':'NAT','Cs. Nat.':'NAT','Lengua Castellana':'LCA'}[r.materia];
+      if (!matKey || !lecNum) return;
+      if (!estado.jeroProgreso[matKey]) estado.jeroProgreso[matKey] = { completadas: [] };
+      if (!estado.jeroProgreso[matKey].completadas.includes(lecNum)) {
+        estado.jeroProgreso[matKey].completadas.push(lecNum);
+      }
+    });
+    guardarEstadoLocal();
+    sincronizarBotonesRefuerzoDesdeSheets().catch(() => {});
+  } catch(e) { console.warn('No se pudo sincronizar progreso Jero', e); }
+}
+
+async function renderJero() {
+  if (!estado.jeroProgreso) estado.jeroProgreso = {};
+  document.getElementById('jero-titulo').textContent = `¡Hola, ${estado.nombre}! 👋`;
+  await sincronizarProgresoJeroDesdeSheets();
+  const cont = document.getElementById('jero-materias-container');
+  cont.innerHTML = '';
+
+  const hitoAct  = jeroHitoActual();
+  const RETOS    = [28, 56, 84, 112];
+  const POR_FILA = 4;
+  const frases   = ['¡Tú puedes! 💪', '¡Sigue! 🚀', '¡Lo estás logrando! ⭐', '¡Campeón! 🏆', '¡Crack! 🔥'];
+  const frase    = frases[(hitoAct - 1) % frases.length];
+
+  const wrap = document.createElement('div');
+  wrap.className = 'jero-hitos-wrap';
+
+  const totalFilas = Math.ceil(TOTAL_LECCIONES_JERO / POR_FILA);
+  let nodoActivo = null;
+
+  for (let row = 0; row < totalFilas; row++) {
+    const fila = document.createElement('div');
+    fila.className = 'jero-hito-row';
+    // Zigzag: filas impares invierten dirección para formar la serpiente
+    if (row % 2 === 1) fila.style.flexDirection = 'row-reverse';
+
+    for (let col = 0; col < POR_FILA; col++) {
+      const n = row * POR_FILA + col + 1;
+      if (n > TOTAL_LECCIONES_JERO) break;
+
+      const esReto = RETOS.includes(n);
+      const esCom  = jeroHitoCompleto(n);
+      const esAct  = n === hitoAct;
+      const esBloq = n > hitoAct;
+
+      const nodo = document.createElement('div');
+      let cls = 'jero-hito-nodo';
+      if (esReto)  cls += ' reto';
+      if (esCom)        cls += ' completado';
+      else if (esAct)   cls += ' activo';
+      else if (esBloq)  cls += ' bloqueado';
+      nodo.className = cls;
+
+      if (esCom) {
+        nodo.innerHTML = '<span class="hito-icon">✓</span>';
+      } else if (esAct) {
+        nodo.innerHTML = `<span class="hito-icon">${esReto ? '⭐' : '▶'}</span><div class="hito-burbuja">${frase}</div>`;
+        nodo.onclick = () => { sonidoClick(); abrirPanelHito(n); };
+        nodoActivo = nodo;
+      } else {
+        nodo.innerHTML = `<span class="hito-icon">${esReto ? '⭐' : '🔒'}</span>`;
+      }
+
+      fila.appendChild(nodo);
+    }
+    wrap.appendChild(fila);
+  }
+
+  cont.appendChild(wrap);
+  if (nodoActivo) setTimeout(() => nodoActivo.scrollIntoView({ behavior:'smooth', block:'center' }), 350);
+}
+
+
+async function iniciarLeccionJero(materia, leccion) {
+  const mat = MATERIAS_JERO[materia];
+  // Mostrar pantalla de carga
+  mostrar('screen-examen');
+  document.getElementById('examen-badge').textContent = `${mat.emoji} ${mat.nombre}`;
+  document.getElementById('examen-badge').style.background = mat.bg;
+  document.getElementById('examen-badge').style.color = 'white';
+  document.getElementById('examen-badge').style.borderRadius = '50px';
+  document.getElementById('examen-badge').style.padding = '6px 16px';
+  document.getElementById('examen-dia-label').textContent = `⭐ Lección ${leccion}`;
+  document.getElementById('progress-fill').style.background = mat.bg;
+  document.getElementById('pregunta-container').innerHTML =
+    '<div class="loading"><div class="spinner"></div><span>Preparando tu lección... ✨</span></div>';
+
+  try {
+    // 1. Intentar cargar preguntas existentes del Sheet
+    let res = await fetch(`/api/preguntas?grado=2&materia=${materia}&leccion=${leccion}`);
+    let data = await res.json();
+
+    // 2. Si no hay preguntas → generar con IA
+    if (!data.ok || !data.preguntas || data.preguntas.length === 0) {
+      document.getElementById('pregunta-container').innerHTML =
+        '<div class="loading"><div class="spinner"></div><span>🤖 Preparando preguntas nuevas para ti...</span></div>';
+
+      const genRes = await fetch('/api/generar-leccion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ grado: 2, materia, leccion })
+      });
+      const genData = await genRes.json();
+      if (!genData.ok) {
+        document.getElementById('pregunta-container').innerHTML =
+          `<div class="error-msg">⚠️ No se pudo preparar la lección. Intenta de nuevo.<br><small>${genData.error||''}</small></div>`;
+        return;
+      }
+      // Recargar preguntas ya generadas
+      res = await fetch(`/api/preguntas?grado=2&materia=${materia}&leccion=${leccion}`);
+      data = await res.json();
+    }
+
+    if (!data.ok || !data.preguntas?.length) {
+      document.getElementById('pregunta-container').innerHTML =
+        '<div class="error-msg">⚠️ No se pudieron cargar las preguntas. Intenta de nuevo.</div>';
+      return;
+    }
+
+    examenActual = {
+      dia: `G2_L${leccion}`,
+      materia,
+      preguntas: data.preguntas,
+      idx: 0, respuestas: [], puntaje: 0, intentos: 0,
+      esJero: true, leccionJero: leccion,
+    };
+    renderPregunta();
+
+  } catch(e) {
+    document.getElementById('pregunta-container').innerHTML =
+      `<div class="error-msg">⚠️ Error de conexión. Revisa el internet e intenta de nuevo.</div>`;
+  }
+}
+
+// terminarExamen unificada (Jero + todos)
+async function terminarExamen_JERO_PATCH() {
+  if (examenActual.esJero) {
+    const { materia, leccionJero, puntaje, preguntas } = examenActual;
+    if (!estado.jeroProgreso) estado.jeroProgreso = {};
+    if (!estado.jeroProgreso[materia]) estado.jeroProgreso[materia] = { completadas: [] };
+    const ya = estado.jeroProgreso[materia].completadas;
+    if (!ya.includes(leccionJero)) ya.push(leccionJero);
+    guardarEstadoLocal();
+
+    // Guardar resultado en Sheets (con timeout, igual que grado 6)
+    const matJero = MATERIAS_JERO[materia];
+    try {
+      const ctrlJ = new AbortController();
+      const tOutJ = setTimeout(() => ctrlJ.abort(), 8000);
+      await fetch('/api/guardar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: estado.nombre,
+          dia: `G2_L${leccionJero}`,
+          materia: matJero.nombre,
+          puntaje,
+          total: preguntas.length,
+          respuestas: examenActual.respuestas,
+          fecha: new Date().toLocaleString('es-CO')
+        }),
+        signal: ctrlJ.signal
+      });
+      clearTimeout(tOutJ);
+    } catch(e) { console.warn('No se pudo guardar resultado Jero', e); }
+    // Guardar errores en Sheets
+    const erroresJero = examenActual.respuestas.filter(r => !r.ok).map(r => {
+      const pregObj = examenActual.preguntas.find(p => p.pregunta === r.pregunta);
+      if (!pregObj || !pregObj.opciones) return null;
+      return { pregunta: pregObj, elegida: r.elegida, correcta: r.correcta };
+    }).filter(Boolean);
+    const errKeyJero = `errores_G2_L${leccionJero}_${materia}`;
+    localStorage.setItem(errKeyJero, JSON.stringify(erroresJero));
+    if (estado.codigo) {
+      if (erroresJero.length > 0) {
+        fetch('/api/errores', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ codigo: estado.codigo, dia: `G2_L${leccionJero}`, materia, errores: erroresJero })
+        }).catch(() => {});
+      } else {
+        fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=G2_L${leccionJero}&materia=${encodeURIComponent(materia)}`, { method: 'DELETE' }).catch(() => {});
+      }
+    }
+    // Generar la siguiente lección en segundo plano (sin bloquear)
+    const siguiente = leccionJero + 1;
+    if (siguiente <= TOTAL_LECCIONES_JERO) {
+      fetch('/api/generar-leccion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ grado: 2, materia, leccion: siguiente })
+      }).catch(() => {});
+    }
+
+    // Sonido de celebración
+    const pct = Math.round((puntaje / preguntas.length) * 100);
+    if (pct >= 80) sonidoEstrella();
+    else sonidoCorrecto();
+  }
+}
+
+// ── VOLVER ───────────────────────────────────────────────────────────
+function volverInicio() {
+  if (estado.grado === 2) {
+    mostrar('screen-jero');
+    renderJero();
+  } else {
+    mostrar('screen-inicio');
+    renderInicio();
+  }
+  window.scrollTo(0,0);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────
+cargarEstado();
+if (estado.nombre) {
+  mostrarHeaderNombre();
+  if (estado.esAdmin) {
+    mostrar('screen-admin');
+    adminInit();
+  } else {
+    mostrar('screen-grado');
+  }
+} else {
+  mostrar('screen-login');
+}
+</script>
+</body>
+</html>
