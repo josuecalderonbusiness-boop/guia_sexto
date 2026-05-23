@@ -572,10 +572,15 @@ module.exports = async (req, res) => {
 
     let parsed;
     try {
-      const clean = raw.replace(/```json|```/g, '').trim();
+      // Extraer JSON aunque Gemini agregue texto antes o después
+      let clean = raw.replace(/```json|```/g, '').trim();
+      // Buscar el primer { y el último } para extraer solo el JSON
+      const start = clean.indexOf('{');
+      const end = clean.lastIndexOf('}');
+      if (start !== -1 && end !== -1) clean = clean.slice(start, end + 1);
       parsed = JSON.parse(clean);
     } catch (e) {
-      return res.status(500).json({ ok: false, error: 'OpenAI devolvió JSON inválido', raw });
+      return res.status(500).json({ ok: false, error: 'Gemini devolvió JSON inválido', raw });
     }
 
     let preguntas = parsed.preguntas || [];
