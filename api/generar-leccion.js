@@ -511,6 +511,7 @@ REGLAS OBLIGATORIAS PARA TODAS LAS PREGUNTAS:
 6. ⚠️ VERIFICACIÓN OBLIGATORIA pregunta por pregunta: ANTES de escribir la "respuesta", lee las 4 opciones y confirma cuál es la correcta. Escribe primero la opción correcta en su lugar (A, B, C o D) y luego escribe la explicación basada en ESA opción.
 7. La explicación debe mencionar EXPLÍCITAMENTE la opción correcta: "La respuesta es [letra]) [texto de la opción] porque..." — NUNCA expliques una opción diferente a la marcada en "respuesta".
 8. TRAMPA FRECUENTE A EVITAR: si marcas "respuesta": "B", la explicación debe hablar de la opción B, no de A, C o D.
+9. El campo "tip" es un concepto de ayuda ANTES de responder: define el concepto clave de la pregunta en 1-2 oraciones simples con un ejemplo corto. Ejemplo: "El valor absoluto es la distancia de un número al cero, siempre positiva. Ejemplo: |−5| = 5 y |5| = 5."
 8. Devuelve ÚNICAMENTE JSON válido, sin texto adicional ni bloques markdown
 
 Formato JSON exacto:
@@ -520,7 +521,8 @@ Formato JSON exacto:
       "pregunta": "texto de la pregunta",${campoContexto}
       "opciones": { "A": "opción a", "B": "opción b", "C": "opción c", "D": "opción d" },
       "respuesta": "B",
-      "explicacion": "explicación simple en 1-2 oraciones para el niño de 7 años"
+      "explicacion": "explicación simple en 1-2 oraciones para el niño de 7 años",
+      "tip": "concepto clave en 1-2 oraciones con un ejemplo corto"
     }
   ]
 }`;
@@ -608,6 +610,7 @@ module.exports = async (req, res) => {
         '',                    // G: imagen
         '',                    // H: video
         p.explicacion || '',   // I: explicación popup
+        p.tip || '',           // J: tip de ayuda
       ];
     });
 
@@ -617,7 +620,7 @@ module.exports = async (req, res) => {
     // Escribir en el Sheet
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
-      range: `${sheetName}!A2:I${rows.length + 1}`,
+      range: `${sheetName}!A2:J${rows.length + 1}`,
       valueInputOption: 'RAW',
       requestBody: { values: rows },
     });

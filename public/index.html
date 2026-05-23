@@ -222,7 +222,42 @@
 
   .error-msg { background: #FFE8E8; color: #C92A2A; border-radius: 14px; padding: 16px 20px; margin: 20px; font-weight: 700; text-align: center; }
 
-  /* ── JERO GRADO 2 ──────────────────────────────────────────────── */
+  /* ── TIP DE AYUDA 💡 ─────────────────────────────────────────────── */
+.btn-tip {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.6rem; animation: pulse-tip 1.5s ease-in-out infinite;
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(255,200,0,0.4));
+}
+@keyframes pulse-tip {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+.tip-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 1000; display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.tip-popup {
+  background: white; border-radius: 24px; padding: 28px 24px;
+  max-width: 420px; width: 100%; box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+.tip-popup-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.tip-popup-titulo {
+  font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: #1A1A2E;
+}
+.tip-popup-texto {
+  font-size: 1rem; color: #444; line-height: 1.6; font-weight: 600;
+}
+.tip-popup-close {
+  position: absolute; top: 14px; right: 14px;
+  background: #F0F0F0; border: none; border-radius: 50%;
+  width: 32px; height: 32px; font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}────────────────────────────────────────────── */
   #screen-jero { display:none; padding:20px 16px; max-width:600px; margin:0 auto; }
   .jero-saludo {
     text-align:center; margin-bottom:24px;
@@ -1144,6 +1179,7 @@ function renderPregunta() {
       ${q.imagen ? `<img src="${q.imagen}" style="width:100%;max-width:480px;border-radius:14px;margin-bottom:16px;display:block;border:3px solid #E8E8E8;" onerror="this.style.display='none'"/>` : ''}
        ${q.video && q.video.startsWith('http') ? `<a href="${q.video}" target="_blank" style="display:inline-block;margin-bottom:16px;padding:10px 20px;background:#FF0000;color:white;border-radius:12px;text-decoration:none;font-weight:800;font-size:0.95rem;">📺 Ver video explicativo antes de responder</a>` : ''}
       <p class="pregunta-text">${q.pregunta.startsWith('📖') ? (() => { const p = q.pregunta.split('\n\n❓ '); return `<div style="background:linear-gradient(135deg,#FFF9E6,#FFF3CC);border:3px solid #F6C90E;border-radius:18px;padding:18px 20px;margin-bottom:16px"><div style="font-size:0.75rem;font-weight:800;color:#C8960C;margin-bottom:10px">📖 LEE CON ATENCIÓN:</div><div style="font-size:0.97rem;font-weight:600;line-height:1.8;white-space:pre-wrap">${p[0].replace(/^📖\s*/,'')}</div></div><p class="pregunta-text">${p[1]}</p>`; })() : q.pregunta}</p>
+      ${q.tip ? `<button class="btn-tip" onclick="mostrarTip(this)" data-tip="${q.tip}" title="Ver concepto clave">💡</button>` : ''}
       <div class="opciones-list">${opcionesHtml}</div>
       <div class="feedback-msg" id="feedback-msg"></div>
     </div>
@@ -2414,7 +2450,24 @@ function playTono(freq, dur, type='sine') {
     o.start(); o.stop(ctx.currentTime + dur);
   } catch(e) {}
 }
-function sonidoClick()     { playTono(520, 0.12); }
+function mostrarTip(btn) {
+  const tip = btn.dataset.tip;
+  document.getElementById('tip-overlay-container')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'tip-overlay-container';
+  overlay.className = 'tip-overlay';
+  overlay.innerHTML = `
+    <div class="tip-popup">
+      <button class="tip-popup-close" onclick="document.getElementById('tip-overlay-container').remove()">✕</button>
+      <div class="tip-popup-header">
+        <span style="font-size:2rem">💡</span>
+        <span class="tip-popup-titulo">Concepto clave</span>
+      </div>
+      <p class="tip-popup-texto">${tip}</p>
+    </div>`;
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+}     { playTono(520, 0.12); }
 function sonidoCorrecto()  { playTono(660, 0.12); setTimeout(()=>playTono(880,0.18),120); }
 function sonidoError()     { playTono(220, 0.3, 'sawtooth'); }
 function sonidoEstrella()  { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTono(f,0.18),i*100)); }
