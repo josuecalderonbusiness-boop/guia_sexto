@@ -285,21 +285,23 @@ function getAuth() {
   });
 }
 
-function callOpenAI(prompt) {
+function callGemini(prompt) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
-      model: 'gpt-4o-mini',
-      max_tokens: 4000,
-      temperature: 0.7,
-      messages: [{ role: 'user', content: prompt }],
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 8000,
+      }
     });
+    const apiKey = process.env.GEMINI_API_KEY;
+    const path = `/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     const options = {
-      hostname: 'api.openai.com',
-      path: '/v1/chat/completions',
+      hostname: 'generativelanguage.googleapis.com',
+      path,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Length': Buffer.byteLength(body),
       },
     };
@@ -309,7 +311,8 @@ function callOpenAI(prompt) {
       r.on('end', () => {
         try {
           const parsed = JSON.parse(data);
-          resolve(parsed.choices?.[0]?.message?.content || '');
+          const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          resolve(text);
         } catch (e) { reject(e); }
       });
     });
@@ -361,7 +364,7 @@ Responde ÚNICAMENTE con un JSON así (sin texto adicional, sin markdown):
 El array debe tener exactamente ${preguntas.length} elementos, uno por pregunta en orden.`;
 
   try {
-    const raw = await callOpenAI(prompt);
+    const raw = await callGemini(prompt);
     const clean = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
     const correcciones = parsed.correcciones || [];
@@ -565,7 +568,7 @@ module.exports = async (req, res) => {
 
     // Construir prompt y llamar a OpenAI
     const prompt = buildPrompt(grado, mat, lNum, tema);
-    const raw = await callOpenAI(prompt);
+    const raw = await callGemini(prompt);
 
     let parsed;
     try {
