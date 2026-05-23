@@ -403,8 +403,9 @@ async function crearHoja(sheets, nombre) {
 }
 
 // ── Temas de lecciones anteriores para el bloque de repaso ──────────
-function temasRepaso(mat, leccionActual) {
-  const curriculum = CURRICULO[mat] || [];
+function temasRepaso(mat, leccionActual, grado) {
+  const curriculoBase = grado === 6 ? CURRICULO_G6 : CURRICULO;
+  const curriculum = curriculoBase[mat] || [];
   const anteriores = curriculum.slice(0, leccionActual - 1);
   if (!anteriores.length) return [];
   const mezclados = anteriores.sort(() => Math.random() - 0.5);
@@ -417,7 +418,7 @@ function buildPrompt(grado, mat, leccion, tema) {
   const config = MATERIAS_CON_TEXTO_BASE[mat];
   const instrExtra = conTexto && config ? config.instruccionesExtra(leccion) : '';
 
-  const temasAnteriores = leccion > 1 ? temasRepaso(mat, leccion) : [];
+  const temasAnteriores = leccion > 1 ? temasRepaso(mat, leccion, grado) : [];
   const hayRepaso = temasAnteriores.length > 0;
 
   // ── Reglas especiales por materia ───────────────────────────────────
