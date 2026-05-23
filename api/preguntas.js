@@ -61,6 +61,10 @@ valueRenderOption: 'UNFORMATTED_VALUE',
 
     res.status(200).json({ ok: true, preguntas, sheetName });
   } catch (err) {
+    // Si la hoja no existe, devolver vacío para que la IA la genere
+    if (err.message && err.message.includes('Unable to parse range')) {
+      return res.status(200).json({ ok: true, preguntas: [], sheetName });
+    }
     console.error(err);
     res.status(500).json({ error: err.message });
   }
