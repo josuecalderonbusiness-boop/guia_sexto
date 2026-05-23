@@ -539,6 +539,8 @@ module.exports = async (req, res) => {
   const lNum = parseInt(leccion);
   const lStr = String(lNum).padStart(2, '0');
   const sheetName = `G${grado}_${mat}_L${lStr}`;
+  const curriculoActivo = parseInt(grado) === 6 ? CURRICULO_G6 : CURRICULO;
+  const tema = curriculoActivo[mat]?.[lNum - 1];
 
   if (!tema) {
     return res.status(400).json({ ok: false, error: `No hay tema definido para ${mat} lección ${lNum}` });
