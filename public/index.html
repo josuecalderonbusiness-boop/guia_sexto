@@ -2450,6 +2450,10 @@ function playTono(freq, dur, type='sine') {
     o.start(); o.stop(ctx.currentTime + dur);
   } catch(e) {}
 }
+function sonidoClick()     { playTono(520, 0.12); }
+function sonidoCorrecto()  { playTono(660, 0.12); setTimeout(()=>playTono(880,0.18),120); }
+function sonidoError()     { playTono(220, 0.3, 'sawtooth'); }
+function sonidoEstrella()  { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTono(f,0.18),i*100)); }
 function mostrarTip(btn) {
   const tip = btn.dataset.tip;
   document.getElementById('tip-overlay-container')?.remove();
