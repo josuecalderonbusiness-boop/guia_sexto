@@ -454,7 +454,7 @@ Temas anteriores disponibles:
 ${temasAnteriores.map((t, i) => `- ${t.substring(0, 100)}...`).join('\n')}` : '';
 
   const estructura = hayRepaso
-    ? `ESTRUCTURA OBLIGATORIA — 15 preguntas en 3 bloques progresivos:
+    ? `ESTRUCTURA OBLIGATORIA — 10 preguntas en 2 bloques progresivos:
 
 BLOQUE A — APRENDE (preguntas 1 a 5): ⭐ MÁS FÁCILES
 El niño NO ha visto este tema antes. Cada pregunta debe ENSEÑAR mientras pregunta.
@@ -477,8 +477,8 @@ Enseña el concepto mientras pregunta. Incluir mini-explicación o ejemplo en el
 BLOQUE B — PRACTICA (preguntas 6 a 10): ⭐⭐ DIFICULTAD MEDIA
 Aplica el concepto en situaciones reales. Sin explicación en el enunciado.
 
-BLOQUE C — RAZONA (preguntas 11 a 15): ⭐⭐⭐ MÁS DIFÍCILES
-Situaciones más elaboradas. El niño debe pensar más. Un solo distractor muy creíble.`;
+BLOQUE B — PRACTICA (preguntas 6 a 10): ⭐⭐ DIFICULTAD MEDIA
+Aplica el concepto en situaciones reales. Sin explicación en el enunciado.`;
 
   const campoContexto = conTexto
     ? `\n      "contexto": "TEXTO COMPLETO aquí (el MISMO en todas las preguntas del bloque nuevo)",`
@@ -507,7 +507,7 @@ REGLAS OBLIGATORIAS PARA TODAS LAS PREGUNTAS:
 2. 4 opciones (A, B, C, D), UNA sola correcta
 3. Sin LaTeX ni símbolos raros. Usar texto plano: 3/4, raiz(16), 2x3
 4. Distractores CREÍBLES pero claramente incorrectos para quien leyó bien
-5. Distribución de respuestas correctas: A×4, B×4, C×4, D×3 — SIN PATRÓN visible (no pongas todas las respuestas en A o en B)
+5. Distribución de respuestas correctas: A×3, B×3, C×2, D×2 — SIN PATRÓN visible (no pongas todas las respuestas en A o en B)
 6. ⚠️ VERIFICACIÓN OBLIGATORIA pregunta por pregunta: ANTES de escribir la "respuesta", lee las 4 opciones y confirma cuál es la correcta. Escribe primero la opción correcta en su lugar (A, B, C o D) y luego escribe la explicación basada en ESA opción.
 7. La explicación debe mencionar EXPLÍCITAMENTE la opción correcta: "La respuesta es [letra]) [texto de la opción] porque..." — NUNCA expliques una opción diferente a la marcada en "respuesta".
 8. TRAMPA FRECUENTE A EVITAR: si marcas "respuesta": "B", la explicación debe hablar de la opción B, no de A, C o D.
