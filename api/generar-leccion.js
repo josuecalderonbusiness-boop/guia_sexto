@@ -539,7 +539,6 @@ module.exports = async (req, res) => {
   const lNum = parseInt(leccion);
   const lStr = String(lNum).padStart(2, '0');
   const sheetName = `G${grado}_${mat}_L${lStr}`;
-  return `Eres un profesor experto creando preguntas de examen estilo DUOLINGO para un estudiante de ${grado === 6 ? '11-12 años (grado 6)' : '7 años (grado 2)'} (grado ${grado}, Colombia).
 
   if (!tema) {
     return res.status(400).json({ ok: false, error: `No hay tema definido para ${mat} lección ${lNum}` });
