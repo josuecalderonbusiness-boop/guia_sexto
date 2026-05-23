@@ -519,6 +519,24 @@
   <div id="dias-container"></div>
 </div>
 
+<div id="screen-tomas">
+  <div class="jero-saludo">
+    <span class="mascota">🧠</span>
+    <h2 id="tomas-titulo">¡Hola, Tomás!</h2>
+    <p>Sigue tu camino de hitos — ¡tú puedes!</p>
+  </div>
+  <div class="jero-materias" id="tomas-materias-container"></div>
+</div>
+
+<div id="screen-tomas">
+  <div class="jero-saludo">
+    <span class="mascota">🧠</span>
+    <h2 id="tomas-titulo">¡Hola, Tomás!</h2>
+    <p>Sigue tu camino de hitos — ¡tú puedes! 🌟</p>
+  </div>
+  <div class="jero-materias" id="tomas-materias-container"></div>
+</div>
+
 <div id="screen-jero">
   <div class="jero-saludo">
     <span class="mascota">🧠</span>
@@ -741,7 +759,7 @@ function intentarDesbloquearSiguienteDia() {
 }
 
 function mostrar(id) {
-  ['screen-login','screen-grado','screen-inicio','screen-jero','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo','screen-cuentos','screen-lector','screen-comprension','screen-lect-texto'
+  ['screen-login','screen-grado','screen-inicio','screen-jero','screen-tomas','screen-examen','screen-resultado','screen-misresultados','screen-admin','screen-refuerzo','screen-cuentos','screen-lector','screen-comprension','screen-lect-texto'
 ].forEach(s => {
     document.getElementById(s).style.display = 'none';
   });
@@ -804,6 +822,9 @@ async function elegirGrado(grado) {
   if (grado === 2) {
     mostrar('screen-jero');
     renderJero();
+  } else if (grado === 6) {
+    mostrar('screen-tomas');
+    renderTomas();
   } else {
     mostrar('screen-inicio');
     renderInicio();
@@ -1211,7 +1232,9 @@ async function terminarExamen() {
   const { dia, materia, puntaje, preguntas, respuestas } = examenActual;
   const total = preguntas.length;
   const pct = Math.round((puntaje / total) * 100);
-  const mat = (!examenActual.esJero && MATERIAS[materia]) ? MATERIAS[materia] : (MATERIAS_JERO?.[materia] ? { nombre: MATERIAS_JERO[materia].nombre, gradiente: MATERIAS_JERO[materia].bg, color: '#FF6B6B', emoji: MATERIAS_JERO[materia].emoji } : { nombre: materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' });
+  const mat = examenActual.esTomas
+    ? { nombre: MATERIAS_TOMAS[materia]?.nombre||materia, gradiente: MATERIAS_TOMAS[materia]?.bg||'linear-gradient(135deg,#339AF0,#228BE6)', color: '#339AF0', emoji: MATERIAS_TOMAS[materia]?.emoji||'📚' }
+    : (!examenActual.esJero && MATERIAS[materia]) ? MATERIAS[materia] : (MATERIAS_JERO?.[materia] ? { nombre: MATERIAS_JERO[materia].nombre, gradiente: MATERIAS_JERO[materia].bg, color: '#FF6B6B', emoji: MATERIAS_JERO[materia].emoji } : { nombre: materia, gradiente: 'linear-gradient(135deg,#FF6B6B,#FA5252)', color: '#FF6B6B', emoji: '📚' });
   // Limpiar pantalla inmediatamente para no quedarse en el spinner
   const pc = document.getElementById('pregunta-container');
   if (pc) pc.innerHTML = '<div class="loading"><div class="spinner"></div><span>Guardando resultado...</span></div>';
@@ -2883,11 +2906,322 @@ function mostrarResultadoComprension(puntaje, total, nivel) {
     +'</div></div>';
 }
 
-// ── VOLVER ───────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// ── TOMÁS — GRADO 6 (HITOS, igual que Jero) ──────────────────────
+// ══════════════════════════════════════════════════════════════════
+
+const MATERIAS_TOMAS = {
+  MAT: { nombre:'Matemáticas',      emoji:'🔢', bg:'linear-gradient(135deg,#FF6B6B,#FA5252)', shadow:'rgba(255,107,107,0.4)' },
+  LEN: { nombre:'Lenguaje',         emoji:'📖', bg:'linear-gradient(135deg,#339AF0,#1971C2)', shadow:'rgba(51,154,240,0.4)'  },
+  BIO: { nombre:'Biología',         emoji:'🌿', bg:'linear-gradient(135deg,#51CF66,#37B24D)', shadow:'rgba(81,207,102,0.4)'  },
+  QUI: { nombre:'Química',          emoji:'⚗️', bg:'linear-gradient(135deg,#845EF7,#6741D9)', shadow:'rgba(132,94,247,0.4)'  },
+  SOC: { nombre:'Ciencias Sociales',emoji:'🌍', bg:'linear-gradient(135deg,#FF922B,#F76707)', shadow:'rgba(255,146,43,0.4)'  },
+};
+
+const TOTAL_LECCIONES_TOMAS = 112;
+
+function tomasHitoCompleto(n) {
+  return Object.keys(MATERIAS_TOMAS).every(m =>
+    (estado.tomasProgreso?.[m]?.completadas || []).includes(n)
+  );
+}
+
+function tomasHitoActual() {
+  for (let n = 1; n <= TOTAL_LECCIONES_TOMAS; n++) {
+    if (!tomasHitoCompleto(n)) return n;
+  }
+  return TOTAL_LECCIONES_TOMAS;
+}
+
+function tieneErroresGuardadosTomas(leccion, mat) {
+  const key = `errores_G6_L${leccion}_${mat}`;
+  try { const e = JSON.parse(localStorage.getItem(key)||'[]'); return e.length; } catch { return 0; }
+}
+
+function abrirPanelHitoTomas(n) {
+  document.getElementById('tomas-hito-panel')?.remove();
+  document.getElementById('tomas-panel-overlay')?.remove();
+  const esReto = [28,56,84,112].includes(n);
+  const etapa  = Math.ceil(n / 28);
+
+  const overlay = document.createElement('div');
+  overlay.id = 'tomas-panel-overlay';
+  overlay.className = 'jero-panel-overlay';
+  const cerrar = () => {
+    document.getElementById('tomas-hito-panel')?.remove();
+    document.getElementById('tomas-panel-overlay')?.remove();
+  };
+  overlay.onclick = cerrar;
+
+  const panel = document.createElement('div');
+  panel.id = 'tomas-hito-panel';
+  panel.className = 'jero-hito-panel';
+
+  const header = document.createElement('div');
+  header.className = 'hito-panel-header';
+  const titulo = document.createElement('span');
+  titulo.className = 'hito-panel-titulo';
+  titulo.textContent = esReto ? `⭐ Reto — Etapa ${etapa}` : `Hito ${n} de ${TOTAL_LECCIONES_TOMAS}`;
+  const btnClose = document.createElement('button');
+  btnClose.className = 'hito-panel-close';
+  btnClose.textContent = '✕';
+  btnClose.onclick = cerrar;
+  header.appendChild(titulo);
+  header.appendChild(btnClose);
+  panel.appendChild(header);
+
+  Object.entries(MATERIAS_TOMAS).forEach(([key, mat]) => {
+    const comp   = (estado.tomasProgreso?.[key]?.completadas || []).includes(n);
+    const numErr = comp ? tieneErroresGuardadosTomas(n, key) : 0;
+
+    const btn = document.createElement('button');
+    btn.className = 'hito-panel-mat' + (comp ? ' done' : '');
+    btn.innerHTML = `<span>${mat.emoji} ${mat.nombre}</span><span>${comp ? '✓' : '→'}</span>`;
+    if (!comp) {
+      btn.onclick = () => { cerrar(); iniciarLeccionTomas(key, n); };
+    }
+    panel.appendChild(btn);
+
+    if (comp && numErr > 0) {
+      const ref = document.createElement('button');
+      ref.className = 'hito-panel-ref';
+      ref.textContent = '🔁 Refuerzo · ' + numErr + ' error' + (numErr > 1 ? 'es' : '');
+      ref.onclick = () => { cerrar(); iniciarRefuerzoTomas(n, key); };
+      panel.appendChild(ref);
+    }
+  });
+
+  document.body.appendChild(overlay);
+  document.body.appendChild(panel);
+}
+
+async function sincronizarProgresoTomasDesdeSheets() {
+  if (!estado.codigo) return;
+  try {
+    const res = await fetch('/api/resultados?nombre=' + encodeURIComponent(estado.nombre));
+    const data = await res.json();
+    if (!data.ok || !data.resultados) return;
+    if (!estado.tomasProgreso) estado.tomasProgreso = {};
+    const NOMBRES_TOMAS = { MAT:'Matemáticas', LEN:'Lenguaje', BIO:'Biología', QUI:'Química', SOC:'Ciencias Sociales' };
+    data.resultados.forEach(r => {
+      const matchLec = String(r.dia).match(/G6_L(\d+)/i);
+      if (!matchLec) return;
+      const lecNum = parseInt(matchLec[1]);
+      const matKey = Object.keys(NOMBRES_TOMAS).find(k => NOMBRES_TOMAS[k] === r.materia);
+      if (!matKey || !lecNum) return;
+      if (!estado.tomasProgreso[matKey]) estado.tomasProgreso[matKey] = { completadas: [] };
+      if (!estado.tomasProgreso[matKey].completadas.includes(lecNum)) {
+        estado.tomasProgreso[matKey].completadas.push(lecNum);
+      }
+    });
+    guardarEstadoLocal();
+  } catch(e) { console.warn('No se pudo sincronizar progreso Tomás', e); }
+}
+
+async function renderTomas() {
+  if (!estado.tomasProgreso) estado.tomasProgreso = {};
+  document.getElementById('tomas-titulo').textContent = `¡Hola, ${estado.nombre}! 👋`;
+  await sincronizarProgresoTomasDesdeSheets();
+  const cont = document.getElementById('tomas-materias-container');
+  cont.innerHTML = '';
+
+  const hitoAct  = tomasHitoActual();
+  const RETOS    = [28, 56, 84, 112];
+  const POR_FILA = 4;
+  const frases   = ['¡Tú puedes! 💪', '¡Sigue! 🚀', '¡Lo estás logrando! ⭐', '¡Campeón! 🏆', '¡Crack! 🔥'];
+  const frase    = frases[(hitoAct - 1) % frases.length];
+
+  const wrap = document.createElement('div');
+  wrap.className = 'jero-hitos-wrap';
+
+  const totalFilas = Math.ceil(TOTAL_LECCIONES_TOMAS / POR_FILA);
+  let nodoActivo = null;
+
+  for (let row = 0; row < totalFilas; row++) {
+    const fila = document.createElement('div');
+    fila.className = 'jero-hito-row';
+    if (row % 2 === 1) fila.style.flexDirection = 'row-reverse';
+
+    for (let col = 0; col < POR_FILA; col++) {
+      const n = row * POR_FILA + col + 1;
+      if (n > TOTAL_LECCIONES_TOMAS) break;
+
+      const esReto = RETOS.includes(n);
+      const esCom  = tomasHitoCompleto(n);
+      const esAct  = n === hitoAct;
+      const esBloq = n > hitoAct;
+
+      const nodo = document.createElement('div');
+      let cls = 'jero-hito-nodo';
+      if (esReto)       cls += ' reto';
+      if (esCom)        cls += ' completado';
+      else if (esAct)   cls += ' activo';
+      else if (esBloq)  cls += ' bloqueado';
+      nodo.className = cls;
+
+      if (esCom) {
+        nodo.innerHTML = '<span class="hito-icon">✓</span>';
+      } else if (esAct) {
+        nodo.innerHTML = `<span class="hito-icon">${esReto ? '⭐' : '▶'}</span><div class="hito-burbuja">${frase}</div>`;
+        nodo.onclick = () => { sonidoClick(); abrirPanelHitoTomas(n); };
+        nodoActivo = nodo;
+      } else {
+        nodo.innerHTML = `<span class="hito-icon">${esReto ? '⭐' : '🔒'}</span>`;
+      }
+
+      fila.appendChild(nodo);
+    }
+    wrap.appendChild(fila);
+  }
+
+  cont.appendChild(wrap);
+  if (nodoActivo) setTimeout(() => nodoActivo.scrollIntoView({ behavior:'smooth', block:'center' }), 350);
+}
+
+async function iniciarLeccionTomas(materia, leccion) {
+  const mat = MATERIAS_TOMAS[materia];
+  mostrar('screen-examen');
+  document.getElementById('examen-badge').textContent = `${mat.emoji} ${mat.nombre}`;
+  document.getElementById('examen-badge').style.background = mat.bg;
+  document.getElementById('examen-badge').style.color = 'white';
+  document.getElementById('examen-badge').style.borderRadius = '50px';
+  document.getElementById('examen-badge').style.padding = '6px 16px';
+  document.getElementById('examen-dia-label').textContent = `⭐ Lección ${leccion}`;
+  document.getElementById('progress-fill').style.background = mat.bg;
+  document.getElementById('pregunta-container').innerHTML =
+    '<div class="loading"><div class="spinner"></div><span>Preparando tu lección... ✨</span></div>';
+
+  try {
+    let res = await fetch(`/api/preguntas?grado=6&materia=${materia}&leccion=${leccion}`);
+    let data = await res.json();
+
+    if (!data.ok || !data.preguntas || data.preguntas.length === 0) {
+      document.getElementById('pregunta-container').innerHTML =
+        '<div class="loading"><div class="spinner"></div><span>🤖 Preparando preguntas nuevas para ti...</span></div>';
+      const genRes = await fetch('/api/generar-leccion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ grado: 6, materia, leccion })
+      });
+      const genData = await genRes.json();
+      if (!genData.ok) {
+        document.getElementById('pregunta-container').innerHTML =
+          `<div class="error-msg">⚠️ No se pudo preparar la lección. Intenta de nuevo.<br><small>${genData.error||''}</small></div>`;
+        return;
+      }
+      res = await fetch(`/api/preguntas?grado=6&materia=${materia}&leccion=${leccion}`);
+      data = await res.json();
+    }
+
+    if (!data.ok || !data.preguntas?.length) {
+      document.getElementById('pregunta-container').innerHTML =
+        '<div class="error-msg">⚠️ No se pudieron cargar las preguntas. Intenta de nuevo.</div>';
+      return;
+    }
+
+    examenActual = {
+      dia: `G6_L${leccion}`,
+      materia,
+      preguntas: data.preguntas,
+      idx: 0, respuestas: [], puntaje: 0, intentos: 0,
+      esTomas: true, leccionTomas: leccion,
+    };
+    renderPregunta();
+  } catch(e) {
+    document.getElementById('pregunta-container').innerHTML =
+      `<div class="error-msg">⚠️ Error de conexión. Revisa el internet e intenta de nuevo.</div>`;
+  }
+}
+
+async function iniciarRefuerzoTomas(leccion, materia) {
+  const key = `errores_G6_L${leccion}_${materia}`;
+  let erroresLocal = [];
+  try { erroresLocal = JSON.parse(localStorage.getItem(key)||'[]'); } catch {}
+  if (erroresLocal.length > 0) {
+    arrancarRefuerzoTomas(leccion, materia, erroresLocal);
+    return;
+  }
+  try {
+    const res = await fetch(`/api/preguntas?grado=6&materia=${materia}&leccion=${leccion}`);
+    const data = await res.json();
+    const erroresCompletos = (data.preguntas||[]).filter(p => p.esError);
+    if (erroresCompletos.length === 0) { alert('¡Sin errores guardados! 🎉'); return; }
+    arrancarRefuerzoTomas(leccion, materia, erroresCompletos);
+  } catch { alert('No se pudieron cargar los errores.'); }
+}
+
+function arrancarRefuerzoTomas(leccion, materia, errores) {
+  const mat = MATERIAS_TOMAS[materia];
+  refuerzoActual = {
+    preguntas: errores, idx: 0, puntaje: 0,
+    materia, dia: `G6_L${leccion}`,
+    esTomas: true, leccionTomas: leccion, matTomasObj: mat
+  };
+  mostrar('screen-refuerzo');
+  renderRefuerzo();
+}
+
+async function terminarExamenTomas_PATCH() {
+  if (!examenActual.esTomas) return;
+  const { materia, leccionTomas, puntaje, preguntas } = examenActual;
+  if (!estado.tomasProgreso) estado.tomasProgreso = {};
+  if (!estado.tomasProgreso[materia]) estado.tomasProgreso[materia] = { completadas: [] };
+  const ya = estado.tomasProgreso[materia].completadas;
+  if (!ya.includes(leccionTomas)) ya.push(leccionTomas);
+  guardarEstadoLocal();
+
+  const matTomasObj = MATERIAS_TOMAS[materia];
+  try {
+    const ctrl = new AbortController();
+    const tOut = setTimeout(() => ctrl.abort(), 8000);
+    await fetch('/api/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: estado.nombre,
+        dia: `G6_L${leccionTomas}`,
+        materia: matTomasObj.nombre,
+        puntaje, total: preguntas.length,
+        respuestas: examenActual.respuestas,
+        fecha: new Date().toLocaleString('es-CO')
+      }),
+      signal: ctrl.signal
+    });
+    clearTimeout(tOut);
+  } catch(e) { console.warn('No se pudo guardar resultado Tomás', e); }
+
+  const errores = examenActual.respuestas.filter(r => !r.ok).map(r => {
+    const pregObj = examenActual.preguntas.find(p => p.pregunta === r.pregunta);
+    if (!pregObj || !pregObj.opciones) return null;
+    return { pregunta: pregObj, elegida: r.elegida, correcta: r.correcta };
+  }).filter(Boolean);
+  const errKey = `errores_G6_L${leccionTomas}_${materia}`;
+  localStorage.setItem(errKey, JSON.stringify(errores));
+  if (estado.codigo) {
+    if (errores.length > 0) {
+      fetch('/api/errores', { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ codigo: estado.codigo, dia: `G6_L${leccionTomas}`, materia, errores }) }).catch(()=>{});
+    } else {
+      fetch(`/api/errores?codigo=${encodeURIComponent(estado.codigo)}&dia=G6_L${leccionTomas}&materia=${encodeURIComponent(materia)}`, { method:'DELETE' }).catch(()=>{});
+    }
+  }
+
+  const siguiente = leccionTomas + 1;
+  if (siguiente <= TOTAL_LECCIONES_TOMAS) {
+    fetch('/api/generar-leccion', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ grado: 6, materia, leccion: siguiente }) }).catch(()=>{});
+  }
+
+  const pct = Math.round((puntaje / preguntas.length) * 100);
+  if (pct >= 80) sonidoEstrella(); else sonidoCorrecto();
+}
 function volverInicio() {
   if (estado.grado === 2) {
     mostrar('screen-jero');
     renderJero();
+  } else if (estado.grado === 6) {
+    mostrar('screen-tomas');
+    renderTomas();
   } else {
     mostrar('screen-inicio');
     renderInicio();
