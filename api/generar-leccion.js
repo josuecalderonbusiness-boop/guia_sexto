@@ -288,20 +288,18 @@ function getAuth() {
 function callGemini(prompt) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: 16000,
-      }
+      model: 'gpt-4.1-mini',
+      max_tokens: 8000,
+      temperature: 0.4,
+      messages: [{ role: 'user', content: prompt }],
     });
-    const apiKey = process.env.GEMINI_API_KEY;
-    const path = `/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
     const options = {
-      hostname: 'generativelanguage.googleapis.com',
-      path,
+      hostname: 'api.openai.com',
+      path: '/v1/chat/completions',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Length': Buffer.byteLength(body),
       },
     };
@@ -311,8 +309,7 @@ function callGemini(prompt) {
       r.on('end', () => {
         try {
           const parsed = JSON.parse(data);
-          const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          resolve(text);
+          resolve(parsed.choices?.[0]?.message?.content || '');
         } catch (e) { reject(e); }
       });
     });
