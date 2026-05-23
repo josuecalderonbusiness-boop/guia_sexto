@@ -339,7 +339,10 @@ Respuesta marcada: ${p.respuesta}`;
     ? 'Las preguntas son de inglés básico para niño de 7 años colombiano. Las preguntas están en español y las opciones son palabras en inglés. Verifica que la traducción marcada sea realmente correcta.'
     : '';
 
-  const prompt = `Eres un profesor experto en ${nombreMateria} para niños de 7 años de Colombia (grado 2).
+  const nivelStr = mat === 'MAT' || mat === 'LEN' || mat === 'BIO' || mat === 'QUI'
+    ? 'estudiantes de 11-12 años de Colombia (grado 6)'
+    : 'niños de 7 años de Colombia (grado 2)';
+  const prompt = `Eres un profesor experto en ${nombreMateria} para ${nivelStr}.
 ${instrIngles}
 
 Tu tarea es revisar cada pregunta y verificar si la respuesta marcada es CORRECTA o no.
@@ -370,7 +373,9 @@ El array debe tener exactamente ${preguntas.length} elementos, uno por pregunta 
       if (['A','B','C','D'].includes(corr) && corr !== p.respuesta) {
         corregidas++;
         console.log(`Pregunta ${i+1}: respuesta corregida de ${p.respuesta} → ${corr}`);
-        return { ...p, respuesta: corr };
+        const opcionCorrecta = p.opciones?.[corr] || '';
+        const nuevaExplicacion = `La respuesta correcta es ${corr}) "${opcionCorrecta}". ${p.explicacion || ''}`;
+        return { ...p, respuesta: corr, explicacion: nuevaExplicacion };
       }
       return p;
     });
@@ -499,8 +504,9 @@ REGLAS OBLIGATORIAS PARA TODAS LAS PREGUNTAS:
 3. Sin LaTeX ni símbolos raros. Usar texto plano: 3/4, raiz(16), 2x3
 4. Distractores CREÍBLES pero claramente incorrectos para quien leyó bien
 5. Distribución de respuestas correctas: A×4, B×4, C×4, D×3 — SIN PATRÓN visible (no pongas todas las respuestas en A o en B)
-6. ⚠️ VERIFICACIÓN OBLIGATORIA: antes de escribir cada pregunta, confirma que la opción marcada como "respuesta" ES REALMENTE LA CORRECTA. Comprueba mentalmente: si un niño elige esa opción, ¿está bien?
-7. La explicación debe decirle al niño POR QUÉ esa respuesta es correcta, en 1-2 oraciones simples
+6. ⚠️ VERIFICACIÓN OBLIGATORIA pregunta por pregunta: ANTES de escribir la "respuesta", lee las 4 opciones y confirma cuál es la correcta. Escribe primero la opción correcta en su lugar (A, B, C o D) y luego escribe la explicación basada en ESA opción.
+7. La explicación debe mencionar EXPLÍCITAMENTE la opción correcta: "La respuesta es [letra]) [texto de la opción] porque..." — NUNCA expliques una opción diferente a la marcada en "respuesta".
+8. TRAMPA FRECUENTE A EVITAR: si marcas "respuesta": "B", la explicación debe hablar de la opción B, no de A, C o D.
 8. Devuelve ÚNICAMENTE JSON válido, sin texto adicional ni bloques markdown
 
 Formato JSON exacto:
