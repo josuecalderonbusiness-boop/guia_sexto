@@ -291,7 +291,7 @@ function callGemini(prompt) {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.4,
-        maxOutputTokens: 8000,
+        maxOutputTokens: 16000,
       }
     });
     const apiKey = process.env.GEMINI_API_KEY;
@@ -586,7 +586,7 @@ module.exports = async (req, res) => {
     }
 
     let preguntas = parsed.preguntas || [];
-    if (preguntas.length < 10) {
+    if (preguntas.length < 5) {
       return res.status(500).json({ ok: false, error: `Solo ${preguntas.length} preguntas generadas`, raw });
     }
 
