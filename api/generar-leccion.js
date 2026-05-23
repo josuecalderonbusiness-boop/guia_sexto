@@ -582,7 +582,8 @@ module.exports = async (req, res) => {
       if (start !== -1 && end !== -1) clean = clean.slice(start, end + 1);
       parsed = JSON.parse(clean);
     } catch (e) {
-      return res.status(500).json({ ok: false, error: 'Gemini devolvió JSON inválido', raw });
+      console.error('RAW DE GEMINI:', raw?.substring(0, 500));
+      return res.status(500).json({ ok: false, error: 'Gemini devolvió JSON inválido', raw: raw?.substring(0, 300) });
     }
 
     let preguntas = parsed.preguntas || [];
